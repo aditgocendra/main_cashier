@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:main_cashier/presentation/home/tab_view/inventory_tab.dart';
-
+import 'tab_view/category_tab.dart';
+import 'tab_view/inventory_tab.dart';
 import '../../core/constant/list_constant.dart';
 import 'home_controller.dart';
 import 'tab_view/dashboard_tab.dart';
@@ -74,8 +74,12 @@ class _TabScreenState extends State<TabScreen>
       children: const [
         DashboardTab(),
         InventoryTab(),
+        CategoryTab(),
         Center(
-          child: Text('3'),
+          child: Text('4'),
+        ),
+        Center(
+          child: Text('5'),
         ),
       ],
     );
