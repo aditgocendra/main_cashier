@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:main_cashier/core/constant/color_constant.dart';
+import 'package:main_cashier/presentation/home/home_controller.dart';
+import 'package:main_cashier/presentation/home/home_view.dart';
+import 'package:main_cashier/presentation/sign_in/sign_in_controller.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(const App());
@@ -9,9 +15,27 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => HomeController(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => SignInController(),
+        )
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          scaffoldBackgroundColor: backgroundColor,
+          textTheme: GoogleFonts.poppinsTextTheme(
+            Theme.of(context).textTheme.apply(
+                  bodyColor: Colors.black,
+                ),
+          ),
+        ),
+        home: const HomeView(),
+      ),
     );
   }
 }
