@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:main_cashier/core/constant/color_constant.dart';
-import 'package:main_cashier/presentation/home/home_controller.dart';
-import 'package:main_cashier/presentation/home/home_view.dart';
-import 'package:main_cashier/presentation/sign_in/sign_in_controller.dart';
+import 'core/constant/color_constant.dart';
+import 'presentation/home/home_view.dart';
 import 'package:provider/provider.dart';
+import 'providers.dart';
 
 void main() {
   runApp(const App());
@@ -16,14 +15,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (context) => HomeController(),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => SignInController(),
-        )
-      ],
+      providers: listProvider,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
