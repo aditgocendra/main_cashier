@@ -20,9 +20,9 @@ class CategoryRepositoryImpl implements CategoryRepository {
   }
 
   @override
-  Future<List<CategoryEntity>> getCategories() async {
+  Future<List<CategoryEntity>> getCategories(int limit, int offset) async {
     try {
-      return await categoryLocalDataSource.getAll();
+      return await categoryLocalDataSource.getAll(limit, offset);
     } catch (e) {
       throw FetchDataException('Fail get categories');
     }

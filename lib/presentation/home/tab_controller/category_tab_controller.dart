@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../../domain/usecase/category/update_category_usecase.dart';
-import '../../../core/usecase/usecase.dart';
 import '../../../domain/entity/category_entity.dart';
 import '../../../domain/usecase/category/delete_category_usecase.dart';
 import '../../../domain/usecase/category/create_category_usecase.dart';
@@ -24,6 +23,12 @@ class CategoryTabController extends ChangeNotifier {
 
   String _errorDialog = "";
   String get errorDialog => _errorDialog;
+
+  int _rowPage = 10;
+  int get rowPage => _rowPage;
+
+  int _offsetRowPage = 0;
+  int get offsetRowPage => _offsetRowPage;
 
   void addCategory(String title) async {
     await createCategory.call(title).then((value) {
@@ -56,10 +61,31 @@ class CategoryTabController extends ChangeNotifier {
   }
 
   void setCategories() async {
-    await getCategories.call(NoParans()).then((value) {
+    final param = ParamGetCategories(limit: rowPage, offset: offsetRowPage);
+    await getCategories.call(param).then((value) {
       _listCategory = value;
       notifyListeners();
     });
+  }
+
+  void updateRowPage(int newRowPage) {
+    _rowPage = newRowPage;
+    _offsetRowPage = 0;
+    setCategories();
+  }
+
+  void nextPage() {
+    _offsetRowPage = offsetRowPage + rowPage;
+    setCategories();
+  }
+
+  void backPage() {
+    if (offsetRowPage <= 0) {
+      return;
+    }
+
+    _offsetRowPage = offsetRowPage - rowPage;
+    setCategories();
   }
 
   void resetErrorDialog() => _errorDialog = "";

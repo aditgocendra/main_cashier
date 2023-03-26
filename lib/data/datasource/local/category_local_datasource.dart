@@ -2,7 +2,7 @@ import 'drift/drift_database.dart';
 import '../../models/category_model.dart';
 
 abstract class CategoryLocalDataSource {
-  Future<List<CategoryModel>> getAll();
+  Future<List<CategoryModel>> getAll(int limit, int offset);
 
   Stream<List<CategoryModel>> watchAll();
 
@@ -21,8 +21,10 @@ class CategoryLocalDataSourceImpl implements CategoryLocalDataSource {
   });
 
   @override
-  Future<List<CategoryModel>> getAll() async {
-    final result = await databaseApp.select(databaseApp.categoryTable).get();
+  Future<List<CategoryModel>> getAll(int limit, int offset) async {
+    final result = await (databaseApp.select(databaseApp.categoryTable)
+          ..limit(limit, offset: offset))
+        .get();
 
     return CategoryModel.fromTableList(result);
   }
