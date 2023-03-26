@@ -8,7 +8,10 @@ class TableComponent {
         child: Center(
           child: Text(
             text,
-            style: const TextStyle(fontSize: 16),
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
       ),
