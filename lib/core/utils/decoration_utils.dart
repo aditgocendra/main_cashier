@@ -1,3 +1,4 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 
 import '../constant/color_constant.dart';
@@ -19,6 +20,28 @@ class DecorationUtils {
         borderRadius: BorderRadius.all(
           Radius.circular(12),
         ),
+      ),
+    );
+  }
+
+  static DropDownDecoratorProps dropdownStyleForm(String labelText) {
+    return DropDownDecoratorProps(
+      dropdownSearchDecoration: InputDecoration(
+        contentPadding: const EdgeInsets.all(12.0),
+        border: const OutlineInputBorder(
+          borderSide: BorderSide(width: 1.0),
+          borderRadius: BorderRadius.all(
+            Radius.circular(12.0),
+          ),
+        ),
+        focusedBorder: const OutlineInputBorder(
+          borderSide: BorderSide(width: 1.0, color: Colors.blue),
+          borderRadius: BorderRadius.all(
+            Radius.circular(12.0),
+          ),
+        ),
+        labelText: labelText,
+        labelStyle: const TextStyle(fontSize: 14),
       ),
     );
   }
