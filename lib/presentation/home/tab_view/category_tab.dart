@@ -1,3 +1,4 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:unicons/unicons.dart';
@@ -32,235 +33,315 @@ class _CategoryTabState extends State<CategoryTab> {
     final navigator = Navigator.of(context);
     final ctgTabController = context.watch<CategoryTabController>();
 
-    return Container(
-      decoration: BoxDecoration(
-        color: canvasColor,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Wrap(
-              crossAxisAlignment: WrapCrossAlignment.center,
-              alignment: WrapAlignment.spaceBetween,
-              children: [
-                SizedBox(
-                  width: 200,
-                  child: TextField(
-                    // controller: homeController.searchTec,
-                    style: const TextStyle(fontSize: 14),
-                    onChanged: (value) {},
-                    decoration: InputDecoration(
-                      fillColor: Colors.white60,
-                      hintText: "Pencarian",
-                      contentPadding: const EdgeInsets.symmetric(
-                        vertical: 16,
-                        horizontal: 16,
-                      ),
-                      border: const OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: borderColor,
-                        ),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(12),
-                        ),
-                      ),
-                      suffixIcon: InkWell(
-                        onTap: () {},
-                        child: const Icon(
-                          UniconsLine.search_alt,
-                          color: borderColor,
-                          size: 12,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Wrap(
+    return ListView(
+      // mainAxisSize: MainAxisSize.min,
+      // physics: const NeverScrollableScrollPhysics(),
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            color: canvasColor,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  alignment: WrapAlignment.spaceBetween,
                   children: [
-                    const SizedBox(
-                      width: 12,
+                    SizedBox(
+                      width: 200,
+                      child: TextField(
+                        // controller: homeController.searchTec,
+                        style: const TextStyle(fontSize: 14),
+                        onChanged: (value) {},
+                        decoration: InputDecoration(
+                          fillColor: Colors.white60,
+                          hintText: "Pencarian",
+                          contentPadding: const EdgeInsets.symmetric(
+                            vertical: 16,
+                            horizontal: 16,
+                          ),
+                          border: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: borderColor,
+                            ),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(12),
+                            ),
+                          ),
+                          suffixIcon: InkWell(
+                            onTap: () {},
+                            child: const Icon(
+                              UniconsLine.search_alt,
+                              color: borderColor,
+                              size: 12,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return Dialog(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                              child: DialogCategoryAdd(
-                                ctgTabController: ctgTabController,
-                              ),
+                    Wrap(
+                      children: [
+                        const SizedBox(
+                          width: 12,
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return Dialog(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: DialogCategoryAdd(
+                                    ctgTabController: ctgTabController,
+                                  ),
+                                );
+                              },
                             );
                           },
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.all(16),
-                        backgroundColor: primaryColor,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(6),
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.all(18),
+                            backgroundColor: primaryColor,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          child: const Text(
+                            "Create Category",
+                            style: TextStyle(fontSize: 12),
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              SelectionArea(
+                child: Table(
+                  border: const TableBorder(
+                    horizontalInside: BorderSide(
+                      width: 0.1,
+                    ),
+                    top: BorderSide(
+                      width: 0.1,
+                    ),
+                    bottom: BorderSide(
+                      width: 0.1,
+                    ),
+                  ),
+                  columnWidths: const <int, TableColumnWidth>{
+                    0: FlexColumnWidth(),
+                    1: FlexColumnWidth(),
+                    2: FlexColumnWidth(),
+                  },
+                  defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                  children: <TableRow>[
+                    // Header Data Table
+                    TableComponent.headerTable(
+                      ["Category ID", "Title", "Action"],
+                    ),
+                    // Body Data Table
+                    ...ctgTabController.listCategory.map((val) {
+                      return TableRow(
+                        children: [
+                          TableCell(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Center(
+                                child: Text(
+                                  val.id.toString(),
+                                  style: const TextStyle(fontSize: 14),
+                                ),
+                              ),
+                            ),
+                          ),
+                          TableCell(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Center(
+                                child: Text(
+                                  val.title,
+                                  style: const TextStyle(fontSize: 14),
+                                ),
+                              ),
+                            ),
+                          ),
+                          TableCell(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Center(
+                                child: Wrap(
+                                  children: [
+                                    // Edit
+                                    IconButton(
+                                      onPressed: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return Dialog(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(16),
+                                              ),
+                                              child: DialogCategoryEdit(
+                                                ctg: val,
+                                                ctgTabController:
+                                                    ctgTabController,
+                                              ),
+                                            );
+                                          },
+                                        );
+                                      },
+                                      icon: const Icon(UniconsLine.edit),
+                                    ),
+                                    // Delete
+                                    IconButton(
+                                      onPressed: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return DialogUtils
+                                                .dialogConfirmation(
+                                              title: "Delete Category",
+                                              message:
+                                                  "Are you sure delete this category ?",
+                                              callbackConfirmation: () {
+                                                ctgTabController
+                                                    .removeCategory(val);
+
+                                                if (ctgTabController
+                                                    .errorDialog.isNotEmpty) {}
+                                                navigator.pop();
+                                              },
+                                              callbackCancel: () {
+                                                navigator.pop();
+                                              },
+                                            );
+                                          },
+                                        );
+                                      },
+                                      icon: const Icon(UniconsLine.trash),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    }).toList()
+                  ],
+                ),
+              ),
+              // Footer
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        const Text(
+                          "Rows per page",
+                          style: TextStyle(
+                            fontSize: 12,
+                          ),
                         ),
-                      ),
-                      child: const Text(
-                        "Category Add",
-                        style: TextStyle(fontSize: 12),
-                      ),
+                        const SizedBox(
+                          width: 8,
+                        ),
+                        SizedBox(
+                          width: 75,
+                          child: DropdownSearch<int>(
+                            items: const [10, 25, 50],
+                            selectedItem: 10,
+                            onChanged: (int? value) {
+                              // widget.controller.setChangeConditionSelected(value!);
+                            },
+                            popupProps: PopupProps.menu(
+                              // showSelectedItems: true,
+                              fit: FlexFit.loose,
+                              menuProps: const MenuProps(
+                                backgroundColor: Colors.transparent,
+                                elevation: 0,
+                              ),
+                              containerBuilder: (ctx, popupWidget) {
+                                return Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    const SizedBox(
+                                      height: 12,
+                                    ),
+                                    Flexible(
+                                      child: Container(
+                                        decoration: const BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(12.0),
+                                          ),
+                                        ),
+                                        child: popupWidget,
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
+                            dropdownDecoratorProps:
+                                const DropDownDecoratorProps(
+                              dropdownSearchDecoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(8.0),
+                                labelStyle: TextStyle(
+                                    fontSize: 12, color: primaryColor),
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide(width: 1.0),
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(12.0),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            // dropdownDecoratorProps: DecorationUtils.dropdownStyleForm(
+                            //   "Product Condition",
+                            // ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Wrap(
+                      children: [
+                        // Back Page
+                        IconButton(
+                          onPressed: () {
+                            ctgTabController.backPage();
+                          },
+                          icon: const Icon(Icons.keyboard_arrow_left),
+                        ),
+                        // Next Page
+                        IconButton(
+                          onPressed: () {
+                            ctgTabController.nextPage();
+                          },
+                          icon: const Icon(Icons.keyboard_arrow_right),
+                        ),
+                      ],
                     )
                   ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-          Expanded(
-            child: ListView(
-              children: [
-                SelectionArea(
-                  child: Table(
-                    border: const TableBorder(
-                      horizontalInside: BorderSide(
-                        width: 0.1,
-                      ),
-                      top: BorderSide(
-                        width: 0.1,
-                      ),
-                      bottom: BorderSide(
-                        width: 0.1,
-                      ),
-                    ),
-                    columnWidths: const <int, TableColumnWidth>{
-                      0: FlexColumnWidth(),
-                      1: FlexColumnWidth(),
-                      2: FlexColumnWidth(),
-                    },
-                    defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                    children: <TableRow>[
-                      // Header Data Table
-                      TableComponent.headerTable(
-                        ["Category ID", "Title", "Action"],
-                      ),
-                      // Body Data Table
-                      ...ctgTabController.listCategory.map((val) {
-                        return TableRow(
-                          children: [
-                            TableCell(
-                              child: Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Center(
-                                  child: Text(
-                                    val.id.toString(),
-                                    style: const TextStyle(fontSize: 14),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            TableCell(
-                              child: Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Center(
-                                  child: Text(
-                                    val.title,
-                                    style: const TextStyle(fontSize: 14),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            TableCell(
-                              child: Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Center(
-                                  child: Wrap(
-                                    children: [
-                                      // Edit
-                                      IconButton(
-                                        onPressed: () {
-                                          showDialog(
-                                            context: context,
-                                            builder: (context) {
-                                              return Dialog(
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(16),
-                                                ),
-                                                child: DialogCategoryEdit(
-                                                  ctg: val,
-                                                  ctgTabController:
-                                                      ctgTabController,
-                                                ),
-                                              );
-                                            },
-                                          );
-                                        },
-                                        icon: const Icon(UniconsLine.edit),
-                                      ),
-                                      // Delete
-                                      IconButton(
-                                        onPressed: () {
-                                          showDialog(
-                                            context: context,
-                                            builder: (context) {
-                                              return DialogUtils
-                                                  .dialogConfirmation(
-                                                title: "Delete Category",
-                                                message:
-                                                    "Are you sure delete this category ?",
-                                                callbackConfirmation: () {
-                                                  ctgTabController
-                                                      .removeCategory(val);
-
-                                                  if (ctgTabController
-                                                      .errorDialog
-                                                      .isNotEmpty) {}
-                                                  navigator.pop();
-                                                },
-                                                callbackCancel: () {
-                                                  navigator.pop();
-                                                },
-                                              );
-                                            },
-                                          );
-                                        },
-                                        icon: const Icon(UniconsLine.trash),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      }).toList()
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          // Footer
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.keyboard_arrow_left),
-                ),
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.keyboard_arrow_right),
-                )
-              ],
-            ),
-          )
-        ],
-      ),
+        )
+      ],
     );
   }
 }
