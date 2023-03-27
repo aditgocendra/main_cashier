@@ -20,6 +20,9 @@ class CategoryTab extends StatefulWidget {
 }
 
 class _CategoryTabState extends State<CategoryTab> {
+  final TextEditingController tecTitle = TextEditingController();
+  final TextEditingController tecSearch = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -28,7 +31,12 @@ class _CategoryTabState extends State<CategoryTab> {
     });
   }
 
-  final TextEditingController tecSearch = TextEditingController();
+  @override
+  void dispose() {
+    super.dispose();
+    tecTitle.dispose();
+    tecSearch.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,8 +44,6 @@ class _CategoryTabState extends State<CategoryTab> {
     final ctgTabController = context.watch<CategoryTabController>();
 
     return ListView(
-      // mainAxisSize: MainAxisSize.min,
-      // physics: const NeverScrollableScrollPhysics(),
       children: [
         Container(
           decoration: BoxDecoration(
@@ -112,6 +118,7 @@ class _CategoryTabState extends State<CategoryTab> {
                                   ),
                                   child: DialogCategoryAdd(
                                     ctgTabController: ctgTabController,
+                                    tecTitle: tecTitle,
                                   ),
                                 );
                               },
@@ -206,6 +213,7 @@ class _CategoryTabState extends State<CategoryTab> {
                                                 ctg: val,
                                                 ctgTabController:
                                                     ctgTabController,
+                                                tecTitle: tecTitle,
                                               ),
                                             );
                                           },
@@ -280,7 +288,6 @@ class _CategoryTabState extends State<CategoryTab> {
                               ctgTabController.updateRowPage(value!);
                             },
                             popupProps: PopupProps.menu(
-                              // showSelectedItems: true,
                               fit: FlexFit.loose,
                               menuProps: const MenuProps(
                                 backgroundColor: Colors.transparent,
@@ -323,9 +330,6 @@ class _CategoryTabState extends State<CategoryTab> {
                                 ),
                               ),
                             ),
-                            // dropdownDecoratorProps: DecorationUtils.dropdownStyleForm(
-                            //   "Product Condition",
-                            // ),
                           ),
                         ),
                       ],
@@ -368,10 +372,14 @@ class _CategoryTabState extends State<CategoryTab> {
 }
 
 class DialogCategoryAdd extends StatelessWidget {
-  final TextEditingController tecTitle = TextEditingController();
+  final TextEditingController tecTitle;
   final CategoryTabController ctgTabController;
 
-  DialogCategoryAdd({required this.ctgTabController, super.key});
+  const DialogCategoryAdd({
+    required this.ctgTabController,
+    required this.tecTitle,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -435,14 +443,14 @@ class DialogCategoryAdd extends StatelessWidget {
 }
 
 class DialogCategoryEdit extends StatelessWidget {
-  final TextEditingController tecTitle = TextEditingController();
-
+  final TextEditingController tecTitle;
   final CategoryTabController ctgTabController;
   final CategoryEntity ctg;
 
-  DialogCategoryEdit({
+  const DialogCategoryEdit({
     required this.ctgTabController,
     required this.ctg,
+    required this.tecTitle,
     super.key,
   });
 
