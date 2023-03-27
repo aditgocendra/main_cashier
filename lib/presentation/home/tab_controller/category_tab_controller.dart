@@ -73,9 +73,11 @@ class CategoryTabController extends ChangeNotifier {
     final param = ParamGetCategories(limit: rowPage, offset: offsetRowPage);
 
     await getCategories.call(param).then((value) {
-      if (value.isNotEmpty) {
-        _listCategory = value;
+      if (value.isEmpty) {
+        return;
       }
+
+      _listCategory = value;
 
       notifyListeners();
     });
@@ -99,12 +101,15 @@ class CategoryTabController extends ChangeNotifier {
   }
 
   void nextPage() {
+    if (isSearch) return;
+
     _offsetRowPage = offsetRowPage + rowPage;
     _activeRowPage += 1;
     setCategories();
   }
 
   void backPage() {
+    if (isSearch) return;
     if (offsetRowPage <= 0) {
       return;
     }
