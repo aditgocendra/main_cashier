@@ -264,7 +264,7 @@ class _CategoryTabState extends State<CategoryTab> {
                             items: const [10, 25, 50],
                             selectedItem: 10,
                             onChanged: (int? value) {
-                              // widget.controller.setChangeConditionSelected(value!);
+                              ctgTabController.updateRowPage(value!);
                             },
                             popupProps: PopupProps.menu(
                               // showSelectedItems: true,
@@ -318,6 +318,8 @@ class _CategoryTabState extends State<CategoryTab> {
                       ],
                     ),
                     Wrap(
+                      alignment: WrapAlignment.center,
+                      crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         // Back Page
                         IconButton(
@@ -325,6 +327,12 @@ class _CategoryTabState extends State<CategoryTab> {
                             ctgTabController.backPage();
                           },
                           icon: const Icon(Icons.keyboard_arrow_left),
+                        ),
+                        Text(
+                          ctgTabController.activeRowPage.toString(),
+                          style: const TextStyle(
+                            fontSize: 12.5,
+                          ),
                         ),
                         // Next Page
                         IconButton(

@@ -30,6 +30,9 @@ class CategoryTabController extends ChangeNotifier {
   int _offsetRowPage = 0;
   int get offsetRowPage => _offsetRowPage;
 
+  int _activeRowPage = 1;
+  int get activeRowPage => _activeRowPage;
+
   void addCategory(String title) async {
     await createCategory.call(title).then((value) {
       _listCategory.add(value);
@@ -63,6 +66,9 @@ class CategoryTabController extends ChangeNotifier {
   void setCategories() async {
     final param = ParamGetCategories(limit: rowPage, offset: offsetRowPage);
     await getCategories.call(param).then((value) {
+      if (value.isEmpty) {
+        return;
+      }
       _listCategory = value;
       notifyListeners();
     });
@@ -71,11 +77,13 @@ class CategoryTabController extends ChangeNotifier {
   void updateRowPage(int newRowPage) {
     _rowPage = newRowPage;
     _offsetRowPage = 0;
+    _activeRowPage = 1;
     setCategories();
   }
 
   void nextPage() {
     _offsetRowPage = offsetRowPage + rowPage;
+    _activeRowPage += 1;
     setCategories();
   }
 
@@ -85,6 +93,7 @@ class CategoryTabController extends ChangeNotifier {
     }
 
     _offsetRowPage = offsetRowPage - rowPage;
+    _activeRowPage -= 1;
     setCategories();
   }
 
