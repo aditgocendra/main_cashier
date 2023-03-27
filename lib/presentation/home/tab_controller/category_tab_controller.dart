@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:main_cashier/domain/usecase/category/search_categories_usecase.dart';
 import '../../../domain/usecase/category/update_category_usecase.dart';
 import '../../../domain/entity/category_entity.dart';
 import '../../../domain/usecase/category/delete_category_usecase.dart';
@@ -7,12 +8,14 @@ import '../../../domain/usecase/category/get_categories_usecase.dart';
 
 class CategoryTabController extends ChangeNotifier {
   final GetCategories getCategories;
+  final SearchCategories searchCategories;
   final CreateCategory createCategory;
   final DeleteCategory deleteCategory;
   final UpdateCategory updateCategory;
 
   CategoryTabController({
     required this.getCategories,
+    required this.searchCategories,
     required this.createCategory,
     required this.deleteCategory,
     required this.updateCategory,
@@ -32,6 +35,9 @@ class CategoryTabController extends ChangeNotifier {
 
   int _activeRowPage = 1;
   int get activeRowPage => _activeRowPage;
+
+  bool _isSearch = false;
+  bool get isSearch => _isSearch;
 
   void addCategory(String title) async {
     await createCategory.call(title).then((value) {
@@ -65,11 +71,22 @@ class CategoryTabController extends ChangeNotifier {
 
   void setCategories() async {
     final param = ParamGetCategories(limit: rowPage, offset: offsetRowPage);
+
     await getCategories.call(param).then((value) {
-      if (value.isEmpty) {
-        return;
+      if (value.isNotEmpty) {
+        _listCategory = value;
       }
-      _listCategory = value;
+
+      notifyListeners();
+    });
+  }
+
+  void searchDataCategories(String keyword) async {
+    await searchCategories.call(keyword).then((value) {
+      if (value.isNotEmpty) {
+        _listCategory = value;
+      }
+      tooggleIsSearch();
       notifyListeners();
     });
   }
@@ -96,6 +113,8 @@ class CategoryTabController extends ChangeNotifier {
     _activeRowPage -= 1;
     setCategories();
   }
+
+  void tooggleIsSearch() => _isSearch = isSearch ? false : true;
 
   void resetErrorDialog() => _errorDialog = "";
 }

@@ -1,10 +1,10 @@
-import 'package:main_cashier/domain/usecase/category/delete_category_usecase.dart';
-import 'package:main_cashier/domain/usecase/category/update_category_usecase.dart';
-
 import 'data/datasource/local/category_local_datasource.dart';
 import 'data/datasource/local/drift/drift_database.dart';
 import 'data/repositories/category_repository_impl.dart';
 
+import 'domain/usecase/category/delete_category_usecase.dart';
+import 'domain/usecase/category/search_categories_usecase.dart';
+import 'domain/usecase/category/update_category_usecase.dart';
 import 'domain/repostitories/category_repository.dart';
 import 'domain/usecase/category/create_category_usecase.dart';
 import 'domain/usecase/category/get_categories_usecase.dart';
@@ -36,6 +36,10 @@ GetCategories _getCategories = GetCategories(
   repository: _categoryRepository,
 );
 
+SearchCategories _searchCategories = SearchCategories(
+  repository: _categoryRepository,
+);
+
 CreateCategory _createCategory = CreateCategory(
   repository: _categoryRepository,
 );
@@ -55,6 +59,7 @@ List<SingleChildWidget> _listProvider = [
   ChangeNotifierProvider(
     create: (context) => CategoryTabController(
       getCategories: _getCategories,
+      searchCategories: _searchCategories,
       createCategory: _createCategory,
       deleteCategory: _deleteCategory,
       updateCategory: _updateCategory,

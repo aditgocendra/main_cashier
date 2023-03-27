@@ -1,10 +1,12 @@
+import 'package:drift/drift.dart';
+
 import 'drift/drift_database.dart';
 import '../../models/category_model.dart';
 
 abstract class CategoryLocalDataSource {
   Future<List<CategoryModel>> getAll(int limit, int offset);
 
-  Stream<List<CategoryModel>> watchAll();
+  Future<List<CategoryModel>> search(String keyword);
 
   Future<CategoryModel> create(String title);
 
@@ -56,17 +58,13 @@ class CategoryLocalDataSourceImpl implements CategoryLocalDataSource {
   }
 
   @override
-  Stream<List<CategoryModel>> watchAll() {
-    final query = databaseApp.select(databaseApp.categoryTable);
+  Future<List<CategoryModel>> search(String keyword) async {
+    final result = await (databaseApp.select(databaseApp.categoryTable)
+          ..where(
+            (tbl) => tbl.title.like('%$keyword%'),
+          ))
+        .get();
 
-    return query
-        .map(
-          (row) => CategoryModel(
-            id: row.id,
-            title: row.title,
-            createdAt: row.createdAt,
-          ),
-        )
-        .watch();
+    return CategoryModel.fromTableList(result);
   }
 }

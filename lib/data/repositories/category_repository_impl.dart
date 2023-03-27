@@ -59,11 +59,11 @@ class CategoryRepositoryImpl implements CategoryRepository {
   }
 
   @override
-  Stream<List<CategoryEntity>> watchCategories() {
+  Future<List<CategoryEntity>> searchCategories(String keyword) async {
     try {
-      return categoryLocalDataSource.watchAll();
-    } catch (_) {
-      throw FetchDataException('Fail stream data categories');
+      return await categoryLocalDataSource.search(keyword);
+    } catch (e) {
+      throw FetchDataException('Fail search keyword $keyword in category');
     }
   }
 }

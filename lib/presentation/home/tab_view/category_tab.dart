@@ -28,6 +28,8 @@ class _CategoryTabState extends State<CategoryTab> {
     });
   }
 
+  final TextEditingController tecSearch = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     final navigator = Navigator.of(context);
@@ -54,9 +56,8 @@ class _CategoryTabState extends State<CategoryTab> {
                     SizedBox(
                       width: 200,
                       child: TextField(
-                        // controller: homeController.searchTec,
+                        controller: tecSearch,
                         style: const TextStyle(fontSize: 14),
-                        onChanged: (value) {},
                         decoration: InputDecoration(
                           fillColor: Colors.white60,
                           hintText: "Pencarian",
@@ -73,11 +74,23 @@ class _CategoryTabState extends State<CategoryTab> {
                             ),
                           ),
                           suffixIcon: InkWell(
-                            onTap: () {},
-                            child: const Icon(
-                              UniconsLine.search_alt,
-                              color: borderColor,
-                              size: 12,
+                            onTap: () {
+                              if (ctgTabController.isSearch) {
+                                ctgTabController.tooggleIsSearch();
+                                ctgTabController.setCategories();
+                                tecSearch.clear();
+                                return;
+                              }
+
+                              ctgTabController.searchDataCategories(
+                                tecSearch.text,
+                              );
+                            },
+                            child: Icon(
+                              ctgTabController.isSearch
+                                  ? UniconsLine.times
+                                  : UniconsLine.search_alt,
+                              size: 20,
                             ),
                           ),
                         ),
