@@ -87,9 +87,9 @@ class CategoryTabController extends ChangeNotifier {
     await searchCategories.call(keyword).then((value) {
       if (value.isNotEmpty) {
         _listCategory = value;
+        tooggleIsSearch();
+        notifyListeners();
       }
-      tooggleIsSearch();
-      notifyListeners();
     });
   }
 
@@ -101,7 +101,9 @@ class CategoryTabController extends ChangeNotifier {
   }
 
   void nextPage() {
-    if (isSearch) return;
+    if (isSearch) {
+      return;
+    }
 
     _offsetRowPage = offsetRowPage + rowPage;
     _activeRowPage += 1;
@@ -122,4 +124,13 @@ class CategoryTabController extends ChangeNotifier {
   void tooggleIsSearch() => _isSearch = isSearch ? false : true;
 
   void resetErrorDialog() => _errorDialog = "";
+
+  void initTab() {
+    _listCategory.clear();
+    _rowPage = 10;
+    _offsetRowPage = 0;
+    _activeRowPage = 1;
+    _isSearch = false;
+    resetErrorDialog();
+  }
 }

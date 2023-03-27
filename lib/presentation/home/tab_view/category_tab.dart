@@ -26,9 +26,9 @@ class _CategoryTabState extends State<CategoryTab> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<CategoryTabController>().setCategories();
-    });
+    final ctl = context.read<CategoryTabController>();
+    ctl.initTab();
+    ctl.setCategories();
   }
 
   @override
@@ -66,7 +66,7 @@ class _CategoryTabState extends State<CategoryTab> {
                         style: const TextStyle(fontSize: 14),
                         decoration: InputDecoration(
                           fillColor: Colors.white60,
-                          hintText: "Pencarian",
+                          hintText: "Search (Title)",
                           contentPadding: const EdgeInsets.symmetric(
                             vertical: 16,
                             horizontal: 16,
@@ -87,6 +87,8 @@ class _CategoryTabState extends State<CategoryTab> {
                                 tecSearch.clear();
                                 return;
                               }
+
+                              if (tecSearch.text.isEmpty) return;
 
                               ctgTabController.searchDataCategories(
                                 tecSearch.text,
