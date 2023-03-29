@@ -70,6 +70,7 @@ class _TabScreenState extends State<TabScreen>
   @override
   Widget build(BuildContext context) {
     return TabBarView(
+      physics: const NeverScrollableScrollPhysics(),
       controller: widget.controller.tabControllerHome,
       children: const [
         DashboardTab(),
