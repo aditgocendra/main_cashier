@@ -13,6 +13,7 @@ class Topbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final homeController = context.read<HomeController>();
+    final sizeWidthScreen = MediaQuery.of(context).size.width;
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -26,8 +27,8 @@ class Topbar extends StatelessWidget {
         children: [
           Text(
             listTabMenu[homeController.indexTabActive]['menu'],
-            style: const TextStyle(
-              fontSize: 24,
+            style: TextStyle(
+              fontSize: sizeWidthScreen > 360 ? 24 : 16,
             ),
           ),
           Container(
@@ -37,15 +38,13 @@ class Topbar extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
-              children: const [
-                Text('Administrator'),
-                SizedBox(
-                  width: 16,
+              children: [
+                if (sizeWidthScreen > 475) const Text('Administrator'),
+                if (sizeWidthScreen > 475) const SizedBox(width: 8),
+                Image.asset(
+                  'assets/images/admin_avatar.png',
+                  width: sizeWidthScreen > 360 ? 32 : 20,
                 ),
-                // Image.asset(
-                //   'assets/avatar/pilot.png',
-                //   width: 32,
-                // ),
               ],
             ),
           ),
