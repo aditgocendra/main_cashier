@@ -42,8 +42,10 @@ class _CategoryTabState extends State<CategoryTab> {
   Widget build(BuildContext context) {
     final navigator = Navigator.of(context);
     final ctgTabController = context.watch<CategoryTabController>();
+    final size = MediaQuery.of(context).size.width;
 
     return ListView(
+      padding: const EdgeInsets.all(8),
       children: [
         Container(
           decoration: BoxDecoration(
@@ -145,129 +147,135 @@ class _CategoryTabState extends State<CategoryTab> {
                 ),
               ),
               SelectionArea(
-                child: Table(
-                  border: const TableBorder(
-                    horizontalInside: BorderSide(
-                      width: 0.1,
+                child: SingleChildScrollView(
+                  scrollDirection:
+                      size >= 450 ? Axis.vertical : Axis.horizontal,
+                  child: Table(
+                    border: const TableBorder(
+                      horizontalInside: BorderSide(
+                        width: 0.1,
+                      ),
+                      top: BorderSide(
+                        width: 0.1,
+                      ),
+                      bottom: BorderSide(
+                        width: 0.1,
+                      ),
                     ),
-                    top: BorderSide(
-                      width: 0.1,
-                    ),
-                    bottom: BorderSide(
-                      width: 0.1,
-                    ),
-                  ),
-                  columnWidths: const <int, TableColumnWidth>{
-                    0: FlexColumnWidth(),
-                    1: FlexColumnWidth(),
-                    2: FlexColumnWidth(),
-                  },
-                  defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                  children: <TableRow>[
-                    // Header Data Table
-                    TableComponent.headerTable(
-                      ["Category ID", "Title", "Action"],
-                    ),
-                    // Body Data Table
-                    ...ctgTabController.listCategory.map((val) {
-                      return TableRow(
-                        children: [
-                          TableCell(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Center(
-                                child: Text(
-                                  val.id.toString(),
-                                  style: const TextStyle(fontSize: 14),
+                    // defaultColumnWidth: FixedColumnWidth(1800 / 3),
+                    columnWidths: const <int, TableColumnWidth>{
+                      0: IntrinsicColumnWidth(),
+                      1: IntrinsicColumnWidth(),
+                      2: IntrinsicColumnWidth(),
+                    },
+                    defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                    children: <TableRow>[
+                      // Header Data Table
+                      TableComponent.headerTable(
+                        ["Category ID", "Title", "Action"],
+                      ),
+                      // Body Data Table
+                      ...ctgTabController.listCategory.map((val) {
+                        return TableRow(
+                          children: [
+                            TableCell(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Center(
+                                  child: Text(
+                                    val.id.toString(),
+                                    style: const TextStyle(fontSize: 14),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          TableCell(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Center(
-                                child: Text(
-                                  val.title,
-                                  style: const TextStyle(fontSize: 14),
+                            TableCell(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Center(
+                                  child: Text(
+                                    val.title,
+                                    style: const TextStyle(fontSize: 14),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          TableCell(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Center(
-                                child: Wrap(
-                                  children: [
-                                    // Edit
-                                    IconButton(
-                                      onPressed: () {
-                                        showDialog(
-                                          context: context,
-                                          builder: (context) {
-                                            return Dialog(
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(16),
-                                              ),
-                                              child: DialogCategoryEdit(
-                                                ctg: val,
-                                                ctgTabController:
-                                                    ctgTabController,
-                                                tecTitle: tecTitle,
-                                              ),
-                                            );
-                                          },
-                                        );
-                                      },
-                                      icon: const Icon(UniconsLine.edit),
-                                    ),
-                                    // Delete
-                                    IconButton(
-                                      onPressed: () {
-                                        showDialog(
-                                          context: context,
-                                          builder: (context) {
-                                            return DialogUtils
-                                                .dialogConfirmation(
-                                              title: "Delete Category",
-                                              message:
-                                                  "Are you sure delete this category ?",
-                                              callbackConfirmation: () {
-                                                ctgTabController
-                                                    .removeCategory(val);
+                            TableCell(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Center(
+                                  child: Wrap(
+                                    children: [
+                                      // Edit
+                                      IconButton(
+                                        onPressed: () {
+                                          showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              return Dialog(
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(16),
+                                                ),
+                                                child: DialogCategoryEdit(
+                                                  ctg: val,
+                                                  ctgTabController:
+                                                      ctgTabController,
+                                                  tecTitle: tecTitle,
+                                                ),
+                                              );
+                                            },
+                                          );
+                                        },
+                                        icon: const Icon(UniconsLine.edit),
+                                      ),
+                                      // Delete
+                                      IconButton(
+                                        onPressed: () {
+                                          showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              return DialogUtils
+                                                  .dialogConfirmation(
+                                                title: "Delete Category",
+                                                message:
+                                                    "Are you sure delete this category ?",
+                                                callbackConfirmation: () {
+                                                  ctgTabController
+                                                      .removeCategory(val);
 
-                                                if (ctgTabController
-                                                    .errorDialog.isNotEmpty) {}
-                                                navigator.pop();
-                                              },
-                                              callbackCancel: () {
-                                                navigator.pop();
-                                              },
-                                            );
-                                          },
-                                        );
-                                      },
-                                      icon: const Icon(UniconsLine.trash),
-                                    )
-                                  ],
+                                                  if (ctgTabController
+                                                      .errorDialog
+                                                      .isNotEmpty) {}
+                                                  navigator.pop();
+                                                },
+                                                callbackCancel: () {
+                                                  navigator.pop();
+                                                },
+                                              );
+                                            },
+                                          );
+                                        },
+                                        icon: const Icon(UniconsLine.trash),
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
-                      );
-                    }).toList()
-                  ],
+                          ],
+                        );
+                      }).toList()
+                    ],
+                  ),
                 ),
               ),
               // Footer
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                child: Wrap(
+                  alignment: WrapAlignment.spaceBetween,
+                  crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
                     Wrap(
                       crossAxisAlignment: WrapCrossAlignment.center,
@@ -322,13 +330,8 @@ class _CategoryTabState extends State<CategoryTab> {
                                 const DropDownDecoratorProps(
                               dropdownSearchDecoration: InputDecoration(
                                 contentPadding: EdgeInsets.all(8.0),
-                                labelStyle: TextStyle(
-                                    fontSize: 12, color: primaryColor),
                                 border: OutlineInputBorder(
-                                  borderSide: BorderSide(width: 1.0),
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(12.0),
-                                  ),
+                                  borderSide: BorderSide.none,
                                 ),
                               ),
                             ),
