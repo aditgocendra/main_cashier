@@ -219,9 +219,9 @@ class $ProductTableTable extends ProductTable
   static const VerificationMeta _codeProductMeta =
       const VerificationMeta('codeProduct');
   @override
-  late final GeneratedColumn<int> codeProduct = GeneratedColumn<int>(
+  late final GeneratedColumn<String> codeProduct = GeneratedColumn<String>(
       'code_product', aliasedName, false,
-      type: DriftSqlType.int,
+      type: DriftSqlType.string,
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
@@ -234,18 +234,32 @@ class $ProductTableTable extends ProductTable
   late final GeneratedColumn<int> price = GeneratedColumn<int>(
       'price', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _stockMeta = const VerificationMeta('stock');
+  @override
+  late final GeneratedColumn<int> stock = GeneratedColumn<int>(
+      'stock', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _soldMeta = const VerificationMeta('sold');
+  @override
+  late final GeneratedColumn<int> sold = GeneratedColumn<int>(
+      'sold', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
   @override
   late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
       'created_at', aliasedName, false,
-      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      defaultValue: currentDateAndTime);
   static const VerificationMeta _updatedAtMeta =
       const VerificationMeta('updatedAt');
   @override
   late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
-      'updated_at', aliasedName, false,
-      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+      'updated_at', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
   static const VerificationMeta _categoryIdMeta =
       const VerificationMeta('categoryId');
   @override
@@ -257,7 +271,7 @@ class $ProductTableTable extends ProductTable
           GeneratedColumn.constraintIsAlways('REFERENCES category_table (id)'));
   @override
   List<GeneratedColumn> get $columns =>
-      [codeProduct, name, price, createdAt, updatedAt, categoryId];
+      [codeProduct, name, price, stock, sold, createdAt, updatedAt, categoryId];
   @override
   String get aliasedName => _alias ?? 'product_table';
   @override
@@ -287,17 +301,23 @@ class $ProductTableTable extends ProductTable
     } else if (isInserting) {
       context.missing(_priceMeta);
     }
+    if (data.containsKey('stock')) {
+      context.handle(
+          _stockMeta, stock.isAcceptableOrUnknown(data['stock']!, _stockMeta));
+    } else if (isInserting) {
+      context.missing(_stockMeta);
+    }
+    if (data.containsKey('sold')) {
+      context.handle(
+          _soldMeta, sold.isAcceptableOrUnknown(data['sold']!, _soldMeta));
+    }
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
           createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
-    } else if (isInserting) {
-      context.missing(_createdAtMeta);
     }
     if (data.containsKey('updated_at')) {
       context.handle(_updatedAtMeta,
           updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
-    } else if (isInserting) {
-      context.missing(_updatedAtMeta);
     }
     if (data.containsKey('category_id')) {
       context.handle(
@@ -317,15 +337,19 @@ class $ProductTableTable extends ProductTable
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return ProductTableData(
       codeProduct: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}code_product'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}code_product'])!,
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       price: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}price'])!,
+      stock: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}stock'])!,
+      sold: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}sold'])!,
       createdAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
       updatedAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at'])!,
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at']),
       categoryId: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}category_id'])!,
     );
@@ -339,27 +363,35 @@ class $ProductTableTable extends ProductTable
 
 class ProductTableData extends DataClass
     implements Insertable<ProductTableData> {
-  final int codeProduct;
+  final String codeProduct;
   final String name;
   final int price;
+  final int stock;
+  final int sold;
   final DateTime createdAt;
-  final DateTime updatedAt;
+  final DateTime? updatedAt;
   final int categoryId;
   const ProductTableData(
       {required this.codeProduct,
       required this.name,
       required this.price,
+      required this.stock,
+      required this.sold,
       required this.createdAt,
-      required this.updatedAt,
+      this.updatedAt,
       required this.categoryId});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    map['code_product'] = Variable<int>(codeProduct);
+    map['code_product'] = Variable<String>(codeProduct);
     map['name'] = Variable<String>(name);
     map['price'] = Variable<int>(price);
+    map['stock'] = Variable<int>(stock);
+    map['sold'] = Variable<int>(sold);
     map['created_at'] = Variable<DateTime>(createdAt);
-    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || updatedAt != null) {
+      map['updated_at'] = Variable<DateTime>(updatedAt);
+    }
     map['category_id'] = Variable<int>(categoryId);
     return map;
   }
@@ -369,8 +401,12 @@ class ProductTableData extends DataClass
       codeProduct: Value(codeProduct),
       name: Value(name),
       price: Value(price),
+      stock: Value(stock),
+      sold: Value(sold),
       createdAt: Value(createdAt),
-      updatedAt: Value(updatedAt),
+      updatedAt: updatedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(updatedAt),
       categoryId: Value(categoryId),
     );
   }
@@ -379,11 +415,13 @@ class ProductTableData extends DataClass
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return ProductTableData(
-      codeProduct: serializer.fromJson<int>(json['codeProduct']),
+      codeProduct: serializer.fromJson<String>(json['codeProduct']),
       name: serializer.fromJson<String>(json['name']),
       price: serializer.fromJson<int>(json['price']),
+      stock: serializer.fromJson<int>(json['stock']),
+      sold: serializer.fromJson<int>(json['sold']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
       categoryId: serializer.fromJson<int>(json['categoryId']),
     );
   }
@@ -391,28 +429,34 @@ class ProductTableData extends DataClass
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
-      'codeProduct': serializer.toJson<int>(codeProduct),
+      'codeProduct': serializer.toJson<String>(codeProduct),
       'name': serializer.toJson<String>(name),
       'price': serializer.toJson<int>(price),
+      'stock': serializer.toJson<int>(stock),
+      'sold': serializer.toJson<int>(sold),
       'createdAt': serializer.toJson<DateTime>(createdAt),
-      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'updatedAt': serializer.toJson<DateTime?>(updatedAt),
       'categoryId': serializer.toJson<int>(categoryId),
     };
   }
 
   ProductTableData copyWith(
-          {int? codeProduct,
+          {String? codeProduct,
           String? name,
           int? price,
+          int? stock,
+          int? sold,
           DateTime? createdAt,
-          DateTime? updatedAt,
+          Value<DateTime?> updatedAt = const Value.absent(),
           int? categoryId}) =>
       ProductTableData(
         codeProduct: codeProduct ?? this.codeProduct,
         name: name ?? this.name,
         price: price ?? this.price,
+        stock: stock ?? this.stock,
+        sold: sold ?? this.sold,
         createdAt: createdAt ?? this.createdAt,
-        updatedAt: updatedAt ?? this.updatedAt,
+        updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
         categoryId: categoryId ?? this.categoryId,
       );
   @override
@@ -421,6 +465,8 @@ class ProductTableData extends DataClass
           ..write('codeProduct: $codeProduct, ')
           ..write('name: $name, ')
           ..write('price: $price, ')
+          ..write('stock: $stock, ')
+          ..write('sold: $sold, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('categoryId: $categoryId')
@@ -429,8 +475,8 @@ class ProductTableData extends DataClass
   }
 
   @override
-  int get hashCode =>
-      Object.hash(codeProduct, name, price, createdAt, updatedAt, categoryId);
+  int get hashCode => Object.hash(
+      codeProduct, name, price, stock, sold, createdAt, updatedAt, categoryId);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -438,46 +484,55 @@ class ProductTableData extends DataClass
           other.codeProduct == this.codeProduct &&
           other.name == this.name &&
           other.price == this.price &&
+          other.stock == this.stock &&
+          other.sold == this.sold &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt &&
           other.categoryId == this.categoryId);
 }
 
 class ProductTableCompanion extends UpdateCompanion<ProductTableData> {
-  final Value<int> codeProduct;
+  final Value<String> codeProduct;
   final Value<String> name;
   final Value<int> price;
+  final Value<int> stock;
+  final Value<int> sold;
   final Value<DateTime> createdAt;
-  final Value<DateTime> updatedAt;
+  final Value<DateTime?> updatedAt;
   final Value<int> categoryId;
   final Value<int> rowid;
   const ProductTableCompanion({
     this.codeProduct = const Value.absent(),
     this.name = const Value.absent(),
     this.price = const Value.absent(),
+    this.stock = const Value.absent(),
+    this.sold = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.categoryId = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   ProductTableCompanion.insert({
-    required int codeProduct,
+    required String codeProduct,
     required String name,
     required int price,
-    required DateTime createdAt,
-    required DateTime updatedAt,
+    required int stock,
+    this.sold = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
     required int categoryId,
     this.rowid = const Value.absent(),
   })  : codeProduct = Value(codeProduct),
         name = Value(name),
         price = Value(price),
-        createdAt = Value(createdAt),
-        updatedAt = Value(updatedAt),
+        stock = Value(stock),
         categoryId = Value(categoryId);
   static Insertable<ProductTableData> custom({
-    Expression<int>? codeProduct,
+    Expression<String>? codeProduct,
     Expression<String>? name,
     Expression<int>? price,
+    Expression<int>? stock,
+    Expression<int>? sold,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
     Expression<int>? categoryId,
@@ -487,6 +542,8 @@ class ProductTableCompanion extends UpdateCompanion<ProductTableData> {
       if (codeProduct != null) 'code_product': codeProduct,
       if (name != null) 'name': name,
       if (price != null) 'price': price,
+      if (stock != null) 'stock': stock,
+      if (sold != null) 'sold': sold,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (categoryId != null) 'category_id': categoryId,
@@ -495,17 +552,21 @@ class ProductTableCompanion extends UpdateCompanion<ProductTableData> {
   }
 
   ProductTableCompanion copyWith(
-      {Value<int>? codeProduct,
+      {Value<String>? codeProduct,
       Value<String>? name,
       Value<int>? price,
+      Value<int>? stock,
+      Value<int>? sold,
       Value<DateTime>? createdAt,
-      Value<DateTime>? updatedAt,
+      Value<DateTime?>? updatedAt,
       Value<int>? categoryId,
       Value<int>? rowid}) {
     return ProductTableCompanion(
       codeProduct: codeProduct ?? this.codeProduct,
       name: name ?? this.name,
       price: price ?? this.price,
+      stock: stock ?? this.stock,
+      sold: sold ?? this.sold,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       categoryId: categoryId ?? this.categoryId,
@@ -517,13 +578,19 @@ class ProductTableCompanion extends UpdateCompanion<ProductTableData> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     if (codeProduct.present) {
-      map['code_product'] = Variable<int>(codeProduct.value);
+      map['code_product'] = Variable<String>(codeProduct.value);
     }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
     if (price.present) {
       map['price'] = Variable<int>(price.value);
+    }
+    if (stock.present) {
+      map['stock'] = Variable<int>(stock.value);
+    }
+    if (sold.present) {
+      map['sold'] = Variable<int>(sold.value);
     }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
@@ -546,6 +613,8 @@ class ProductTableCompanion extends UpdateCompanion<ProductTableData> {
           ..write('codeProduct: $codeProduct, ')
           ..write('name: $name, ')
           ..write('price: $price, ')
+          ..write('stock: $stock, ')
+          ..write('sold: $sold, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('categoryId: $categoryId, ')
@@ -556,17 +625,28 @@ class ProductTableCompanion extends UpdateCompanion<ProductTableData> {
 }
 
 class ProductCategoryViewData extends DataClass {
+  final String codeProduct;
   final String name;
   final int price;
+  final int stock;
+  final int sold;
   final String title;
   const ProductCategoryViewData(
-      {required this.name, required this.price, required this.title});
+      {required this.codeProduct,
+      required this.name,
+      required this.price,
+      required this.stock,
+      required this.sold,
+      required this.title});
   factory ProductCategoryViewData.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return ProductCategoryViewData(
+      codeProduct: serializer.fromJson<String>(json['codeProduct']),
       name: serializer.fromJson<String>(json['name']),
       price: serializer.fromJson<int>(json['price']),
+      stock: serializer.fromJson<int>(json['stock']),
+      sold: serializer.fromJson<int>(json['sold']),
       title: serializer.fromJson<String>(json['title']),
     );
   }
@@ -574,36 +654,54 @@ class ProductCategoryViewData extends DataClass {
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
+      'codeProduct': serializer.toJson<String>(codeProduct),
       'name': serializer.toJson<String>(name),
       'price': serializer.toJson<int>(price),
+      'stock': serializer.toJson<int>(stock),
+      'sold': serializer.toJson<int>(sold),
       'title': serializer.toJson<String>(title),
     };
   }
 
-  ProductCategoryViewData copyWith({String? name, int? price, String? title}) =>
+  ProductCategoryViewData copyWith(
+          {String? codeProduct,
+          String? name,
+          int? price,
+          int? stock,
+          int? sold,
+          String? title}) =>
       ProductCategoryViewData(
+        codeProduct: codeProduct ?? this.codeProduct,
         name: name ?? this.name,
         price: price ?? this.price,
+        stock: stock ?? this.stock,
+        sold: sold ?? this.sold,
         title: title ?? this.title,
       );
   @override
   String toString() {
     return (StringBuffer('ProductCategoryViewData(')
+          ..write('codeProduct: $codeProduct, ')
           ..write('name: $name, ')
           ..write('price: $price, ')
+          ..write('stock: $stock, ')
+          ..write('sold: $sold, ')
           ..write('title: $title')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(name, price, title);
+  int get hashCode => Object.hash(codeProduct, name, price, stock, sold, title);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is ProductCategoryViewData &&
+          other.codeProduct == this.codeProduct &&
           other.name == this.name &&
           other.price == this.price &&
+          other.stock == this.stock &&
+          other.sold == this.sold &&
           other.title == this.title);
 }
 
@@ -619,7 +717,8 @@ class $ProductCategoryViewView
   $ProductTableTable get productTable =>
       attachedDatabase.productTable.createAlias('t1');
   @override
-  List<GeneratedColumn> get $columns => [name, price, title];
+  List<GeneratedColumn> get $columns =>
+      [codeProduct, name, price, stock, sold, title];
   @override
   String get aliasedName => _alias ?? entityName;
   @override
@@ -633,15 +732,25 @@ class $ProductCategoryViewView
       {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return ProductCategoryViewData(
+      codeProduct: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}code_product'])!,
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       price: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}price'])!,
+      stock: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}stock'])!,
+      sold: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}sold'])!,
       title: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}title'])!,
     );
   }
 
+  late final GeneratedColumn<String> codeProduct = GeneratedColumn<String>(
+      'code_product', aliasedName, false,
+      generatedAs: GeneratedAs(productTable.codeProduct, false),
+      type: DriftSqlType.string);
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
       'name', aliasedName, false,
       generatedAs: GeneratedAs(productTable.name, false),
@@ -649,6 +758,14 @@ class $ProductCategoryViewView
   late final GeneratedColumn<int> price = GeneratedColumn<int>(
       'price', aliasedName, false,
       generatedAs: GeneratedAs(productTable.price, false),
+      type: DriftSqlType.int);
+  late final GeneratedColumn<int> stock = GeneratedColumn<int>(
+      'stock', aliasedName, false,
+      generatedAs: GeneratedAs(productTable.stock, false),
+      type: DriftSqlType.int);
+  late final GeneratedColumn<int> sold = GeneratedColumn<int>(
+      'sold', aliasedName, false,
+      generatedAs: GeneratedAs(productTable.sold, false),
       type: DriftSqlType.int);
   late final GeneratedColumn<String> title = GeneratedColumn<String>(
       'title', aliasedName, false,

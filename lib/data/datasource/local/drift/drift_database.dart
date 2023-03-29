@@ -13,11 +13,13 @@ class CategoryTable extends Table {
 }
 
 class ProductTable extends Table {
-  IntColumn get codeProduct => integer().unique()();
+  TextColumn get codeProduct => text().unique()();
   TextColumn get name => text()();
   IntColumn get price => integer()();
-  DateTimeColumn get createdAt => dateTime()();
-  DateTimeColumn get updatedAt => dateTime()();
+  IntColumn get stock => integer()();
+  IntColumn get sold => integer().withDefault(const Constant(0))();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get updatedAt => dateTime().nullable()();
   IntColumn get categoryId =>
       integer().references(CategoryTable, #id)(); // ForeignKey
 }
@@ -28,8 +30,11 @@ abstract class ProductCategoryView extends View {
 
   @override
   Query as() => select([
+        productTable.codeProduct,
         productTable.name,
         productTable.price,
+        productTable.stock,
+        productTable.sold,
         categoryTable.title,
       ]).from(categoryTable).join(
         [
