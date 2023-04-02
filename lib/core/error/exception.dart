@@ -10,12 +10,7 @@ class AppException implements Exception {
   }
 }
 
-class FetchDataException extends AppException {
-  FetchDataException([String? message])
-      : super(message, 'Error fetch data from database drift');
-}
-
-class InsertDataException extends AppException {
-  InsertDataException([String? message])
-      : super(message, 'Error insert data to database drift, ');
+class DatabaseDriftException extends AppException {
+  DatabaseDriftException([String? message])
+      : super(message, 'Error from database, ');
 }
