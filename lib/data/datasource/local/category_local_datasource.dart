@@ -24,9 +24,11 @@ class CategoryLocalDataSourceImpl implements CategoryLocalDataSource {
 
   @override
   Future<List<CategoryModel>> getAll(int limit, int offset) async {
-    final result = await (databaseApp.select(databaseApp.categoryTable)
-          ..limit(limit, offset: offset))
-        .get();
+    final result = limit != 0
+        ? await (databaseApp.select(databaseApp.categoryTable)
+              ..limit(limit, offset: offset))
+            .get()
+        : await databaseApp.select(databaseApp.categoryTable).get();
 
     return CategoryModel.fromTableList(result);
   }
