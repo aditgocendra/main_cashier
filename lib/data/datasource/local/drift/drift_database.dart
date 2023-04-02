@@ -22,9 +22,12 @@ class ProductTable extends Table {
   DateTimeColumn get updatedAt => dateTime().nullable()();
   IntColumn get categoryId =>
       integer().references(CategoryTable, #id)(); // ForeignKey
+
+  @override
+  Set<Column> get primaryKey => {codeProduct};
 }
 
-abstract class ProductCategoryView extends View {
+abstract class ProductView extends View {
   CategoryTable get categoryTable;
   ProductTable get productTable;
 
@@ -48,7 +51,7 @@ abstract class ProductCategoryView extends View {
 
 @DriftDatabase(
   tables: [CategoryTable, ProductTable],
-  views: [ProductCategoryView],
+  views: [ProductView],
 )
 class DatabaseApp extends _$DatabaseApp {
   DatabaseApp() : super(_openConnection());
