@@ -15,7 +15,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
     try {
       return await categoryLocalDataSource.create(title);
     } catch (e) {
-      throw InsertDataException('Fail insert categories');
+      throw DatabaseDriftException('Fail insert categories');
     }
   }
 
@@ -24,7 +24,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
     try {
       return await categoryLocalDataSource.getAll(limit, offset);
     } catch (e) {
-      throw FetchDataException('Fail get categories');
+      throw DatabaseDriftException('Fail get categories');
     }
   }
 
@@ -39,7 +39,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
         ),
       );
     } catch (_) {
-      throw FetchDataException('Fail delete category');
+      throw DatabaseDriftException('Fail delete category');
     }
   }
 
@@ -54,7 +54,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
         ),
       );
     } catch (_) {
-      throw InsertDataException('Fail update category');
+      throw DatabaseDriftException('Fail update category');
     }
   }
 
@@ -63,7 +63,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
     try {
       return await categoryLocalDataSource.search(keyword);
     } catch (e) {
-      throw FetchDataException('Fail search keyword $keyword in category');
+      throw DatabaseDriftException('Fail search keyword $keyword in category');
     }
   }
 }
