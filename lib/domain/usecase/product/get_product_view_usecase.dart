@@ -11,17 +11,26 @@ class GetProductView
   });
 
   @override
-  Future<List<ProductViewEntity>> call(ParamGetProductView parans) async {
-    return await repository.getProductView(parans.limit, parans.offset);
+  Future<List<ProductViewEntity>> call(ParamGetProductView params) async {
+    return await repository.getProductView(
+      limit: params.limit,
+      offset: params.offset,
+      orderColumn: params.orderColumn,
+      orderMode: params.orderSort,
+    );
   }
 }
 
 class ParamGetProductView {
   int limit;
   int offset;
+  int orderColumn;
+  bool orderSort;
 
   ParamGetProductView({
     required this.limit,
     required this.offset,
+    required this.orderColumn,
+    required this.orderSort,
   });
 }

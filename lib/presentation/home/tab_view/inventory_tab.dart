@@ -33,6 +33,7 @@ class _InventoryTabState extends State<InventoryTab> {
   void initState() {
     super.initState();
     final controller = context.read<InventoryTabController>();
+    controller.resetTab();
     controller.setCategories();
     controller.setProductData();
   }
@@ -73,106 +74,192 @@ class _InventoryTabState extends State<InventoryTab> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.symmetric(horizontal: 12),
                 child: Wrap(
                   crossAxisAlignment: WrapCrossAlignment.center,
                   alignment: WrapAlignment.spaceBetween,
                   children: [
-                    SizedBox(
-                      width: 200,
-                      child: TextField(
-                        controller: tecSearch,
-                        style: const TextStyle(fontSize: 14),
-                        decoration: InputDecoration(
-                          fillColor: Colors.white60,
-                          hintText: "Search (Title)",
-                          contentPadding: const EdgeInsets.symmetric(
-                            vertical: 16,
-                            horizontal: 16,
-                          ),
-                          border: const OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: borderColor,
-                            ),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(12),
-                            ),
-                          ),
-                          suffixIcon: InkWell(
-                            onTap: () {
-                              if (controller.isSearch) {
-                                controller.tooggleIsSearch();
-                                controller.setProductData();
-                                tecSearch.clear();
-                                return;
-                              }
-
-                              if (tecSearch.text.isEmpty) return;
-
-                              controller.searchDataProduct(tecSearch.text);
-                            },
-                            child: Icon(
-                              controller.isSearch
-                                  ? UniconsLine.times
-                                  : UniconsLine.search_alt,
-                              size: 20,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
                     Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
-                        ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.all(18),
-                            backgroundColor: primaryColor,
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          child: SizedBox(
+                            width: 200,
+                            child: TextField(
+                              controller: tecSearch,
+                              style: const TextStyle(fontSize: 14),
+                              decoration: InputDecoration(
+                                fillColor: Colors.white60,
+                                hintText: "Search (Title)",
+                                contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 16,
+                                  horizontal: 16,
+                                ),
+                                border: const OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: borderColor,
+                                  ),
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(12),
+                                  ),
+                                ),
+                                suffixIcon: InkWell(
+                                  onTap: () {
+                                    if (controller.isSearch) {
+                                      controller.tooggleIsSearch();
+                                      controller.setProductData();
+                                      tecSearch.clear();
+                                      return;
+                                    }
+
+                                    if (tecSearch.text.isEmpty) return;
+
+                                    controller
+                                        .searchDataProduct(tecSearch.text);
+                                  },
+                                  child: Icon(
+                                    controller.isSearch
+                                        ? UniconsLine.times
+                                        : UniconsLine.search_alt,
+                                    size: 20,
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
-                          child: const Text(
-                            "Generate Report",
-                            style: TextStyle(fontSize: 12),
                           ),
                         ),
                         const SizedBox(
                           width: 12,
                         ),
-                        ElevatedButton(
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                resetTec();
-                                controller.resetDialogAttr();
-                                return Dialog(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                  child: DialogProductAdd(
-                                    tecCode: tecCode,
-                                    tecName: tecName,
-                                    tecPrice: tecPrice,
-                                    tecStock: tecStock,
-                                  ),
-                                );
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          child: SizedBox(
+                            width: 200,
+                            child: DropdownSearch<String>(
+                              items: const [
+                                "Code",
+                                "Name",
+                                "Stock",
+                                "Price",
+                                "Sold",
+                              ],
+                              selectedItem: "Code",
+                              onChanged: (String? value) {
+                                controller.changeOrderColumn(value!);
+                                controller.setProductData();
                               },
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.all(18),
-                            backgroundColor: primaryColor,
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
+                              popupProps: PopupProps.menu(
+                                fit: FlexFit.loose,
+                                menuProps: const MenuProps(
+                                  backgroundColor: Colors.transparent,
+                                  elevation: 0,
+                                ),
+                                containerBuilder: (ctx, popupWidget) {
+                                  return Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      const SizedBox(
+                                        height: 12,
+                                      ),
+                                      Flexible(
+                                        child: Container(
+                                          decoration: const BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(12.0),
+                                            ),
+                                          ),
+                                          child: popupWidget,
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              ),
+                              dropdownDecoratorProps:
+                                  DecorationUtils.dropdownStyleForm(
+                                "Filter",
+                              ),
                             ),
                           ),
-                          child: const Text(
-                            "Create Product",
-                            style: TextStyle(fontSize: 12),
+                        ),
+                        const SizedBox(
+                          width: 12,
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            controller.tooggleSort();
+                            controller.setProductData();
+                          },
+                          icon: Icon(
+                            UniconsLine.sort,
+                            color: controller.orderSort
+                                ? primaryColor
+                                : Colors.black54,
+                          ),
+                        )
+                      ],
+                    ),
+                    Wrap(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          child: ElevatedButton(
+                            onPressed: () {},
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.all(18),
+                              backgroundColor: primaryColor,
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            child: const Text(
+                              "Generate Report",
+                              style: TextStyle(fontSize: 12),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 12,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  resetTec();
+                                  controller.resetDialogAttr();
+                                  return Dialog(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    child: DialogProductAdd(
+                                      tecCode: tecCode,
+                                      tecName: tecName,
+                                      tecPrice: tecPrice,
+                                      tecStock: tecStock,
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.all(18),
+                              backgroundColor: primaryColor,
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            child: const Text(
+                              "Create Product",
+                              style: TextStyle(fontSize: 12),
+                            ),
                           ),
                         )
                       ],

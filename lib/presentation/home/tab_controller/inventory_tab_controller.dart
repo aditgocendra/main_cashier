@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:main_cashier/domain/usecase/product/search_product_usecase.dart';
-import '../../../core/usecase/usecase.dart';
+import '../../../domain/usecase/product/search_product_usecase.dart';
 
 import '../../../domain/entity/category_entity.dart';
 import '../../../domain/entity/product_entity.dart';
@@ -35,6 +34,12 @@ class InventoryTabController extends ChangeNotifier {
   int _activeRowPage = 1;
   int get activeRowPage => _activeRowPage;
 
+  int _orderColumn = 0;
+  int get orderColumn => _orderColumn;
+
+  bool _orderSort = false;
+  bool get orderSort => _orderSort;
+
   // Usecase
   GetCategories getCategories;
   GetProductView getProductView;
@@ -58,7 +63,13 @@ class InventoryTabController extends ChangeNotifier {
   }
 
   void setProductData() async {
-    final params = ParamGetProductView(limit: rowPage, offset: offsetRowPage);
+    final params = ParamGetProductView(
+      limit: rowPage,
+      offset: offsetRowPage,
+      orderColumn: orderColumn,
+      orderSort: orderSort,
+    );
+
     await getProductView.call(params).then((value) {
       _listProduct = value;
       notifyListeners();
@@ -160,10 +171,32 @@ class InventoryTabController extends ChangeNotifier {
   void changeCategorySelection(CategoryEntity category) =>
       _categorySelection = category;
 
+  void changeOrderColumn(String order) {
+    if (order == "Code") _orderColumn = 0;
+    if (order == "Name") _orderColumn = 1;
+    if (order == "Price") _orderColumn = 2;
+    if (order == "Sold") _orderColumn = 3;
+    if (order == "Stock") _orderColumn = 4;
+  }
+
   void tooggleIsSearch() => _isSearch = isSearch ? false : true;
+
+  void tooggleSort() => _orderSort = orderSort ? false : true;
 
   void resetDialogAttr() {
     _errDialogMessage = "";
     _categorySelection = null;
+  }
+
+  void resetTab() {
+    _listCategories.clear();
+    _listProduct.clear();
+    _rowPage = 10;
+    _offsetRowPage = 0;
+    _activeRowPage = 1;
+    _orderColumn = 0;
+    _orderSort = false;
+    _categorySelection = null;
+    resetDialogAttr();
   }
 }

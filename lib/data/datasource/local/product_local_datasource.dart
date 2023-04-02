@@ -4,7 +4,12 @@ import 'drift/drift_database.dart';
 import '../../models/product_model.dart';
 
 abstract class ProductLocalDataSource {
-  Future<List<ProductViewModel>> getView(int limit, int offset);
+  Future<List<ProductViewModel>> getView({
+    required int limit,
+    required int offset,
+    required int orderColumn,
+    required bool orderMode,
+  });
 
   Future<bool> codeProductIsExist(String code);
 
@@ -46,13 +51,31 @@ class ProductLocalDataSourceImpl implements ProductLocalDataSource {
         .go();
   }
 
+  // OrderingMode by value sort, true ? Ascending : Descending
+  // Order Column : 0 = Sold, 1 = Name, 2 = Price, 3 = Stock, Default = CodeProduct
   @override
-  Future<List<ProductViewModel>> getView(int limit, int offset) async {
-    final result = limit != 0
-        ? await (databaseApp.select(databaseApp.productView)
-              ..limit(limit, offset: offset))
-            .get()
-        : await databaseApp.select(databaseApp.productView).get();
+  Future<List<ProductViewModel>> getView({
+    required int limit,
+    required int offset,
+    required int orderColumn,
+    required bool orderMode,
+  }) async {
+    final result = await ((databaseApp.select(databaseApp.productView)
+          ..orderBy([
+            (tbl) => OrderingTerm(
+                expression: (orderColumn == 1)
+                    ? tbl.name
+                    : (orderColumn == 2)
+                        ? tbl.price
+                        : (orderColumn == 3)
+                            ? tbl.sold
+                            : (orderColumn == 4)
+                                ? tbl.stock
+                                : tbl.codeProduct,
+                mode: orderMode ? OrderingMode.desc : OrderingMode.asc)
+          ]))
+          ..limit(limit, offset: offset))
+        .get();
     return ProductViewModel.fromTableList(result);
   }
 

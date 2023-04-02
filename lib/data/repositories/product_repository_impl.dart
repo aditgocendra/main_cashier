@@ -39,9 +39,19 @@ class ProductRepositoryImpl implements ProductRepository {
   }
 
   @override
-  Future<List<ProductViewEntity>> getProductView(int limit, int offset) async {
+  Future<List<ProductViewEntity>> getProductView({
+    required int limit,
+    required int offset,
+    required int orderColumn,
+    required bool orderMode,
+  }) async {
     try {
-      return await productLocalDataSource.getView(limit, offset);
+      return await productLocalDataSource.getView(
+        limit: limit,
+        offset: offset,
+        orderColumn: orderColumn,
+        orderMode: orderMode,
+      );
     } on DatabaseDriftException {
       throw DatabaseDriftException("Fetch data product fail");
     }
