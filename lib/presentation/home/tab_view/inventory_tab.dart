@@ -1,6 +1,13 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:unicons/unicons.dart';
+
+import '../tab_controller/inventory_tab_controller.dart';
+
+import '../../../domain/entity/category_entity.dart';
+import '../../../domain/entity/product_entity.dart';
 
 import '../../../core/components/table_components.dart';
 import '../../../core/constant/color_constant.dart';
@@ -23,7 +30,35 @@ class _InventoryTabState extends State<InventoryTab> {
   final TextEditingController tecStock = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    final controller = context.read<InventoryTabController>();
+    controller.setCategories();
+    controller.setProductData();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    tecCode.dispose();
+    tecName.dispose();
+    tecPrice.dispose();
+    tecStock.dispose();
+    tecSearch.dispose();
+  }
+
+  void resetTec() {
+    tecCode.clear();
+    tecName.clear();
+    tecPrice.clear();
+    tecName.clear();
+    tecStock.clear();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final navigator = Navigator.of(context);
+    final controller = context.watch<InventoryTabController>();
     final size = MediaQuery.of(context).size.width;
 
     return ListView(
@@ -65,21 +100,21 @@ class _InventoryTabState extends State<InventoryTab> {
                           ),
                           suffixIcon: InkWell(
                             onTap: () {
-                              // if (ctgTabController.isSearch) {
-                              //   ctgTabController.tooggleIsSearch();
-                              //   ctgTabController.setCategories();
-                              //   tecSearch.clear();
-                              //   return;
-                              // }
+                              if (controller.isSearch) {
+                                controller.tooggleIsSearch();
+                                controller.setProductData();
+                                tecSearch.clear();
+                                return;
+                              }
 
-                              // if (tecSearch.text.isEmpty) return;
+                              if (tecSearch.text.isEmpty) return;
 
-                              // ctgTabController.searchDataCategories(
-                              //   tecSearch.text,
-                              // );
+                              controller.searchDataProduct(tecSearch.text);
                             },
-                            child: const Icon(
-                              UniconsLine.search_alt,
+                            child: Icon(
+                              controller.isSearch
+                                  ? UniconsLine.times
+                                  : UniconsLine.search_alt,
                               size: 20,
                             ),
                           ),
@@ -111,12 +146,13 @@ class _InventoryTabState extends State<InventoryTab> {
                             showDialog(
                               context: context,
                               builder: (context) {
+                                resetTec();
+                                controller.resetDialogAttr();
                                 return Dialog(
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(16),
                                   ),
                                   child: DialogProductAdd(
-                                    // ctgTabController: ctgTabController,
                                     tecCode: tecCode,
                                     tecName: tecName,
                                     tecPrice: tecPrice,
@@ -147,7 +183,7 @@ class _InventoryTabState extends State<InventoryTab> {
               SelectionArea(
                 child: SingleChildScrollView(
                   scrollDirection:
-                      size >= 640 ? Axis.vertical : Axis.horizontal,
+                      size >= 770 ? Axis.vertical : Axis.horizontal,
                   child: Table(
                     border: const TableBorder(
                       horizontalInside: BorderSide(
@@ -169,6 +205,7 @@ class _InventoryTabState extends State<InventoryTab> {
                       4: IntrinsicColumnWidth(),
                       5: IntrinsicColumnWidth(),
                       6: IntrinsicColumnWidth(),
+                      7: IntrinsicColumnWidth(),
                     },
                     defaultVerticalAlignment: TableCellVerticalAlignment.middle,
                     children: <TableRow>[
@@ -181,101 +218,171 @@ class _InventoryTabState extends State<InventoryTab> {
                           "Price",
                           "Stock",
                           "Sold",
+                          "Category",
                           "Action",
                         ],
                       ),
                       // Body Data Table
-                      // ...ctgTabController.listCategory.map((val) {
-                      //   return TableRow(
-                      //     children: [
-                      //       TableCell(
-                      //         child: Padding(
-                      //           padding: const EdgeInsets.all(8.0),
-                      //           child: Center(
-                      //             child: Text(
-                      //               val.id.toString(),
-                      //               style: const TextStyle(fontSize: 14),
-                      //             ),
-                      //           ),
-                      //         ),
-                      //       ),
-                      //       TableCell(
-                      //         child: Padding(
-                      //           padding: const EdgeInsets.all(8.0),
-                      //           child: Center(
-                      //             child: Text(
-                      //               val.title,
-                      //               style: const TextStyle(fontSize: 14),
-                      //             ),
-                      //           ),
-                      //         ),
-                      //       ),
-                      //       TableCell(
-                      //         child: Padding(
-                      //           padding: const EdgeInsets.all(8.0),
-                      //           child: Center(
-                      //             child: Wrap(
-                      //               children: [
-                      //                 // Edit
-                      //                 IconButton(
-                      //                   onPressed: () {
-                      //                     showDialog(
-                      //                       context: context,
-                      //                       builder: (context) {
-                      //                         return Dialog(
-                      //                           shape: RoundedRectangleBorder(
-                      //                             borderRadius:
-                      //                                 BorderRadius.circular(16),
-                      //                           ),
-                      //                           child: DialogCategoryEdit(
-                      //                             ctg: val,
-                      //                             ctgTabController:
-                      //                                 ctgTabController,
-                      //                             tecTitle: tecTitle,
-                      //                           ),
-                      //                         );
-                      //                       },
-                      //                     );
-                      //                   },
-                      //                   icon: const Icon(UniconsLine.edit),
-                      //                 ),
-                      //                 // Delete
-                      //                 IconButton(
-                      //                   onPressed: () {
-                      //                     showDialog(
-                      //                       context: context,
-                      //                       builder: (context) {
-                      //                         return DialogUtils
-                      //                             .dialogConfirmation(
-                      //                           title: "Delete Category",
-                      //                           message:
-                      //                               "Are you sure delete this category ?",
-                      //                           callbackConfirmation: () {
-                      //                             ctgTabController
-                      //                                 .removeCategory(val);
+                      ...controller.listProduct
+                          .asMap()
+                          .map(
+                            (index, val) => MapEntry(
+                              index,
+                              TableRow(
+                                children: [
+                                  TableCell(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Center(
+                                        child: Text(
+                                          "${index + 1}",
+                                          style: const TextStyle(fontSize: 14),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  TableCell(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Center(
+                                        child: Text(
+                                          val.code,
+                                          style: const TextStyle(fontSize: 14),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  TableCell(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Center(
+                                        child: Text(
+                                          val.name,
+                                          style: const TextStyle(fontSize: 14),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  TableCell(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Center(
+                                        child: Text(
+                                          val.price.toString(),
+                                          style: const TextStyle(fontSize: 14),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  TableCell(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Center(
+                                        child: Text(
+                                          val.stock.toString(),
+                                          style: const TextStyle(fontSize: 14),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  TableCell(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Center(
+                                        child: Text(
+                                          val.sold.toString(),
+                                          style: const TextStyle(fontSize: 14),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  TableCell(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Center(
+                                        child: Text(
+                                          val.titleCategory,
+                                          style: const TextStyle(fontSize: 14),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  TableCell(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Center(
+                                        child: Wrap(
+                                          children: [
+                                            // Edit
+                                            IconButton(
+                                              onPressed: () {
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    resetTec();
+                                                    controller
+                                                        .resetDialogAttr();
+                                                    return Dialog(
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(16),
+                                                      ),
+                                                      child: DialogProductEdit(
+                                                        product: val,
+                                                        tecCode: tecCode,
+                                                        tecName: tecName,
+                                                        tecPrice: tecPrice,
+                                                        tecStock: tecStock,
+                                                      ),
+                                                    );
+                                                  },
+                                                );
+                                              },
+                                              icon:
+                                                  const Icon(UniconsLine.edit),
+                                            ),
+                                            // Delete
+                                            IconButton(
+                                              onPressed: () {
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return DialogUtils
+                                                        .dialogConfirmation(
+                                                      title: "Delete Product",
+                                                      message:
+                                                          "Are you sure delete this product ?",
+                                                      callbackConfirmation: () {
+                                                        controller
+                                                            .removeProduct(
+                                                          val.code,
+                                                        );
 
-                      //                             if (ctgTabController
-                      //                                 .errorDialog
-                      //                                 .isNotEmpty) {}
-                      //                             navigator.pop();
-                      //                           },
-                      //                           callbackCancel: () {
-                      //                             navigator.pop();
-                      //                           },
-                      //                         );
-                      //                       },
-                      //                     );
-                      //                   },
-                      //                   icon: const Icon(UniconsLine.trash),
-                      //                 )
-                      //               ],
-                      //             ),
-                      //           ),
-                      //         ),
-                      //       ),
-                      //     ],
-                      //   );
-                      // }).toList()
+                                                        navigator.pop();
+                                                      },
+                                                      callbackCancel: () {
+                                                        navigator.pop();
+                                                      },
+                                                    );
+                                                  },
+                                                );
+                                              },
+                                              icon:
+                                                  const Icon(UniconsLine.trash),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                          .values
+                          .toList()
                     ],
                   ),
                 ),
@@ -305,7 +412,7 @@ class _InventoryTabState extends State<InventoryTab> {
                             items: const [10, 25, 50],
                             selectedItem: 10,
                             onChanged: (int? value) {
-                              // ctgTabController.updateRowPage(value!);
+                              controller.updateRowPage(value!);
                             },
                             popupProps: PopupProps.menu(
                               fit: FlexFit.loose,
@@ -356,21 +463,20 @@ class _InventoryTabState extends State<InventoryTab> {
                         // Back Page
                         IconButton(
                           onPressed: () {
-                            // ctgTabController.backPage();
+                            controller.backPage();
                           },
                           icon: const Icon(Icons.keyboard_arrow_left),
                         ),
-                        const Text(
-                          "1",
-                          // ctgTabController.activeRowPage.toString(),
-                          style: TextStyle(
+                        Text(
+                          controller.activeRowPage.toString(),
+                          style: const TextStyle(
                             fontSize: 12.5,
                           ),
                         ),
                         // Next Page
                         IconButton(
                           onPressed: () {
-                            // ctgTabController.nextPage();
+                            controller.nextPage();
                           },
                           icon: const Icon(Icons.keyboard_arrow_right),
                         ),
@@ -393,8 +499,6 @@ class DialogProductAdd extends StatelessWidget {
   final TextEditingController tecPrice;
   final TextEditingController tecStock;
 
-  // final CategoryTabController ctgTabController;
-
   const DialogProductAdd({
     required this.tecCode,
     required this.tecName,
@@ -405,6 +509,7 @@ class DialogProductAdd extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = context.watch<InventoryTabController>();
     final navigator = Navigator.of(context);
     final formKey = GlobalKey<FormState>();
 
@@ -414,6 +519,8 @@ class DialogProductAdd extends StatelessWidget {
         Form(
           key: formKey,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               TextFormField(
                 controller: tecCode,
@@ -461,6 +568,8 @@ class DialogProductAdd extends StatelessWidget {
                   return null;
                 },
                 style: const TextStyle(fontSize: 14),
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                keyboardType: TextInputType.number,
                 decoration: DecorationUtils.textFieldDecoration(
                   label: "Price",
                   hint: "Example : 20000",
@@ -479,6 +588,8 @@ class DialogProductAdd extends StatelessWidget {
                   return null;
                 },
                 style: const TextStyle(fontSize: 14),
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                keyboardType: TextInputType.number,
                 decoration: DecorationUtils.textFieldDecoration(
                   label: "Stock",
                   hint: "Example : 1000",
@@ -487,12 +598,20 @@ class DialogProductAdd extends StatelessWidget {
               const SizedBox(
                 height: 16,
               ),
-              DropdownSearch<String>(
-                items: const ['Food', 'Drink', 'Something'],
-                // selectedItem: widget.controller.conditionSelected,
-                // onChanged: (String? value) {
-                //   widget.controller.setChangeConditionSelected(value!);
-                // },
+              DropdownSearch<CategoryEntity>(
+                items: controller.listCategories,
+                compareFn: (item1, item2) => item1.isEqual(item2),
+                itemAsString: (item) => item.toString(),
+                selectedItem: controller.categorySelection,
+                onChanged: (CategoryEntity? value) =>
+                    controller.changeCategorySelection(value!),
+                validator: (value) {
+                  if (value == null) {
+                    return fieldRequired;
+                  }
+
+                  return null;
+                },
                 popupProps: PopupProps.menu(
                   showSelectedItems: true,
                   fit: FlexFit.loose,
@@ -535,32 +654,248 @@ class DialogProductAdd extends StatelessWidget {
         ),
         ElevatedButton(
           onPressed: () {
-            if (!formKey.currentState!.validate()) {
-              return;
-            }
+            if (!formKey.currentState!.validate()) return;
 
-            // ctgTabController.addCategory(tecTitle.text);
-            navigator.pop();
-
-            // if (ctgTabController.errorDialog.isNotEmpty) {
-            //   showDialog(
-            //     context: context,
-            //     builder: (context) => DialogUtils.dialogInformation(
-            //       title: "Edit Category",
-            //       message: ctgTabController.errorDialog,
-            //       callbackConfirmation: () => navigator.pop(),
-            //     ),
-            //   );
-            //   ctgTabController.resetErrorDialog();
-            // }
+            controller.addProduct(
+              code: tecCode.text,
+              name: tecName.text,
+              price: int.parse(tecPrice.text),
+              stock: int.parse(tecStock.text),
+              sold: 0,
+              idCategory: controller.categorySelection!.id,
+              callbackSuccess: () => navigator.pop(),
+            );
           },
           style: DecorationUtils.buttonDialogStyle(),
           child: const Text("Add"),
         ),
+        if (controller.errDialogMessage.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 12),
+            child: Text(
+              controller.errDialogMessage,
+              textAlign: TextAlign.start,
+              style: const TextStyle(
+                color: Colors.redAccent,
+              ),
+            ),
+          )
       ],
       callbackClose: () {
         navigator.pop();
       },
+    );
+  }
+}
+
+class DialogProductEdit extends StatelessWidget {
+  final ProductViewEntity product;
+  final TextEditingController tecCode;
+  final TextEditingController tecName;
+  final TextEditingController tecPrice;
+  final TextEditingController tecStock;
+
+  const DialogProductEdit({
+    required this.product,
+    required this.tecCode,
+    required this.tecName,
+    required this.tecPrice,
+    required this.tecStock,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = context.watch<InventoryTabController>();
+    final navigator = Navigator.of(context);
+    final formKey = GlobalKey<FormState>();
+
+    // Set attr value
+    tecCode.text = product.code;
+    tecName.text = product.name;
+    tecPrice.text = product.price.toString();
+    tecStock.text = product.stock.toString();
+
+    controller.changeCategorySelection(
+      controller.listCategories
+          .where((element) => element.title == product.titleCategory)
+          .first,
+    );
+
+    return DialogUtils.layoutCustomDialog(
+      dialogHeaderText: "Edit Product",
+      childern: [
+        Form(
+          key: formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              TextFormField(
+                controller: tecCode,
+                enabled: false,
+                validator: (code) {
+                  if (code == null || code.isEmpty) {
+                    return fieldRequired;
+                  }
+
+                  return null;
+                },
+                style: const TextStyle(fontSize: 14),
+                decoration: DecorationUtils.textFieldDecoration(
+                  label: "Product Code",
+                  hint: "Example : BN-R-0001",
+                ),
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              TextFormField(
+                controller: tecName,
+                validator: (code) {
+                  if (code == null || code.isEmpty) {
+                    return fieldRequired;
+                  }
+
+                  return null;
+                },
+                style: const TextStyle(fontSize: 14),
+                decoration: DecorationUtils.textFieldDecoration(
+                  label: "Product Name",
+                  hint: "Example : Beng-beng",
+                ),
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              TextFormField(
+                controller: tecPrice,
+                validator: (code) {
+                  if (code == null || code.isEmpty) {
+                    return fieldRequired;
+                  }
+
+                  return null;
+                },
+                style: const TextStyle(fontSize: 14),
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                keyboardType: TextInputType.number,
+                decoration: DecorationUtils.textFieldDecoration(
+                  label: "Price",
+                  hint: "Example : 20000",
+                ),
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              TextFormField(
+                controller: tecStock,
+                validator: (code) {
+                  if (code == null || code.isEmpty) {
+                    return fieldRequired;
+                  }
+
+                  return null;
+                },
+                style: const TextStyle(fontSize: 14),
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                keyboardType: TextInputType.number,
+                decoration: DecorationUtils.textFieldDecoration(
+                  label: "Stock",
+                  hint: "Example : 1000",
+                ),
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              DropdownSearch<CategoryEntity>(
+                items: controller.listCategories,
+                compareFn: (item1, item2) => item1.isEqual(item2),
+                itemAsString: (item) => item.toString(),
+                selectedItem: controller.categorySelection,
+                onChanged: (CategoryEntity? value) =>
+                    controller.changeCategorySelection(value!),
+                validator: (value) {
+                  if (value == null) {
+                    return fieldRequired;
+                  }
+
+                  return null;
+                },
+                popupProps: PopupProps.menu(
+                  showSelectedItems: true,
+                  fit: FlexFit.loose,
+                  menuProps: const MenuProps(
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                  ),
+                  containerBuilder: (ctx, popupWidget) {
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        const SizedBox(
+                          height: 12,
+                        ),
+                        Flexible(
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(12.0),
+                              ),
+                            ),
+                            child: popupWidget,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+                dropdownDecoratorProps: DecorationUtils.dropdownStyleForm(
+                  "Select Category",
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(
+          height: 24,
+        ),
+        ElevatedButton(
+          onPressed: () {
+            if (!formKey.currentState!.validate()) return;
+
+            controller.changeProduct(
+              ProductEntity(
+                code: product.code,
+                name: tecName.text,
+                price: int.parse(tecPrice.text),
+                stock: int.parse(tecStock.text),
+                sold: product.sold,
+                idCategory: controller.categorySelection!.id,
+                createdAt: DateTime.now(),
+              ),
+            );
+
+            navigator.pop();
+          },
+          style: DecorationUtils.buttonDialogStyle(),
+          child: const Text("Edit"),
+        ),
+        if (controller.errDialogMessage.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 12),
+            child: Text(
+              controller.errDialogMessage,
+              textAlign: TextAlign.start,
+              style: const TextStyle(
+                color: Colors.redAccent,
+              ),
+            ),
+          )
+      ],
+      callbackClose: () => navigator.pop(),
     );
   }
 }
