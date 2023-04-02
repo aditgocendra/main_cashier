@@ -331,7 +331,7 @@ class $ProductTableTable extends ProductTable
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => const {};
+  Set<GeneratedColumn> get $primaryKey => {codeProduct};
   @override
   ProductTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -624,24 +624,24 @@ class ProductTableCompanion extends UpdateCompanion<ProductTableData> {
   }
 }
 
-class ProductCategoryViewData extends DataClass {
+class ProductViewData extends DataClass {
   final String codeProduct;
   final String name;
   final int price;
   final int stock;
   final int sold;
   final String title;
-  const ProductCategoryViewData(
+  const ProductViewData(
       {required this.codeProduct,
       required this.name,
       required this.price,
       required this.stock,
       required this.sold,
       required this.title});
-  factory ProductCategoryViewData.fromJson(Map<String, dynamic> json,
+  factory ProductViewData.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return ProductCategoryViewData(
+    return ProductViewData(
       codeProduct: serializer.fromJson<String>(json['codeProduct']),
       name: serializer.fromJson<String>(json['name']),
       price: serializer.fromJson<int>(json['price']),
@@ -663,14 +663,14 @@ class ProductCategoryViewData extends DataClass {
     };
   }
 
-  ProductCategoryViewData copyWith(
+  ProductViewData copyWith(
           {String? codeProduct,
           String? name,
           int? price,
           int? stock,
           int? sold,
           String? title}) =>
-      ProductCategoryViewData(
+      ProductViewData(
         codeProduct: codeProduct ?? this.codeProduct,
         name: name ?? this.name,
         price: price ?? this.price,
@@ -680,7 +680,7 @@ class ProductCategoryViewData extends DataClass {
       );
   @override
   String toString() {
-    return (StringBuffer('ProductCategoryViewData(')
+    return (StringBuffer('ProductViewData(')
           ..write('codeProduct: $codeProduct, ')
           ..write('name: $name, ')
           ..write('price: $price, ')
@@ -696,7 +696,7 @@ class ProductCategoryViewData extends DataClass {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is ProductCategoryViewData &&
+      (other is ProductViewData &&
           other.codeProduct == this.codeProduct &&
           other.name == this.name &&
           other.price == this.price &&
@@ -705,13 +705,12 @@ class ProductCategoryViewData extends DataClass {
           other.title == this.title);
 }
 
-class $ProductCategoryViewView
-    extends ViewInfo<$ProductCategoryViewView, ProductCategoryViewData>
+class $ProductViewView extends ViewInfo<$ProductViewView, ProductViewData>
     implements HasResultSet {
   final String? _alias;
   @override
   final _$DatabaseApp attachedDatabase;
-  $ProductCategoryViewView(this.attachedDatabase, [this._alias]);
+  $ProductViewView(this.attachedDatabase, [this._alias]);
   $CategoryTableTable get categoryTable =>
       attachedDatabase.categoryTable.createAlias('t0');
   $ProductTableTable get productTable =>
@@ -722,16 +721,15 @@ class $ProductCategoryViewView
   @override
   String get aliasedName => _alias ?? entityName;
   @override
-  String get entityName => 'product_category_view';
+  String get entityName => 'product_view';
   @override
   String? get createViewStmt => null;
   @override
-  $ProductCategoryViewView get asDslTable => this;
+  $ProductViewView get asDslTable => this;
   @override
-  ProductCategoryViewData map(Map<String, dynamic> data,
-      {String? tablePrefix}) {
+  ProductViewData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return ProductCategoryViewData(
+    return ProductViewData(
       codeProduct: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}code_product'])!,
       name: attachedDatabase.typeMapping
@@ -772,8 +770,8 @@ class $ProductCategoryViewView
       generatedAs: GeneratedAs(categoryTable.title, false),
       type: DriftSqlType.string);
   @override
-  $ProductCategoryViewView createAlias(String alias) {
-    return $ProductCategoryViewView(attachedDatabase, alias);
+  $ProductViewView createAlias(String alias) {
+    return $ProductViewView(attachedDatabase, alias);
   }
 
   @override
@@ -790,12 +788,11 @@ abstract class _$DatabaseApp extends GeneratedDatabase {
   _$DatabaseApp(QueryExecutor e) : super(e);
   late final $CategoryTableTable categoryTable = $CategoryTableTable(this);
   late final $ProductTableTable productTable = $ProductTableTable(this);
-  late final $ProductCategoryViewView productCategoryView =
-      $ProductCategoryViewView(this);
+  late final $ProductViewView productView = $ProductViewView(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [categoryTable, productTable, productCategoryView];
+      [categoryTable, productTable, productView];
 }
