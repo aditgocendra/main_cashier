@@ -26,6 +26,6 @@ class CategoryModel extends CategoryEntity {
 
   static List<CategoryModel> fromTableList(List<CategoryTableData> data) {
     if (data.isEmpty) return [];
-    return data.map((json) => CategoryModel.fromTable(json)).toList();
+    return data.map((val) => CategoryModel.fromTable(val)).toList();
   }
 }
