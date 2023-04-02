@@ -58,7 +58,8 @@ class InventoryTabController extends ChangeNotifier {
   }
 
   void setProductData() async {
-    await getProductView.call(NoParans()).then((value) {
+    final params = ParamGetProductView(limit: rowPage, offset: offsetRowPage);
+    await getProductView.call(params).then((value) {
       _listProduct = value;
       notifyListeners();
     });

@@ -4,7 +4,7 @@ import 'drift/drift_database.dart';
 import '../../models/product_model.dart';
 
 abstract class ProductLocalDataSource {
-  Future<List<ProductViewModel>> getView();
+  Future<List<ProductViewModel>> getView(int limit, int offset);
 
   Future<bool> codeProductIsExist(String code);
 
@@ -47,8 +47,12 @@ class ProductLocalDataSourceImpl implements ProductLocalDataSource {
   }
 
   @override
-  Future<List<ProductViewModel>> getView() async {
-    final result = await databaseApp.select(databaseApp.productView).get();
+  Future<List<ProductViewModel>> getView(int limit, int offset) async {
+    final result = limit != 0
+        ? await (databaseApp.select(databaseApp.productView)
+              ..limit(limit, offset: offset))
+            .get()
+        : await databaseApp.select(databaseApp.productView).get();
     return ProductViewModel.fromTableList(result);
   }
 
