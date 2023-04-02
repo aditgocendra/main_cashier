@@ -8,4 +8,13 @@ class CategoryEntity {
     required this.title,
     required this.createdAt,
   });
+
+  @override
+  String toString() {
+    return title;
+  }
+
+  bool isEqual(CategoryEntity entity) {
+    return id == entity.id;
+  }
 }
