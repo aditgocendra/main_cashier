@@ -784,15 +784,624 @@ class $ProductViewView extends ViewInfo<$ProductViewView, ProductViewData>
   Set<String> get readTables => const {'category_table', 'product_table'};
 }
 
+class $RoleTableTable extends RoleTable
+    with TableInfo<$RoleTableTable, RoleTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RoleTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
+  @override
+  List<GeneratedColumn> get $columns => [id, name];
+  @override
+  String get aliasedName => _alias ?? 'role_table';
+  @override
+  String get actualTableName => 'role_table';
+  @override
+  VerificationContext validateIntegrity(Insertable<RoleTableData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  RoleTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return RoleTableData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+    );
+  }
+
+  @override
+  $RoleTableTable createAlias(String alias) {
+    return $RoleTableTable(attachedDatabase, alias);
+  }
+}
+
+class RoleTableData extends DataClass implements Insertable<RoleTableData> {
+  final int id;
+  final String name;
+  const RoleTableData({required this.id, required this.name});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['name'] = Variable<String>(name);
+    return map;
+  }
+
+  RoleTableCompanion toCompanion(bool nullToAbsent) {
+    return RoleTableCompanion(
+      id: Value(id),
+      name: Value(name),
+    );
+  }
+
+  factory RoleTableData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return RoleTableData(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+    };
+  }
+
+  RoleTableData copyWith({int? id, String? name}) => RoleTableData(
+        id: id ?? this.id,
+        name: name ?? this.name,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('RoleTableData(')
+          ..write('id: $id, ')
+          ..write('name: $name')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is RoleTableData &&
+          other.id == this.id &&
+          other.name == this.name);
+}
+
+class RoleTableCompanion extends UpdateCompanion<RoleTableData> {
+  final Value<int> id;
+  final Value<String> name;
+  const RoleTableCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+  });
+  RoleTableCompanion.insert({
+    this.id = const Value.absent(),
+    required String name,
+  }) : name = Value(name);
+  static Insertable<RoleTableData> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+    });
+  }
+
+  RoleTableCompanion copyWith({Value<int>? id, Value<String>? name}) {
+    return RoleTableCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RoleTableCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $UserTableTable extends UserTable
+    with TableInfo<$UserTableTable, UserTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $UserTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      clientDefault: () => _uuid.v4());
+  static const VerificationMeta _usernameMeta =
+      const VerificationMeta('username');
+  @override
+  late final GeneratedColumn<String> username = GeneratedColumn<String>(
+      'username', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
+  static const VerificationMeta _passwordMeta =
+      const VerificationMeta('password');
+  @override
+  late final GeneratedColumn<String> password =
+      GeneratedColumn<String>('password', aliasedName, false,
+          additionalChecks: GeneratedColumn.checkTextLength(
+            minTextLength: 8,
+          ),
+          type: DriftSqlType.string,
+          requiredDuringInsert: true);
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      defaultValue: currentDateAndTime);
+  static const VerificationMeta _roleIdMeta = const VerificationMeta('roleId');
+  @override
+  late final GeneratedColumn<int> roleId = GeneratedColumn<int>(
+      'role_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES role_table (id)'));
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, username, password, createdAt, roleId];
+  @override
+  String get aliasedName => _alias ?? 'user_table';
+  @override
+  String get actualTableName => 'user_table';
+  @override
+  VerificationContext validateIntegrity(Insertable<UserTableData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('username')) {
+      context.handle(_usernameMeta,
+          username.isAcceptableOrUnknown(data['username']!, _usernameMeta));
+    } else if (isInserting) {
+      context.missing(_usernameMeta);
+    }
+    if (data.containsKey('password')) {
+      context.handle(_passwordMeta,
+          password.isAcceptableOrUnknown(data['password']!, _passwordMeta));
+    } else if (isInserting) {
+      context.missing(_passwordMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    }
+    if (data.containsKey('role_id')) {
+      context.handle(_roleIdMeta,
+          roleId.isAcceptableOrUnknown(data['role_id']!, _roleIdMeta));
+    } else if (isInserting) {
+      context.missing(_roleIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => const {};
+  @override
+  UserTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return UserTableData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      username: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}username'])!,
+      password: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}password'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      roleId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}role_id'])!,
+    );
+  }
+
+  @override
+  $UserTableTable createAlias(String alias) {
+    return $UserTableTable(attachedDatabase, alias);
+  }
+}
+
+class UserTableData extends DataClass implements Insertable<UserTableData> {
+  final String id;
+  final String username;
+  final String password;
+  final DateTime createdAt;
+  final int roleId;
+  const UserTableData(
+      {required this.id,
+      required this.username,
+      required this.password,
+      required this.createdAt,
+      required this.roleId});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['username'] = Variable<String>(username);
+    map['password'] = Variable<String>(password);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['role_id'] = Variable<int>(roleId);
+    return map;
+  }
+
+  UserTableCompanion toCompanion(bool nullToAbsent) {
+    return UserTableCompanion(
+      id: Value(id),
+      username: Value(username),
+      password: Value(password),
+      createdAt: Value(createdAt),
+      roleId: Value(roleId),
+    );
+  }
+
+  factory UserTableData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return UserTableData(
+      id: serializer.fromJson<String>(json['id']),
+      username: serializer.fromJson<String>(json['username']),
+      password: serializer.fromJson<String>(json['password']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      roleId: serializer.fromJson<int>(json['roleId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'username': serializer.toJson<String>(username),
+      'password': serializer.toJson<String>(password),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'roleId': serializer.toJson<int>(roleId),
+    };
+  }
+
+  UserTableData copyWith(
+          {String? id,
+          String? username,
+          String? password,
+          DateTime? createdAt,
+          int? roleId}) =>
+      UserTableData(
+        id: id ?? this.id,
+        username: username ?? this.username,
+        password: password ?? this.password,
+        createdAt: createdAt ?? this.createdAt,
+        roleId: roleId ?? this.roleId,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('UserTableData(')
+          ..write('id: $id, ')
+          ..write('username: $username, ')
+          ..write('password: $password, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('roleId: $roleId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, username, password, createdAt, roleId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is UserTableData &&
+          other.id == this.id &&
+          other.username == this.username &&
+          other.password == this.password &&
+          other.createdAt == this.createdAt &&
+          other.roleId == this.roleId);
+}
+
+class UserTableCompanion extends UpdateCompanion<UserTableData> {
+  final Value<String> id;
+  final Value<String> username;
+  final Value<String> password;
+  final Value<DateTime> createdAt;
+  final Value<int> roleId;
+  final Value<int> rowid;
+  const UserTableCompanion({
+    this.id = const Value.absent(),
+    this.username = const Value.absent(),
+    this.password = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.roleId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  UserTableCompanion.insert({
+    this.id = const Value.absent(),
+    required String username,
+    required String password,
+    this.createdAt = const Value.absent(),
+    required int roleId,
+    this.rowid = const Value.absent(),
+  })  : username = Value(username),
+        password = Value(password),
+        roleId = Value(roleId);
+  static Insertable<UserTableData> custom({
+    Expression<String>? id,
+    Expression<String>? username,
+    Expression<String>? password,
+    Expression<DateTime>? createdAt,
+    Expression<int>? roleId,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (username != null) 'username': username,
+      if (password != null) 'password': password,
+      if (createdAt != null) 'created_at': createdAt,
+      if (roleId != null) 'role_id': roleId,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  UserTableCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? username,
+      Value<String>? password,
+      Value<DateTime>? createdAt,
+      Value<int>? roleId,
+      Value<int>? rowid}) {
+    return UserTableCompanion(
+      id: id ?? this.id,
+      username: username ?? this.username,
+      password: password ?? this.password,
+      createdAt: createdAt ?? this.createdAt,
+      roleId: roleId ?? this.roleId,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (username.present) {
+      map['username'] = Variable<String>(username.value);
+    }
+    if (password.present) {
+      map['password'] = Variable<String>(password.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (roleId.present) {
+      map['role_id'] = Variable<int>(roleId.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UserTableCompanion(')
+          ..write('id: $id, ')
+          ..write('username: $username, ')
+          ..write('password: $password, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('roleId: $roleId, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class UserViewData extends DataClass {
+  final String id;
+  final String username;
+  final String name;
+  final DateTime createdAt;
+  const UserViewData(
+      {required this.id,
+      required this.username,
+      required this.name,
+      required this.createdAt});
+  factory UserViewData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return UserViewData(
+      id: serializer.fromJson<String>(json['id']),
+      username: serializer.fromJson<String>(json['username']),
+      name: serializer.fromJson<String>(json['name']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'username': serializer.toJson<String>(username),
+      'name': serializer.toJson<String>(name),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  UserViewData copyWith(
+          {String? id, String? username, String? name, DateTime? createdAt}) =>
+      UserViewData(
+        id: id ?? this.id,
+        username: username ?? this.username,
+        name: name ?? this.name,
+        createdAt: createdAt ?? this.createdAt,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('UserViewData(')
+          ..write('id: $id, ')
+          ..write('username: $username, ')
+          ..write('name: $name, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, username, name, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is UserViewData &&
+          other.id == this.id &&
+          other.username == this.username &&
+          other.name == this.name &&
+          other.createdAt == this.createdAt);
+}
+
+class $UserViewView extends ViewInfo<$UserViewView, UserViewData>
+    implements HasResultSet {
+  final String? _alias;
+  @override
+  final _$DatabaseApp attachedDatabase;
+  $UserViewView(this.attachedDatabase, [this._alias]);
+  $RoleTableTable get roleTable => attachedDatabase.roleTable.createAlias('t0');
+  $UserTableTable get userTable => attachedDatabase.userTable.createAlias('t1');
+  @override
+  List<GeneratedColumn> get $columns => [id, username, name, createdAt];
+  @override
+  String get aliasedName => _alias ?? entityName;
+  @override
+  String get entityName => 'user_view';
+  @override
+  String? get createViewStmt => null;
+  @override
+  $UserViewView get asDslTable => this;
+  @override
+  UserViewData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return UserViewData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      username: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}username'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+    );
+  }
+
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      generatedAs: GeneratedAs(userTable.id, false), type: DriftSqlType.string);
+  late final GeneratedColumn<String> username = GeneratedColumn<String>(
+      'username', aliasedName, false,
+      generatedAs: GeneratedAs(userTable.username, false),
+      type: DriftSqlType.string);
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      generatedAs: GeneratedAs(roleTable.name, false),
+      type: DriftSqlType.string);
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      generatedAs: GeneratedAs(userTable.createdAt, false),
+      type: DriftSqlType.dateTime);
+  @override
+  $UserViewView createAlias(String alias) {
+    return $UserViewView(attachedDatabase, alias);
+  }
+
+  @override
+  Query? get query => (attachedDatabase.selectOnly(roleTable)
+        ..addColumns($columns))
+      .join([innerJoin(userTable, userTable.roleId.equalsExp(roleTable.id))]);
+  @override
+  Set<String> get readTables => const {'role_table', 'user_table'};
+}
+
 abstract class _$DatabaseApp extends GeneratedDatabase {
   _$DatabaseApp(QueryExecutor e) : super(e);
   late final $CategoryTableTable categoryTable = $CategoryTableTable(this);
   late final $ProductTableTable productTable = $ProductTableTable(this);
   late final $ProductViewView productView = $ProductViewView(this);
+  late final $RoleTableTable roleTable = $RoleTableTable(this);
+  late final $UserTableTable userTable = $UserTableTable(this);
+  late final $UserViewView userView = $UserViewView(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [categoryTable, productTable, productView];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+        categoryTable,
+        productTable,
+        productView,
+        roleTable,
+        userTable,
+        userView
+      ];
 }
