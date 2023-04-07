@@ -1,3 +1,11 @@
+import 'package:main_cashier/data/datasource/local/user_local_datasource.dart';
+import 'package:main_cashier/data/repositories/user_repository_impl.dart';
+import 'package:main_cashier/domain/repostitories/user_repository.dart';
+import 'package:main_cashier/domain/usecase/user/change_pass_user_usecase.dart';
+import 'package:main_cashier/domain/usecase/user/create_user_usecase.dart';
+import 'package:main_cashier/domain/usecase/user/delete_user_usecase.dart';
+import 'package:main_cashier/domain/usecase/user/get_view_user_usecase.dart';
+import 'package:main_cashier/domain/usecase/user/update_user_usecase.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -6,6 +14,8 @@ import 'data/repositories/product_repository_impl.dart';
 import 'data/datasource/local/category_local_datasource.dart';
 import 'data/datasource/local/drift/drift_database.dart';
 import 'data/repositories/category_repository_impl.dart';
+import 'data/datasource/local/role_local_datasource.dart';
+import 'data/repositories/role_repository_impl.dart';
 
 import 'domain/repostitories/product_repository.dart';
 import 'domain/usecase/product/create_product_usecase.dart';
@@ -19,11 +29,17 @@ import 'domain/usecase/category/update_category_usecase.dart';
 import 'domain/repostitories/category_repository.dart';
 import 'domain/usecase/category/create_category_usecase.dart';
 import 'domain/usecase/category/get_categories_usecase.dart';
+import 'domain/repostitories/role_repository.dart';
+import 'domain/usecase/role/create_role_usecase.dart';
+import 'domain/usecase/role/delete_role_usecase.dart';
+import 'domain/usecase/role/get_role_usecase.dart';
+import 'domain/usecase/role/update_role_usecase.dart';
 
 import 'presentation/home/home_controller.dart';
 import 'presentation/home/tab_controller/category_tab_controller.dart';
 import 'presentation/home/tab_controller/inventory_tab_controller.dart';
 import 'presentation/sign_in/sign_in_controller.dart';
+import 'presentation/home/tab_controller/users_tab_controller.dart';
 
 List<SingleChildWidget> get listProvider => _listProvider;
 
@@ -39,6 +55,14 @@ ProductLocalDataSource _productLocalDataSource = ProductLocalDataSourceImpl(
   databaseApp: _databaseApp,
 );
 
+RoleLocalDataSource _roleLocalDataSource = RoleLocalDataSourceImpl(
+  databaseApp: _databaseApp,
+);
+
+UserLocalDataSource _userLocalDataSource = UserLocalDataSourceImpl(
+  databaseApp: _databaseApp,
+);
+
 // Repository
 CategoryRepository _categoryRepository = CategoryRepositoryImpl(
   categoryLocalDataSource: _categoryLocalDataSource,
@@ -46,6 +70,14 @@ CategoryRepository _categoryRepository = CategoryRepositoryImpl(
 
 ProductRepository _productRepository = ProductRepositoryImpl(
   productLocalDataSource: _productLocalDataSource,
+);
+
+RoleRepository _roleRepository = RoleRepositoryImpl(
+  roleLocalDataSource: _roleLocalDataSource,
+);
+
+UserRepository _userRepository = UserRepositoryImpl(
+  userLocalDataSource: _userLocalDataSource,
 );
 
 // Category Usecase
@@ -90,6 +122,44 @@ SearchProduct _searchProduct = SearchProduct(
   repository: _productRepository,
 );
 
+// Role Usecase
+GetRole _getRole = GetRole(
+  repository: _roleRepository,
+);
+
+CreateRole _createRole = CreateRole(
+  repository: _roleRepository,
+);
+
+DeleteRole _deleteRole = DeleteRole(
+  repository: _roleRepository,
+);
+
+UpdateRole _updateRole = UpdateRole(
+  repository: _roleRepository,
+);
+
+// User Usecase
+GetViewUser _getViewUser = GetViewUser(
+  repository: _userRepository,
+);
+
+CreateUser _createUser = CreateUser(
+  repository: _userRepository,
+);
+
+UpdateUser _updateUser = UpdateUser(
+  repository: _userRepository,
+);
+
+DeleteUser _deleteUser = DeleteUser(
+  repository: _userRepository,
+);
+
+ChangePassword _changePassword = ChangePassword(
+  repository: _userRepository,
+);
+
 List<SingleChildWidget> _listProvider = [
   ChangeNotifierProvider(
     create: (context) => HomeController(),
@@ -114,6 +184,19 @@ List<SingleChildWidget> _listProvider = [
       deleteProduct: _deleteProduct,
       updateProduct: _updateProduct,
       searchProduct: _searchProduct,
+    ),
+  ),
+  ChangeNotifierProvider(
+    create: (context) => UsersTabController(
+      getRole: _getRole,
+      createRole: _createRole,
+      deleteRole: _deleteRole,
+      updateRole: _updateRole,
+      createUser: _createUser,
+      getViewUser: _getViewUser,
+      updateUser: _updateUser,
+      deleteUser: _deleteUser,
+      changePassword: _changePassword,
     ),
   )
 ];
