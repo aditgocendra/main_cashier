@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'tab_view/users_tab.dart';
 import 'tab_view/category_tab.dart';
 import 'tab_view/inventory_tab.dart';
 import '../../core/constant/list_constant.dart';
@@ -79,8 +80,9 @@ class _TabScreenState extends State<TabScreen>
         Center(
           child: Text('4'),
         ),
+        UsersTab(),
         Center(
-          child: Text('5'),
+          child: Text('6'),
         ),
       ],
     );

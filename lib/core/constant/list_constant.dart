@@ -18,6 +18,10 @@ const List<Map<String, dynamic>> listTabMenu = [
     'icon': UniconsLine.transaction,
   },
   {
+    'menu': 'Users',
+    'icon': UniconsLine.user_circle,
+  },
+  {
     'menu': 'Settings',
     'icon': UniconsLine.setting,
   },
