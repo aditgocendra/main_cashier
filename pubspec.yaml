@@ -21,6 +21,7 @@ dependencies:
   path: ^1.8.2
   sqlite3_flutter_libs: ^0.5.13
   dropdown_search: ^5.0.6
+  uuid: ^3.0.7
   
 dev_dependencies:
   flutter_test:
