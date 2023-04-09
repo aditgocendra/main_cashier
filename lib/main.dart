@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:main_cashier/core/router/routes.dart';
 import 'core/constant/color_constant.dart';
-import 'presentation/home/home_view.dart';
+
 import 'package:provider/provider.dart';
 import 'providers.dart';
 
@@ -16,8 +17,9 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: listProvider,
-      child: MaterialApp(
+      child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
+        routerConfig: router,
         theme: ThemeData(
           scaffoldBackgroundColor: backgroundColor,
           textTheme: GoogleFonts.poppinsTextTheme(
@@ -26,7 +28,6 @@ class App extends StatelessWidget {
                 ),
           ),
         ),
-        home: const HomeView(),
       ),
     );
   }
