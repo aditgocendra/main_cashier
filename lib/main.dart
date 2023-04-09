@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:main_cashier/core/router/routes.dart';
-import 'core/constant/color_constant.dart';
-
 import 'package:provider/provider.dart';
 import 'providers.dart';
+import 'core/router/routes.dart';
+import 'core/constant/color_constant.dart';
 
 void main() {
   runApp(const App());
