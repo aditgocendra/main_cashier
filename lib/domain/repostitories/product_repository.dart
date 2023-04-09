@@ -15,4 +15,6 @@ abstract class ProductRepository {
   Future<int> deleteProduct(String code);
 
   Future<ProductViewEntity> updateProduct(ProductEntity productEntity);
+
+  Future<ProductEntity> selectProduct(String code);
 }
