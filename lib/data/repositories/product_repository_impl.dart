@@ -32,7 +32,7 @@ class ProductRepositoryImpl implements ProductRepository {
         createdAt: DateTime.now(),
       ));
 
-      return await productLocalDataSource.select(productEntity.code);
+      return await productLocalDataSource.selectView(productEntity.code);
     } on DriftRemoteException {
       throw DatabaseDriftException("Insert data product fail");
     }
@@ -92,9 +92,18 @@ class ProductRepositoryImpl implements ProductRepository {
         throw DatabaseDriftException("Fail update product");
       }
 
-      return await productLocalDataSource.select(productEntity.code);
+      return await productLocalDataSource.selectView(productEntity.code);
     } catch (_) {
       throw DatabaseDriftException("Fail update product");
+    }
+  }
+
+  @override
+  Future<ProductEntity> selectProduct(String code) async {
+    try {
+      return await productLocalDataSource.select(code);
+    } catch (_) {
+      throw DatabaseDriftException("Fail select product");
     }
   }
 }

@@ -15,7 +15,9 @@ abstract class ProductLocalDataSource {
 
   Future<int> create(ProductModel productModel);
 
-  Future<ProductViewModel> select(String code);
+  Future<ProductViewModel> selectView(String code);
+
+  Future<ProductModel> select(String code);
 
   Future<int> delete(String code);
 
@@ -104,11 +106,20 @@ class ProductLocalDataSourceImpl implements ProductLocalDataSource {
   }
 
   @override
-  Future<ProductViewModel> select(String code) async {
+  Future<ProductViewModel> selectView(String code) async {
     final result = await (databaseApp.select(databaseApp.productView)
           ..where((tbl) => tbl.codeProduct.equals(code)))
         .getSingle();
 
     return ProductViewModel.fromTable(result);
+  }
+
+  @override
+  Future<ProductModel> select(String code) async {
+    final result = await (databaseApp.select(databaseApp.productTable)
+          ..where((tbl) => tbl.codeProduct.equals(code)))
+        .getSingle();
+
+    return ProductModel.fromTable(result);
   }
 }
