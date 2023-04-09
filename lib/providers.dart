@@ -1,11 +1,13 @@
 import 'package:main_cashier/data/datasource/local/user_local_datasource.dart';
 import 'package:main_cashier/data/repositories/user_repository_impl.dart';
 import 'package:main_cashier/domain/repostitories/user_repository.dart';
+import 'package:main_cashier/domain/usecase/product/select_product_usecase.dart';
 import 'package:main_cashier/domain/usecase/user/change_pass_user_usecase.dart';
 import 'package:main_cashier/domain/usecase/user/create_user_usecase.dart';
 import 'package:main_cashier/domain/usecase/user/delete_user_usecase.dart';
 import 'package:main_cashier/domain/usecase/user/get_view_user_usecase.dart';
 import 'package:main_cashier/domain/usecase/user/update_user_usecase.dart';
+import 'package:main_cashier/presentation/transaction/transaction_controller.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -122,6 +124,10 @@ SearchProduct _searchProduct = SearchProduct(
   repository: _productRepository,
 );
 
+SelectProduct _selectProduct = SelectProduct(
+  repository: _productRepository,
+);
+
 // Role Usecase
 GetRole _getRole = GetRole(
   repository: _roleRepository,
@@ -197,6 +203,11 @@ List<SingleChildWidget> _listProvider = [
       updateUser: _updateUser,
       deleteUser: _deleteUser,
       changePassword: _changePassword,
+    ),
+  ),
+  ChangeNotifierProvider(
+    create: (context) => TransactionController(
+      selectProduct: _selectProduct,
     ),
   )
 ];
