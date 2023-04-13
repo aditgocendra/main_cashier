@@ -1,18 +1,36 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:unicons/unicons.dart';
 
+import '../../../core/utils/format_utils.dart';
+import '../../../domain/entity/transaction_entity.dart';
 import '../../../core/components/table_components.dart';
 import '../../../core/constant/color_constant.dart';
+import '../../../core/utils/decoration_utils.dart';
+import '../../../core/utils/dialog_utils.dart';
+import '../tab_controller/transaction_tab_controller.dart';
 
-class TransactionTab extends StatelessWidget {
+class TransactionTab extends StatefulWidget {
   const TransactionTab({super.key});
+
+  @override
+  State<TransactionTab> createState() => _TransactionTabState();
+}
+
+class _TransactionTabState extends State<TransactionTab> {
+  @override
+  void initState() {
+    super.initState();
+    final controller = context.read<TransactionTabController>();
+    controller.setTransaction();
+  }
 
   @override
   Widget build(BuildContext context) {
     final navigator = Navigator.of(context);
-    // final ctgTabController = context.watch<CategoryTabController>();
+    final controller = context.watch<TransactionTabController>();
     final size = MediaQuery.of(context).size.width;
 
     return ListView(
@@ -39,7 +57,7 @@ class TransactionTab extends StatelessWidget {
                         style: const TextStyle(fontSize: 14),
                         decoration: InputDecoration(
                           fillColor: Colors.white60,
-                          hintText: "Search (Title)",
+                          hintText: "Search (No)",
                           contentPadding: const EdgeInsets.symmetric(
                             vertical: 16,
                             horizontal: 16,
@@ -144,104 +162,114 @@ class TransactionTab extends StatelessWidget {
                       // Header Data Table
                       TableComponent.headerTable(
                         [
-                          "Code Transaction",
+                          "No",
                           "Date Transaction",
                           "Total Payment",
-                          "Action"
+                          "Action",
                         ],
                       ),
                       // Body Data Table
-                      // ...ctgTabController.listCategory.map((val) {
-                      //   return TableRow(
-                      //     children: [
-                      //       TableCell(
-                      //         child: Padding(
-                      //           padding: const EdgeInsets.all(8.0),
-                      //           child: Center(
-                      //             child: Text(
-                      //               val.id.toString(),
-                      //               style: const TextStyle(fontSize: 14),
-                      //             ),
-                      //           ),
-                      //         ),
-                      //       ),
-                      //       TableCell(
-                      //         child: Padding(
-                      //           padding: const EdgeInsets.all(8.0),
-                      //           child: Center(
-                      //             child: Text(
-                      //               val.title,
-                      //               style: const TextStyle(fontSize: 14),
-                      //             ),
-                      //           ),
-                      //         ),
-                      //       ),
-                      //       TableCell(
-                      //         child: Padding(
-                      //           padding: const EdgeInsets.all(8.0),
-                      //           child: Center(
-                      //             child: Wrap(
-                      //               children: [
-                      //                 // Edit
-                      //                 IconButton(
-                      //                   onPressed: () {
-                      //                     showDialog(
-                      //                       context: context,
-                      //                       builder: (context) {
-                      //                         return Dialog(
-                      //                           shape: RoundedRectangleBorder(
-                      //                             borderRadius:
-                      //                                 BorderRadius.circular(16),
-                      //                           ),
-                      //                           child: DialogCategoryEdit(
-                      //                             ctg: val,
-                      //                             ctgTabController:
-                      //                                 ctgTabController,
-                      //                             tecTitle: tecTitle,
-                      //                           ),
-                      //                         );
-                      //                       },
-                      //                     );
-                      //                   },
-                      //                   icon: const Icon(UniconsLine.edit),
-                      //                 ),
-                      //                 // Delete
-                      //                 IconButton(
-                      //                   onPressed: () {
-                      //                     showDialog(
-                      //                       context: context,
-                      //                       builder: (context) {
-                      //                         return DialogUtils
-                      //                             .dialogConfirmation(
-                      //                           title: "Delete Category",
-                      //                           message:
-                      //                               "Are you sure delete this category ?",
-                      //                           callbackConfirmation: () {
-                      //                             ctgTabController
-                      //                                 .removeCategory(val);
-
-                      //                             if (ctgTabController
-                      //                                 .errorDialog
-                      //                                 .isNotEmpty) {}
-                      //                             navigator.pop();
-                      //                           },
-                      //                           callbackCancel: () {
-                      //                             navigator.pop();
-                      //                           },
-                      //                         );
-                      //                       },
-                      //                     );
-                      //                   },
-                      //                   icon: const Icon(UniconsLine.trash),
-                      //                 )
-                      //               ],
-                      //             ),
-                      //           ),
-                      //         ),
-                      //       ),
-                      //     ],
-                      //   );
-                      // }).toList()
+                      ...controller.listTransaction.map((val) {
+                        return TableRow(
+                          children: [
+                            TableCell(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Center(
+                                  child: Text(
+                                    val.numInvoice,
+                                    style: const TextStyle(fontSize: 14),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            TableCell(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Center(
+                                  child: Text(
+                                    FormatUtility.dMMMyFormat(
+                                      val.dateTransaction,
+                                    ),
+                                    style: const TextStyle(fontSize: 14),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            TableCell(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Center(
+                                  child: Text(
+                                    FormatUtility.currencyRp(val.totalPay),
+                                    style: const TextStyle(fontSize: 14),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            TableCell(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Center(
+                                  child: Wrap(
+                                    children: [
+                                      // Detail
+                                      IconButton(
+                                        onPressed: () {
+                                          controller.setDetailTransaction(
+                                            val.id,
+                                          );
+                                          showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              return Dialog(
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(16),
+                                                ),
+                                                child: DialogDetailTransaction(
+                                                  transactionEntity: val,
+                                                ),
+                                              );
+                                            },
+                                          );
+                                        },
+                                        icon: const Icon(UniconsLine.eye),
+                                      ),
+                                      // Delete
+                                      IconButton(
+                                        onPressed: () {
+                                          showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              return DialogUtils
+                                                  .dialogConfirmation(
+                                                title: "Delete Transaction",
+                                                message:
+                                                    "Are you sure delete this transaction ?",
+                                                callbackConfirmation: () {
+                                                  controller.removeTransaction(
+                                                    val.id,
+                                                  );
+                                                  navigator.pop();
+                                                },
+                                                callbackCancel: () {
+                                                  navigator.pop();
+                                                },
+                                              );
+                                            },
+                                          );
+                                        },
+                                        icon: const Icon(UniconsLine.trash),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      }).toList()
                     ],
                   ),
                 ),
@@ -327,7 +355,7 @@ class TransactionTab extends StatelessWidget {
                           icon: const Icon(Icons.keyboard_arrow_left),
                         ),
                         Text(
-                          "",
+                          controller.activeRowPage.toString(),
                           // ctgTabController.activeRowPage.toString(),
                           style: const TextStyle(
                             fontSize: 12.5,
@@ -349,6 +377,197 @@ class TransactionTab extends StatelessWidget {
           ),
         )
       ],
+    );
+  }
+}
+
+class DialogDetailTransaction extends StatelessWidget {
+  final TransactionEntity transactionEntity;
+
+  const DialogDetailTransaction({
+    required this.transactionEntity,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final navigator = Navigator.of(context);
+    final controller = context.watch<TransactionTabController>();
+    final size = MediaQuery.of(context).size.width;
+
+    return DialogUtils.layoutCustomDialog(
+      dialogHeaderText: "Detail Transaction",
+      childern: [
+        Text(
+          "No. ${transactionEntity.numInvoice}",
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(
+          height: 16,
+        ),
+        SingleChildScrollView(
+          scrollDirection: size >= 450 ? Axis.vertical : Axis.horizontal,
+          child: Table(
+            border: const TableBorder(
+              horizontalInside: BorderSide(
+                width: 0.1,
+              ),
+              top: BorderSide(
+                width: 0.1,
+              ),
+              bottom: BorderSide(
+                width: 0.1,
+              ),
+            ),
+            columnWidths: const <int, TableColumnWidth>{
+              0: IntrinsicColumnWidth(),
+              1: IntrinsicColumnWidth(),
+              2: IntrinsicColumnWidth(),
+              3: IntrinsicColumnWidth(),
+              4: IntrinsicColumnWidth(),
+            },
+            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+            children: [
+              // Header Data Table
+              TableComponent.headerTable(
+                [
+                  "Code Product",
+                  "Name",
+                  "Price",
+                  "Qty",
+                  "Total",
+                ],
+              ),
+              // Body Data Table
+              ...controller.listDetailTransaction.map((val) {
+                return TableRow(
+                  children: [
+                    TableCell(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Center(
+                          child: Text(
+                            val.code,
+                            style: const TextStyle(fontSize: 14),
+                          ),
+                        ),
+                      ),
+                    ),
+                    TableCell(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Center(
+                          child: Text(
+                            val.name,
+                            style: const TextStyle(fontSize: 14),
+                          ),
+                        ),
+                      ),
+                    ),
+                    TableCell(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Center(
+                          child: Text(
+                            FormatUtility.currencyRp(val.price),
+                            style: const TextStyle(fontSize: 14),
+                          ),
+                        ),
+                      ),
+                    ),
+                    TableCell(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Center(
+                          child: Text(
+                            val.qty.toString(),
+                            style: const TextStyle(fontSize: 14),
+                          ),
+                        ),
+                      ),
+                    ),
+                    TableCell(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Center(
+                          child: Text(
+                            FormatUtility.currencyRp(val.total),
+                            style: const TextStyle(fontSize: 14),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              }).toList(),
+              TableRow(
+                children: [
+                  const TableCell(
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Center(
+                        child: Text(
+                          "Total Payment",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const TableCell(
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                    ),
+                  ),
+                  const TableCell(
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                    ),
+                  ),
+                  const TableCell(
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                    ),
+                  ),
+                  TableCell(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Center(
+                        child: Text(
+                          FormatUtility.currencyRp(transactionEntity.totalPay),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: primaryColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(
+          height: 16,
+        ),
+        ElevatedButton(
+          onPressed: () {
+            navigator.pop();
+          },
+          style: DecorationUtils.buttonDialogStyle(),
+          child: const Text("Generate Invoice"),
+        ),
+      ],
+      callbackClose: () {
+        navigator.pop();
+      },
     );
   }
 }
