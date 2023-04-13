@@ -43,6 +43,28 @@ class ProductTable extends Table {
   Set<Column> get primaryKey => {codeProduct};
 }
 
+class CounterTransactionTable extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get totalTransaction => integer()();
+  DateTimeColumn get date => dateTime()();
+}
+
+class TransactionTable extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get no => text().unique()();
+  IntColumn get totalPay => integer()();
+  DateTimeColumn get dateTransaction =>
+      dateTime().withDefault(currentDateAndTime)();
+}
+
+class DetailTransactionTable extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get qty => integer()();
+  IntColumn get total => integer()();
+  TextColumn get codeProduct => text().references(ProductTable, #codeProduct)();
+  IntColumn get idTransaction => integer().references(TransactionTable, #id)();
+}
+
 abstract class ProductView extends View {
   CategoryTable get categoryTable;
   ProductTable get productTable;
@@ -87,22 +109,81 @@ abstract class UserView extends View {
       );
 }
 
+abstract class DetailTransactionView extends View {
+  ProductTable get productTable;
+  TransactionTable get transactionTable;
+  DetailTransactionTable get detailTransactionTable;
+
+  @override
+  Query as() => select([
+        productTable.codeProduct,
+        productTable.name,
+        productTable.price,
+        detailTransactionTable.qty,
+        detailTransactionTable.total,
+        transactionTable.id,
+      ]).from(detailTransactionTable).join([
+        innerJoin(
+          productTable,
+          productTable.codeProduct.equalsExp(
+            detailTransactionTable.codeProduct,
+          ),
+        ),
+        innerJoin(
+          transactionTable,
+          transactionTable.id.equalsExp(
+            detailTransactionTable.idTransaction,
+          ),
+        )
+      ]);
+}
+
 @DriftDatabase(
-  tables: [CategoryTable, ProductTable],
-  views: [ProductView, UserView],
+  tables: [
+    CategoryTable,
+    ProductTable,
+    CounterTransactionTable,
+    TransactionTable,
+    DetailTransactionTable
+  ],
+  views: [
+    ProductView,
+    UserView,
+    DetailTransactionView,
+  ],
 )
 class DatabaseApp extends _$DatabaseApp {
   DatabaseApp() : super(_openConnection());
 
   @override
   int get schemaVersion => 1;
+
+  @override
+  MigrationStrategy get migration {
+    return MigrationStrategy(
+      beforeOpen: (details) async {
+        if (details.wasCreated) {
+          await batch((batch) {
+            batch.insertAll(roleTable, [
+              RoleTableCompanion.insert(name: "Admin"),
+              RoleTableCompanion.insert(name: "Cashier"),
+            ]);
+          });
+
+          await into(counterTransactionTable).insert(
+            CounterTransactionTableCompanion.insert(
+              totalTransaction: 1,
+              day: DateTime.now(),
+            ),
+          );
+        }
+      },
+    );
+  }
 }
 
 LazyDatabase _openConnection() {
-  // the LazyDatabase util lets us find the right location for the file async.
   return LazyDatabase(() async {
-    // put the database file, called db.sqlite here, into the documents folder
-    // for your app.
     final dbFolder = await getApplicationDocumentsDirectory();
     final file = File(path.join(dbFolder.path, 'db.sqlite'));
     return NativeDatabase.createInBackground(file);
