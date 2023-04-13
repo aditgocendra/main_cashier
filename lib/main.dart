@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'providers.dart';
 import 'core/router/routes.dart';
 import 'core/constant/color_constant.dart';
 
 void main() {
+  initializeDateFormatting();
   runApp(const App());
 }
 
