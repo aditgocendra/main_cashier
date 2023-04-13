@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:main_cashier/domain/entity/product_entity.dart';
-import 'package:main_cashier/domain/usecase/product/select_product_usecase.dart';
+import '../../core/usecase/usecase.dart';
+import '../../domain/usecase/transaction/get_counter_transaction_usecase.dart';
+import '../../domain/entity/product_entity.dart';
+import '../../domain/entity/detail_transaction_entity.dart';
+import '../../domain/usecase/product/select_product_usecase.dart';
+import '../../domain/usecase/transaction/create_transaction_usecase.dart';
 
 class TransactionController extends ChangeNotifier {
   List<ProductEntity> _listProduct = [];
@@ -19,9 +23,13 @@ class TransactionController extends ChangeNotifier {
   String? get errSelectProduct => _errSelectProduct;
 
   final SelectProduct selectProduct;
+  final CreateTransaction createTransaction;
+  final GetCounterTransaction getCounterTransaction;
 
   TransactionController({
+    required this.createTransaction,
     required this.selectProduct,
+    required this.getCounterTransaction,
   });
 
   void selectProductData(String code) async {
@@ -29,7 +37,6 @@ class TransactionController extends ChangeNotifier {
       final product = listProduct.where((element) => element.code == code);
 
       if (product.isNotEmpty) {
-        print("Product already exist");
         return;
       }
     }
@@ -75,5 +82,37 @@ class TransactionController extends ChangeNotifier {
     }
 
     notifyListeners();
+  }
+
+  // Transaction -------------------------------------------------------------
+  Future<String> _generateNoInvoice() async {
+    final date = DateTime.now();
+
+    final result = await getCounterTransaction.call(NoParans()).catchError(
+          (e) => print,
+        );
+
+    return "${date.day}${date.month}${date.year}-${result.totalTransaction}";
+  }
+
+  void addTransaction() async {
+    List<DetailTransactionEntity> list = [];
+
+    for (var i = 0; i < listProduct.length; i++) {
+      list.add(DetailTransactionEntity(
+        id: 0,
+        qty: int.parse(listTecQty[i].text),
+        total: listTotalQty[i],
+        idProduct: listProduct[i].code,
+      ));
+    }
+
+    final params = ParamCreateTransaction(
+      no: await _generateNoInvoice(),
+      totalPay: totalPay,
+      list: list,
+    );
+
+    await createTransaction.call(params);
   }
 }
