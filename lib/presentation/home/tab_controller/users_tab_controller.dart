@@ -3,10 +3,9 @@ import 'package:main_cashier/domain/entity/user_entity.dart';
 import 'package:main_cashier/domain/usecase/user/change_pass_user_usecase.dart';
 import '../../../core/usecase/usecase.dart';
 import '../../../domain/entity/role_entity.dart';
-import '../../../domain/usecase/role/create_role_usecase.dart';
-import '../../../domain/usecase/role/delete_role_usecase.dart';
+
 import '../../../domain/usecase/role/get_role_usecase.dart';
-import '../../../domain/usecase/role/update_role_usecase.dart';
+
 import '../../../domain/usecase/user/create_user_usecase.dart';
 import '../../../domain/usecase/user/delete_user_usecase.dart';
 import '../../../domain/usecase/user/get_view_user_usecase.dart';
@@ -36,9 +35,6 @@ class UsersTabController extends ChangeNotifier {
 
   // Role Usecase
   final GetRole getRole;
-  final CreateRole createRole;
-  final DeleteRole deleteRole;
-  final UpdateRole updateRole;
 
   // User usecase
   final GetViewUser getViewUser;
@@ -49,9 +45,6 @@ class UsersTabController extends ChangeNotifier {
 
   UsersTabController({
     required this.getRole,
-    required this.createRole,
-    required this.deleteRole,
-    required this.updateRole,
     required this.getViewUser,
     required this.createUser,
     required this.deleteUser,
@@ -63,45 +56,6 @@ class UsersTabController extends ChangeNotifier {
   void setDataRole() async {
     await getRole.call(NoParans()).then((value) {
       _listRole = value;
-      notifyListeners();
-    }).catchError((e) {
-      _errMessageDialog = e.toString();
-      notifyListeners();
-    });
-  }
-
-  void addRole(String name) async {
-    await createRole.call(name).then((value) {
-      _listRole.add(value);
-      notifyListeners();
-    }).catchError((e) {
-      _errMessageDialog = e.toString();
-      notifyListeners();
-    });
-  }
-
-  void editRole(RoleEntity roleEntity) async {
-    await updateRole.call(roleEntity).then((value) {
-      final index = listRole.indexWhere(
-        (element) => element.id == roleEntity.id,
-      );
-
-      _listRole[index] = roleEntity;
-
-      notifyListeners();
-    }).catchError((e) {
-      _errMessageDialog = e.toString();
-      notifyListeners();
-    });
-  }
-
-  void removeRole(int id) async {
-    await deleteRole.call(id).then((rowsAffected) {
-      if (rowsAffected < 1) {
-        return;
-      }
-
-      _listRole.removeWhere((element) => element.id == id);
       notifyListeners();
     }).catchError((e) {
       _errMessageDialog = e.toString();
