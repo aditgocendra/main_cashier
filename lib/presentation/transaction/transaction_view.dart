@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:main_cashier/core/utils/format_utils.dart';
+import '../../core/utils/format_utils.dart';
 
 import 'package:provider/provider.dart';
 import 'package:unicons/unicons.dart';
@@ -258,7 +258,9 @@ class TransactionView extends StatelessWidget {
                         ],
                       ),
                       ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          controller.addTransaction();
+                        },
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.all(18),
                           backgroundColor: primaryColor,
