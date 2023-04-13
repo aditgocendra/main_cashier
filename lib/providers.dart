@@ -1,12 +1,21 @@
+import 'package:main_cashier/data/datasource/local/transaction_local_datasource.dart';
 import 'package:main_cashier/data/datasource/local/user_local_datasource.dart';
+import 'package:main_cashier/data/repositories/transaction_repository_impl.dart';
 import 'package:main_cashier/data/repositories/user_repository_impl.dart';
+import 'package:main_cashier/domain/repostitories/transaction_repository.dart';
 import 'package:main_cashier/domain/repostitories/user_repository.dart';
 import 'package:main_cashier/domain/usecase/product/select_product_usecase.dart';
+import 'package:main_cashier/domain/usecase/transaction/create_transaction_usecase.dart';
+import 'package:main_cashier/domain/usecase/transaction/delete_transaction_usecase.dart';
+import 'package:main_cashier/domain/usecase/transaction/get_all_transaction_usecase.dart';
+import 'package:main_cashier/domain/usecase/transaction/get_counter_transaction_usecase.dart';
+import 'package:main_cashier/domain/usecase/transaction/get_detail_transaction_usecase.dart';
 import 'package:main_cashier/domain/usecase/user/change_pass_user_usecase.dart';
 import 'package:main_cashier/domain/usecase/user/create_user_usecase.dart';
 import 'package:main_cashier/domain/usecase/user/delete_user_usecase.dart';
 import 'package:main_cashier/domain/usecase/user/get_view_user_usecase.dart';
 import 'package:main_cashier/domain/usecase/user/update_user_usecase.dart';
+import 'package:main_cashier/presentation/home/tab_controller/transaction_tab_controller.dart';
 import 'package:main_cashier/presentation/transaction/transaction_controller.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
@@ -32,10 +41,8 @@ import 'domain/repostitories/category_repository.dart';
 import 'domain/usecase/category/create_category_usecase.dart';
 import 'domain/usecase/category/get_categories_usecase.dart';
 import 'domain/repostitories/role_repository.dart';
-import 'domain/usecase/role/create_role_usecase.dart';
-import 'domain/usecase/role/delete_role_usecase.dart';
+
 import 'domain/usecase/role/get_role_usecase.dart';
-import 'domain/usecase/role/update_role_usecase.dart';
 
 import 'presentation/home/home_controller.dart';
 import 'presentation/home/tab_controller/category_tab_controller.dart';
@@ -65,6 +72,11 @@ UserLocalDataSource _userLocalDataSource = UserLocalDataSourceImpl(
   databaseApp: _databaseApp,
 );
 
+TransactionLocalDataSource _transactionLocalDataSource =
+    TransactionLocalDataSourceImpl(
+  databaseApp: _databaseApp,
+);
+
 // Repository
 CategoryRepository _categoryRepository = CategoryRepositoryImpl(
   categoryLocalDataSource: _categoryLocalDataSource,
@@ -80,6 +92,10 @@ RoleRepository _roleRepository = RoleRepositoryImpl(
 
 UserRepository _userRepository = UserRepositoryImpl(
   userLocalDataSource: _userLocalDataSource,
+);
+
+TransactionRepository _transactionRepository = TransactionRepositoryImpl(
+  transactionLocalDataSource: _transactionLocalDataSource,
 );
 
 // Category Usecase
@@ -133,18 +149,6 @@ GetRole _getRole = GetRole(
   repository: _roleRepository,
 );
 
-CreateRole _createRole = CreateRole(
-  repository: _roleRepository,
-);
-
-DeleteRole _deleteRole = DeleteRole(
-  repository: _roleRepository,
-);
-
-UpdateRole _updateRole = UpdateRole(
-  repository: _roleRepository,
-);
-
 // User Usecase
 GetViewUser _getViewUser = GetViewUser(
   repository: _userRepository,
@@ -164,6 +168,27 @@ DeleteUser _deleteUser = DeleteUser(
 
 ChangePassword _changePassword = ChangePassword(
   repository: _userRepository,
+);
+
+// Transaction Usecase
+CreateTransaction _createTransaction = CreateTransaction(
+  repository: _transactionRepository,
+);
+
+GetAllTransaction _getAllTransaction = GetAllTransaction(
+  repository: _transactionRepository,
+);
+
+GetDetailTransaction _getDetailTransaction = GetDetailTransaction(
+  repository: _transactionRepository,
+);
+
+GetCounterTransaction _getCounterTransaction = GetCounterTransaction(
+  repository: _transactionRepository,
+);
+
+DeleteTransaction _deleteTransaction = DeleteTransaction(
+  repository: _transactionRepository,
 );
 
 List<SingleChildWidget> _listProvider = [
@@ -195,9 +220,6 @@ List<SingleChildWidget> _listProvider = [
   ChangeNotifierProvider(
     create: (context) => UsersTabController(
       getRole: _getRole,
-      createRole: _createRole,
-      deleteRole: _deleteRole,
-      updateRole: _updateRole,
       createUser: _createUser,
       getViewUser: _getViewUser,
       updateUser: _updateUser,
@@ -206,8 +228,16 @@ List<SingleChildWidget> _listProvider = [
     ),
   ),
   ChangeNotifierProvider(
+    create: (context) => TransactionTabController(
+        getAllTransaction: _getAllTransaction,
+        getDetailTransaction: _getDetailTransaction,
+        deleteTransaction: _deleteTransaction),
+  ),
+  ChangeNotifierProvider(
     create: (context) => TransactionController(
       selectProduct: _selectProduct,
+      createTransaction: _createTransaction,
+      getCounterTransaction: _getCounterTransaction,
     ),
   )
 ];
