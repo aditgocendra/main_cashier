@@ -68,6 +68,11 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
       await databaseApp.batch((batch) {
         batch.insertAll(databaseApp.detailTransactionTable, listProductInsert);
       });
+
+      // Increment total transaction in CounterTransactionTable
+      await databaseApp.customStatement(
+        "UPDATE 'counter_transaction_table' SET total_transaction = total_transaction + 1 WHERE id = 1",
+      );
     });
   }
 
