@@ -47,8 +47,9 @@ class TransactionController extends ChangeNotifier {
     await selectProduct.call(code).then((value) {
       _listTecQty.add(TextEditingController(text: "1"));
       _listTotalQty.add(value.price);
+
       _listProduct.add(value);
-      _totalPay = value.price;
+      calculateTotalPay();
       notifyListeners();
     }).catchError((e) {
       print(e.toString());
@@ -65,10 +66,8 @@ class TransactionController extends ChangeNotifier {
       _totalPay = price;
     } else {
       _listTotalQty[index] = price * int.parse(val);
-      _totalPay = 0;
-      for (var element in listTotalQty) {
-        _totalPay += element;
-      }
+
+      calculateTotalPay();
     }
 
     notifyListeners();
@@ -80,11 +79,16 @@ class TransactionController extends ChangeNotifier {
     _listTecQty.removeAt(index);
     _totalPay = 0;
 
+    calculateTotalPay();
+
+    notifyListeners();
+  }
+
+  void calculateTotalPay() {
+    _totalPay = 0;
     for (var element in listTotalQty) {
       _totalPay += element;
     }
-
-    notifyListeners();
   }
 
   // Transaction -------------------------------------------------------------
