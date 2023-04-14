@@ -39,12 +39,19 @@ class CategoryTabController extends ChangeNotifier {
   bool _isSearch = false;
   bool get isSearch => _isSearch;
 
-  void addCategory(String title) async {
-    await createCategory.call(title).then((value) {
+  void addCategory({
+    required String title,
+    required VoidCallback callbackSuccess,
+    required VoidCallback callbackFail,
+  }) async {
+    await createCategory.call(title.toLowerCase()).then((value) {
       _listCategory.add(value);
+      callbackSuccess.call();
       notifyListeners();
     }).catchError((e) {
-      _errorDialog = e.toString();
+      setError(e.toString());
+      callbackFail.call();
+      notifyListeners();
     });
   }
 
@@ -55,7 +62,7 @@ class CategoryTabController extends ChangeNotifier {
       );
       notifyListeners();
     }).catchError((e) {
-      _errorDialog = e.toString();
+      setError(e.toString());
     });
   }
 
@@ -64,8 +71,13 @@ class CategoryTabController extends ChangeNotifier {
       if (!value) {
         _errorDialog = "Unknown Error";
       }
+      final index = listCategory.indexWhere(
+        (element) => element.id == newCtg.id,
+      );
+      _listCategory[index] = newCtg;
+      notifyListeners();
     }).catchError((e) {
-      _errorDialog = e.toString();
+      setError(e.toString());
     });
   }
 
@@ -92,6 +104,8 @@ class CategoryTabController extends ChangeNotifier {
       }
     });
   }
+
+  void setError(String err) => _errorDialog = err;
 
   void updateRowPage(int newRowPage) {
     _rowPage = newRowPage;

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:unicons/unicons.dart';
 
+import '../../../core/utils/format_utils.dart';
 import '../../../core/constant/values_constant.dart';
 import '../../../core/components/table_components.dart';
 import '../../../core/utils/decoration_utils.dart';
@@ -161,7 +162,6 @@ class _CategoryTabState extends State<CategoryTab> {
                         width: 0.1,
                       ),
                     ),
-                    // defaultColumnWidth: FixedColumnWidth(1800 / 3),
                     columnWidths: const <int, TableColumnWidth>{
                       0: IntrinsicColumnWidth(),
                       1: IntrinsicColumnWidth(),
@@ -193,7 +193,7 @@ class _CategoryTabState extends State<CategoryTab> {
                                 padding: const EdgeInsets.all(8.0),
                                 child: Center(
                                   child: Text(
-                                    val.title,
+                                    FormatUtility.capitalize(val.title),
                                     style: const TextStyle(fontSize: 14),
                                   ),
                                 ),
@@ -415,31 +415,34 @@ class DialogCategoryAdd extends StatelessWidget {
         ),
         ElevatedButton(
           onPressed: () {
-            if (!formKey.currentState!.validate()) {
-              return;
-            }
+            if (!formKey.currentState!.validate()) return;
 
-            controller.addCategory(tecTitle.text);
-            tecTitle.clear();
-            navigator.pop();
-
-            if (controller.errorDialog.isNotEmpty) {
-              showDialog(
-                context: context,
-                builder: (context) => DialogUtils.dialogInformation(
-                  title: "Category Add",
-                  message: controller.errorDialog,
-                  callbackConfirmation: () => navigator.pop(),
-                ),
-              );
-              controller.resetErrorDialog();
-            }
+            controller.addCategory(
+              title: tecTitle.text.trim(),
+              callbackSuccess: () {
+                tecTitle.clear();
+                navigator.pop();
+              },
+              callbackFail: () {
+                tecTitle.clear();
+                navigator.pop();
+                showDialog(
+                  context: context,
+                  builder: (context) => DialogUtils.dialogInformation(
+                    title: "Fail Add Category",
+                    message: controller.errorDialog,
+                    callbackConfirmation: () => navigator.pop(),
+                  ),
+                );
+              },
+            );
           },
           style: DecorationUtils.buttonDialogStyle(),
           child: const Text("Add"),
         ),
       ],
       callbackClose: () {
+        tecTitle.clear();
         navigator.pop();
       },
     );
@@ -463,7 +466,7 @@ class DialogCategoryEdit extends StatelessWidget {
     final navigator = Navigator.of(context);
     final formKey = GlobalKey<FormState>();
 
-    tecTitle.text = ctg.title;
+    tecTitle.text = FormatUtility.capitalize(ctg.title);
 
     return DialogUtils.layoutCustomDialog(
       dialogHeaderText: "Category Edit",
