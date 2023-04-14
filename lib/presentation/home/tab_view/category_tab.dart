@@ -121,7 +121,6 @@ class _CategoryTabState extends State<CategoryTab> {
                                     borderRadius: BorderRadius.circular(16),
                                   ),
                                   child: DialogCategoryAdd(
-                                    ctgTabController: ctgTabController,
                                     tecTitle: tecTitle,
                                   ),
                                 );
@@ -378,16 +377,15 @@ class _CategoryTabState extends State<CategoryTab> {
 
 class DialogCategoryAdd extends StatelessWidget {
   final TextEditingController tecTitle;
-  final CategoryTabController ctgTabController;
 
   const DialogCategoryAdd({
-    required this.ctgTabController,
     required this.tecTitle,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
+    final controller = context.watch<CategoryTabController>();
     final navigator = Navigator.of(context);
     final formKey = GlobalKey<FormState>();
 
@@ -421,19 +419,20 @@ class DialogCategoryAdd extends StatelessWidget {
               return;
             }
 
-            ctgTabController.addCategory(tecTitle.text);
+            controller.addCategory(tecTitle.text);
+            tecTitle.clear();
             navigator.pop();
 
-            if (ctgTabController.errorDialog.isNotEmpty) {
+            if (controller.errorDialog.isNotEmpty) {
               showDialog(
                 context: context,
                 builder: (context) => DialogUtils.dialogInformation(
-                  title: "Edit Category",
-                  message: ctgTabController.errorDialog,
+                  title: "Category Add",
+                  message: controller.errorDialog,
                   callbackConfirmation: () => navigator.pop(),
                 ),
               );
-              ctgTabController.resetErrorDialog();
+              controller.resetErrorDialog();
             }
           },
           style: DecorationUtils.buttonDialogStyle(),
@@ -497,7 +496,7 @@ class DialogCategoryEdit extends StatelessWidget {
 
             ctg.title = tecTitle.text;
             ctgTabController.updateCategory(ctg);
-
+            tecTitle.clear();
             navigator.pop();
 
             if (ctgTabController.errorDialog.isNotEmpty) {
@@ -517,7 +516,10 @@ class DialogCategoryEdit extends StatelessWidget {
           child: const Text("Edit"),
         ),
       ],
-      callbackClose: () => navigator.pop(),
+      callbackClose: () {
+        tecTitle.clear();
+        navigator.pop();
+      },
     );
   }
 }
