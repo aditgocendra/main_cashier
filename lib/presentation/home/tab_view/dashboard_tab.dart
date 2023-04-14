@@ -10,21 +10,25 @@ class DashboardTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sizeScreen = MediaQuery.of(context).size;
-    double aspectRatio = sizeScreen.width / 560;
-    int crossAxisGrid = 3;
+    double aspectRatio = sizeScreen.width / 780;
+    int crossAxisGrid = 4;
 
-    if (sizeScreen.width < 1368) {
+    if (sizeScreen.width < 1500) {
       crossAxisGrid = 2;
-      aspectRatio = sizeScreen.width / 450;
+      aspectRatio = sizeScreen.width / 470;
     }
 
     if (sizeScreen.width < 1024) {
-      aspectRatio = sizeScreen.width / 400;
+      aspectRatio = sizeScreen.width / 450;
     }
 
-    if (sizeScreen.width < 720) {
+    if (sizeScreen.width < 770) {
       crossAxisGrid = 1;
       aspectRatio = sizeScreen.width / 350;
+    }
+
+    if (sizeScreen.width < 450) {
+      aspectRatio = sizeScreen.width / 600;
     }
 
     return SingleChildScrollView(

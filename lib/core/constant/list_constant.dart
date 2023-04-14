@@ -33,11 +33,15 @@ const List<Map<String, dynamic>> listCardTop = [
     'icon': UniconsLine.archive_alt,
   },
   {
-    'title': 'Total Transaction',
-    'icon': UniconsLine.transaction,
+    'title': 'Total Category',
+    'icon': UniconsLine.apps,
   },
   {
     'title': 'Total Transaction',
     'icon': UniconsLine.transaction,
+  },
+  {
+    'title': 'Profit',
+    'icon': UniconsLine.money_insert,
   },
 ];

@@ -55,7 +55,7 @@ class ItemTopDashboard extends StatelessWidget {
           height: 20,
         ),
         const Text(
-          'Last store added on 23 December 2022',
+          'Last store added on 23 Dec 2022',
           style: TextStyle(
             fontSize: 12,
             color: Colors.black54,
