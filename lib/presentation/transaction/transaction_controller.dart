@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:main_cashier/domain/usecase/transaction/update_counter_transaction_usecase.dart';
 import '../../core/usecase/usecase.dart';
 import '../../domain/usecase/transaction/get_counter_transaction_usecase.dart';
 import '../../domain/entity/product_entity.dart';
@@ -25,11 +26,13 @@ class TransactionController extends ChangeNotifier {
   final SelectProduct selectProduct;
   final CreateTransaction createTransaction;
   final GetCounterTransaction getCounterTransaction;
+  final UpdateCounterTransaction updateCounterTransaction;
 
   TransactionController({
     required this.createTransaction,
     required this.selectProduct,
     required this.getCounterTransaction,
+    required this.updateCounterTransaction,
   });
 
   void selectProductData(String code) async {
@@ -88,11 +91,26 @@ class TransactionController extends ChangeNotifier {
   Future<String> _generateNoInvoice() async {
     final date = DateTime.now();
 
-    final result = await getCounterTransaction.call(NoParans()).catchError(
+    var result = await getCounterTransaction.call(NoParans()).catchError(
           (e) => print,
         );
 
-    return "${date.day}${date.month}${date.year}-${result.totalTransaction}";
+    // Check month
+    if (date.month > result.dateTime.month) {
+      result.dateTime = date;
+      result.totalTransaction = 0;
+
+      await updateCounterTransaction.call(result).then((value) {
+        if (!value) {
+          return;
+        }
+      }).catchError((e) {
+        print(e);
+        return;
+      });
+    }
+
+    return "${date.day}${date.month}${date.year}-${result.totalTransaction.toString().padLeft(4, '0')}";
   }
 
   void addTransaction() async {
@@ -113,6 +131,6 @@ class TransactionController extends ChangeNotifier {
       list: list,
     );
 
-    await createTransaction.call(params);
+    await createTransaction.call(params).then((value) {});
   }
 }

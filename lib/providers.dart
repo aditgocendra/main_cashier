@@ -10,6 +10,7 @@ import 'package:main_cashier/domain/usecase/transaction/delete_transaction_useca
 import 'package:main_cashier/domain/usecase/transaction/get_all_transaction_usecase.dart';
 import 'package:main_cashier/domain/usecase/transaction/get_counter_transaction_usecase.dart';
 import 'package:main_cashier/domain/usecase/transaction/get_detail_transaction_usecase.dart';
+import 'package:main_cashier/domain/usecase/transaction/update_counter_transaction_usecase.dart';
 import 'package:main_cashier/domain/usecase/user/change_pass_user_usecase.dart';
 import 'package:main_cashier/domain/usecase/user/create_user_usecase.dart';
 import 'package:main_cashier/domain/usecase/user/delete_user_usecase.dart';
@@ -191,6 +192,10 @@ DeleteTransaction _deleteTransaction = DeleteTransaction(
   repository: _transactionRepository,
 );
 
+UpdateCounterTransaction _updateCounterTransaction = UpdateCounterTransaction(
+  repository: _transactionRepository,
+);
+
 List<SingleChildWidget> _listProvider = [
   ChangeNotifierProvider(
     create: (context) => HomeController(),
@@ -238,6 +243,7 @@ List<SingleChildWidget> _listProvider = [
       selectProduct: _selectProduct,
       createTransaction: _createTransaction,
       getCounterTransaction: _getCounterTransaction,
+      updateCounterTransaction: _updateCounterTransaction,
     ),
   )
 ];
