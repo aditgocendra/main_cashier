@@ -20,4 +20,8 @@ abstract class TransactionRepository {
   Future deleteTransaction(int id);
 
   Future<CounterTransactionEntity> getCounterTransaction();
+
+  Future<bool> updateCounterTransaction(
+    CounterTransactionEntity counterTransactionEntity,
+  );
 }

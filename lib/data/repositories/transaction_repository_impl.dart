@@ -1,5 +1,6 @@
 import 'package:main_cashier/core/error/exception.dart';
 import 'package:main_cashier/data/datasource/local/transaction_local_datasource.dart';
+import 'package:main_cashier/data/models/counter_transaction_model.dart';
 import 'package:main_cashier/domain/entity/counter_transaction_entity.dart';
 import 'package:main_cashier/domain/entity/transaction_entity.dart';
 import 'package:main_cashier/domain/repostitories/transaction_repository.dart';
@@ -84,6 +85,21 @@ class TransactionRepositoryImpl implements TransactionRepository {
       return await transactionLocalDataSource.getCounterTransaction();
     } catch (_) {
       throw DatabaseDriftException("Fail get counter transaction");
+    }
+  }
+
+  @override
+  Future<bool> updateCounterTransaction(
+      CounterTransactionEntity counterTransactionEntity) async {
+    try {
+      return await transactionLocalDataSource
+          .updateCounterTransaction(CounterTransactionModel(
+        id: counterTransactionEntity.id,
+        totalTransaction: counterTransactionEntity.totalTransaction,
+        dateTime: counterTransactionEntity.dateTime,
+      ));
+    } catch (_) {
+      throw DatabaseDriftException("Fail update counter transaction");
     }
   }
 }
