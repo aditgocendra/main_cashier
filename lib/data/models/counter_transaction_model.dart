@@ -13,7 +13,7 @@ class CounterTransactionModel extends CounterTransactionEntity {
     return CounterTransactionTableData(
       id: counterTransactionModel.id,
       totalTransaction: counterTransactionModel.totalTransaction,
-      day: counterTransactionModel.dateTime,
+      date: counterTransactionModel.dateTime,
     );
   }
 
@@ -21,7 +21,7 @@ class CounterTransactionModel extends CounterTransactionEntity {
     return CounterTransactionModel(
       id: data.id,
       totalTransaction: data.totalTransaction,
-      dateTime: data.day,
+      dateTime: data.date,
     );
   }
 }
