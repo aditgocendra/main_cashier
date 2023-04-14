@@ -24,7 +24,7 @@ class UserTable extends Table {
 
 class CategoryTable extends Table {
   IntColumn get id => integer().autoIncrement()();
-  TextColumn get title => text()();
+  TextColumn get title => text().unique()();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
 }
 
@@ -173,7 +173,7 @@ class DatabaseApp extends _$DatabaseApp {
           await into(counterTransactionTable).insert(
             CounterTransactionTableCompanion.insert(
               totalTransaction: 1,
-              day: DateTime.now(),
+              date: DateTime.now(),
             ),
           );
         }

@@ -22,7 +22,9 @@ class $CategoryTableTable extends CategoryTable
   @override
   late final GeneratedColumn<String> title = GeneratedColumn<String>(
       'title', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
   @override
@@ -645,13 +647,13 @@ class $CounterTransactionTableTable extends CounterTransactionTable
   late final GeneratedColumn<int> totalTransaction = GeneratedColumn<int>(
       'total_transaction', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _dayMeta = const VerificationMeta('day');
+  static const VerificationMeta _dateMeta = const VerificationMeta('date');
   @override
-  late final GeneratedColumn<DateTime> day = GeneratedColumn<DateTime>(
-      'day', aliasedName, false,
+  late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
+      'date', aliasedName, false,
       type: DriftSqlType.dateTime, requiredDuringInsert: true);
   @override
-  List<GeneratedColumn> get $columns => [id, totalTransaction, day];
+  List<GeneratedColumn> get $columns => [id, totalTransaction, date];
   @override
   String get aliasedName => _alias ?? 'counter_transaction_table';
   @override
@@ -673,11 +675,11 @@ class $CounterTransactionTableTable extends CounterTransactionTable
     } else if (isInserting) {
       context.missing(_totalTransactionMeta);
     }
-    if (data.containsKey('day')) {
+    if (data.containsKey('date')) {
       context.handle(
-          _dayMeta, day.isAcceptableOrUnknown(data['day']!, _dayMeta));
+          _dateMeta, date.isAcceptableOrUnknown(data['date']!, _dateMeta));
     } else if (isInserting) {
-      context.missing(_dayMeta);
+      context.missing(_dateMeta);
     }
     return context;
   }
@@ -693,8 +695,8 @@ class $CounterTransactionTableTable extends CounterTransactionTable
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       totalTransaction: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}total_transaction'])!,
-      day: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}day'])!,
+      date: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}date'])!,
     );
   }
 
@@ -708,15 +710,15 @@ class CounterTransactionTableData extends DataClass
     implements Insertable<CounterTransactionTableData> {
   final int id;
   final int totalTransaction;
-  final DateTime day;
+  final DateTime date;
   const CounterTransactionTableData(
-      {required this.id, required this.totalTransaction, required this.day});
+      {required this.id, required this.totalTransaction, required this.date});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['total_transaction'] = Variable<int>(totalTransaction);
-    map['day'] = Variable<DateTime>(day);
+    map['date'] = Variable<DateTime>(date);
     return map;
   }
 
@@ -724,7 +726,7 @@ class CounterTransactionTableData extends DataClass
     return CounterTransactionTableCompanion(
       id: Value(id),
       totalTransaction: Value(totalTransaction),
-      day: Value(day),
+      date: Value(date),
     );
   }
 
@@ -734,7 +736,7 @@ class CounterTransactionTableData extends DataClass
     return CounterTransactionTableData(
       id: serializer.fromJson<int>(json['id']),
       totalTransaction: serializer.fromJson<int>(json['totalTransaction']),
-      day: serializer.fromJson<DateTime>(json['day']),
+      date: serializer.fromJson<DateTime>(json['date']),
     );
   }
   @override
@@ -743,72 +745,72 @@ class CounterTransactionTableData extends DataClass
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'totalTransaction': serializer.toJson<int>(totalTransaction),
-      'day': serializer.toJson<DateTime>(day),
+      'date': serializer.toJson<DateTime>(date),
     };
   }
 
   CounterTransactionTableData copyWith(
-          {int? id, int? totalTransaction, DateTime? day}) =>
+          {int? id, int? totalTransaction, DateTime? date}) =>
       CounterTransactionTableData(
         id: id ?? this.id,
         totalTransaction: totalTransaction ?? this.totalTransaction,
-        day: day ?? this.day,
+        date: date ?? this.date,
       );
   @override
   String toString() {
     return (StringBuffer('CounterTransactionTableData(')
           ..write('id: $id, ')
           ..write('totalTransaction: $totalTransaction, ')
-          ..write('day: $day')
+          ..write('date: $date')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, totalTransaction, day);
+  int get hashCode => Object.hash(id, totalTransaction, date);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is CounterTransactionTableData &&
           other.id == this.id &&
           other.totalTransaction == this.totalTransaction &&
-          other.day == this.day);
+          other.date == this.date);
 }
 
 class CounterTransactionTableCompanion
     extends UpdateCompanion<CounterTransactionTableData> {
   final Value<int> id;
   final Value<int> totalTransaction;
-  final Value<DateTime> day;
+  final Value<DateTime> date;
   const CounterTransactionTableCompanion({
     this.id = const Value.absent(),
     this.totalTransaction = const Value.absent(),
-    this.day = const Value.absent(),
+    this.date = const Value.absent(),
   });
   CounterTransactionTableCompanion.insert({
     this.id = const Value.absent(),
     required int totalTransaction,
-    required DateTime day,
+    required DateTime date,
   })  : totalTransaction = Value(totalTransaction),
-        day = Value(day);
+        date = Value(date);
   static Insertable<CounterTransactionTableData> custom({
     Expression<int>? id,
     Expression<int>? totalTransaction,
-    Expression<DateTime>? day,
+    Expression<DateTime>? date,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (totalTransaction != null) 'total_transaction': totalTransaction,
-      if (day != null) 'day': day,
+      if (date != null) 'date': date,
     });
   }
 
   CounterTransactionTableCompanion copyWith(
-      {Value<int>? id, Value<int>? totalTransaction, Value<DateTime>? day}) {
+      {Value<int>? id, Value<int>? totalTransaction, Value<DateTime>? date}) {
     return CounterTransactionTableCompanion(
       id: id ?? this.id,
       totalTransaction: totalTransaction ?? this.totalTransaction,
-      day: day ?? this.day,
+      date: date ?? this.date,
     );
   }
 
@@ -821,8 +823,8 @@ class CounterTransactionTableCompanion
     if (totalTransaction.present) {
       map['total_transaction'] = Variable<int>(totalTransaction.value);
     }
-    if (day.present) {
-      map['day'] = Variable<DateTime>(day.value);
+    if (date.present) {
+      map['date'] = Variable<DateTime>(date.value);
     }
     return map;
   }
@@ -832,7 +834,7 @@ class CounterTransactionTableCompanion
     return (StringBuffer('CounterTransactionTableCompanion(')
           ..write('id: $id, ')
           ..write('totalTransaction: $totalTransaction, ')
-          ..write('day: $day')
+          ..write('date: $date')
           ..write(')'))
         .toString();
   }
