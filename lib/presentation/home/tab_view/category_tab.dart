@@ -171,100 +171,109 @@ class _CategoryTabState extends State<CategoryTab> {
                     children: <TableRow>[
                       // Header Data Table
                       TableComponent.headerTable(
-                        ["Category ID", "Title", "Action"],
+                        ["No", "Title", "Action"],
                       ),
                       // Body Data Table
-                      ...ctgTabController.listCategory.map((val) {
-                        return TableRow(
-                          children: [
-                            TableCell(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Center(
-                                  child: Text(
-                                    val.id.toString(),
-                                    style: const TextStyle(fontSize: 14),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            TableCell(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Center(
-                                  child: Text(
-                                    FormatUtility.capitalize(val.title),
-                                    style: const TextStyle(fontSize: 14),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            TableCell(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Center(
-                                  child: Wrap(
-                                    children: [
-                                      // Edit
-                                      IconButton(
-                                        onPressed: () {
-                                          showDialog(
-                                            context: context,
-                                            builder: (context) {
-                                              return Dialog(
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(16),
-                                                ),
-                                                child: DialogCategoryEdit(
-                                                  ctg: val,
-                                                  ctgTabController:
-                                                      ctgTabController,
-                                                  tecTitle: tecTitle,
-                                                ),
-                                              );
-                                            },
-                                          );
-                                        },
-                                        icon: const Icon(UniconsLine.edit),
+                      ...ctgTabController.listCategory
+                          .asMap()
+                          .map((index, val) => MapEntry(
+                              index,
+                              TableRow(
+                                children: [
+                                  TableCell(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Center(
+                                        child: Text(
+                                          (index + 1).toString(),
+                                          style: const TextStyle(fontSize: 14),
+                                        ),
                                       ),
-                                      // Delete
-                                      IconButton(
-                                        onPressed: () {
-                                          showDialog(
-                                            context: context,
-                                            builder: (context) {
-                                              return DialogUtils
-                                                  .dialogConfirmation(
-                                                title: "Delete Category",
-                                                message:
-                                                    "Are you sure delete this category ?",
-                                                callbackConfirmation: () {
-                                                  ctgTabController
-                                                      .removeCategory(val);
-
-                                                  if (ctgTabController
-                                                      .errorDialog
-                                                      .isNotEmpty) {}
-                                                  navigator.pop();
-                                                },
-                                                callbackCancel: () {
-                                                  navigator.pop();
-                                                },
-                                              );
-                                            },
-                                          );
-                                        },
-                                        icon: const Icon(UniconsLine.trash),
-                                      )
-                                    ],
+                                    ),
                                   ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      }).toList()
+                                  TableCell(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Center(
+                                        child: Text(
+                                          FormatUtility.capitalize(val.title),
+                                          style: const TextStyle(fontSize: 14),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  TableCell(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Center(
+                                        child: Wrap(
+                                          children: [
+                                            // Edit
+                                            IconButton(
+                                              onPressed: () {
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return Dialog(
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(16),
+                                                      ),
+                                                      child: DialogCategoryEdit(
+                                                        ctg: val,
+                                                        ctgTabController:
+                                                            ctgTabController,
+                                                        tecTitle: tecTitle,
+                                                      ),
+                                                    );
+                                                  },
+                                                );
+                                              },
+                                              icon:
+                                                  const Icon(UniconsLine.edit),
+                                            ),
+                                            // Delete
+                                            IconButton(
+                                              onPressed: () {
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return DialogUtils
+                                                        .dialogConfirmation(
+                                                      title: "Delete Category",
+                                                      message:
+                                                          "Are you sure delete this category ?",
+                                                      callbackConfirmation: () {
+                                                        ctgTabController
+                                                            .removeCategory(
+                                                                val);
+
+                                                        if (ctgTabController
+                                                            .errorDialog
+                                                            .isNotEmpty) {}
+                                                        navigator.pop();
+                                                      },
+                                                      callbackCancel: () {
+                                                        navigator.pop();
+                                                      },
+                                                    );
+                                                  },
+                                                );
+                                              },
+                                              icon:
+                                                  const Icon(UniconsLine.trash),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )))
+                          .values
+                          .toList()
                     ],
                   ),
                 ),
@@ -498,22 +507,27 @@ class DialogCategoryEdit extends StatelessWidget {
             }
 
             ctg.title = tecTitle.text;
-            ctgTabController.updateCategory(ctg);
-            tecTitle.clear();
-            navigator.pop();
-
-            if (ctgTabController.errorDialog.isNotEmpty) {
-              showDialog(
-                context: context,
-                builder: (context) => DialogUtils.dialogInformation(
-                  title: "Edit Category",
-                  message: ctgTabController.errorDialog,
-                  callbackConfirmation: () => navigator.pop(),
-                ),
-              );
-
-              ctgTabController.resetErrorDialog();
-            }
+            ctgTabController.changeCategory(
+              newCtg: ctg,
+              callbackSuccess: () {
+                tecTitle.clear();
+                navigator.pop();
+              },
+              callbackFail: () {
+                navigator.pop();
+                showDialog(
+                  context: context,
+                  builder: (context) => DialogUtils.dialogInformation(
+                    title: "Edit Category",
+                    message: ctgTabController.errorDialog,
+                    callbackConfirmation: () {
+                      ctgTabController.resetErrorDialog();
+                      navigator.pop();
+                    },
+                  ),
+                );
+              },
+            );
           },
           style: DecorationUtils.buttonDialogStyle(),
           child: const Text("Edit"),
