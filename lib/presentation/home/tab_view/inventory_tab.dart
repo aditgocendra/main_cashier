@@ -4,11 +4,13 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:unicons/unicons.dart';
 
+import '../home_controller.dart';
 import '../tab_controller/inventory_tab_controller.dart';
 
 import '../../../domain/entity/category_entity.dart';
 import '../../../domain/entity/product_entity.dart';
 
+import '../../../core/utils/format_utils.dart';
 import '../../../core/components/table_components.dart';
 import '../../../core/constant/color_constant.dart';
 import '../../../core/constant/values_constant.dart';
@@ -57,11 +59,27 @@ class _InventoryTabState extends State<InventoryTab> {
     tecStock.clear();
   }
 
+  Axis _scrollDirectionTable(
+    double widthScreen,
+    bool isSidebarExpanded,
+  ) {
+    if (widthScreen < 1150 && isSidebarExpanded) {
+      return Axis.horizontal;
+    }
+
+    if (widthScreen < 950 && !isSidebarExpanded) {
+      return Axis.horizontal;
+    }
+
+    return Axis.vertical;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final navigator = Navigator.of(context);
     final controller = context.watch<InventoryTabController>();
-    final size = MediaQuery.of(context).size.width;
+    final homeController = context.read<HomeController>();
+    final navigator = Navigator.of(context);
+    final sizeWidth = MediaQuery.of(context).size.width;
 
     return ListView(
       padding: const EdgeInsets.all(8),
@@ -273,8 +291,10 @@ class _InventoryTabState extends State<InventoryTab> {
                   controller: scrollController,
                   child: SingleChildScrollView(
                     controller: scrollController,
-                    scrollDirection:
-                        size >= 770 ? Axis.vertical : Axis.horizontal,
+                    scrollDirection: _scrollDirectionTable(
+                      sizeWidth,
+                      homeController.isSidebarExpanded,
+                    ),
                     child: Table(
                       border: const TableBorder(
                         horizontalInside: BorderSide(
@@ -291,7 +311,7 @@ class _InventoryTabState extends State<InventoryTab> {
                       columnWidths: const <int, TableColumnWidth>{
                         0: IntrinsicColumnWidth(),
                         1: IntrinsicColumnWidth(),
-                        2: IntrinsicColumnWidth(),
+                        2: FixedColumnWidth(200),
                         3: IntrinsicColumnWidth(),
                         4: IntrinsicColumnWidth(),
                         5: IntrinsicColumnWidth(),
@@ -328,8 +348,9 @@ class _InventoryTabState extends State<InventoryTab> {
                                         child: Center(
                                           child: Text(
                                             "${index + 1}",
-                                            style:
-                                                const TextStyle(fontSize: 14),
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -340,8 +361,9 @@ class _InventoryTabState extends State<InventoryTab> {
                                         child: Center(
                                           child: Text(
                                             val.code,
-                                            style:
-                                                const TextStyle(fontSize: 14),
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -352,8 +374,9 @@ class _InventoryTabState extends State<InventoryTab> {
                                         child: Center(
                                           child: Text(
                                             val.name,
-                                            style:
-                                                const TextStyle(fontSize: 14),
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -363,9 +386,10 @@ class _InventoryTabState extends State<InventoryTab> {
                                         padding: const EdgeInsets.all(8.0),
                                         child: Center(
                                           child: Text(
-                                            val.price.toString(),
-                                            style:
-                                                const TextStyle(fontSize: 14),
+                                            FormatUtility.currencyRp(val.price),
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -375,9 +399,10 @@ class _InventoryTabState extends State<InventoryTab> {
                                         padding: const EdgeInsets.all(8.0),
                                         child: Center(
                                           child: Text(
-                                            val.stock.toString(),
-                                            style:
-                                                const TextStyle(fontSize: 14),
+                                            "${val.stock} Unit",
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -388,8 +413,9 @@ class _InventoryTabState extends State<InventoryTab> {
                                         child: Center(
                                           child: Text(
                                             val.sold.toString(),
-                                            style:
-                                                const TextStyle(fontSize: 14),
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -399,9 +425,12 @@ class _InventoryTabState extends State<InventoryTab> {
                                         padding: const EdgeInsets.all(8.0),
                                         child: Center(
                                           child: Text(
-                                            val.titleCategory,
-                                            style:
-                                                const TextStyle(fontSize: 14),
+                                            FormatUtility.capitalize(
+                                              val.titleCategory,
+                                            ),
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -410,7 +439,11 @@ class _InventoryTabState extends State<InventoryTab> {
                                       child: Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: Center(
-                                          child: Wrap(
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
                                             children: [
                                               // Edit
                                               IconButton(
@@ -626,6 +659,7 @@ class DialogProductAdd extends StatelessWidget {
             children: [
               TextFormField(
                 controller: tecCode,
+                maxLength: 14,
                 validator: (code) {
                   if (code == null || code.isEmpty) {
                     return fieldRequired;
@@ -644,6 +678,7 @@ class DialogProductAdd extends StatelessWidget {
               ),
               TextFormField(
                 controller: tecName,
+                maxLength: 24,
                 validator: (code) {
                   if (code == null || code.isEmpty) {
                     return fieldRequired;
@@ -703,7 +738,9 @@ class DialogProductAdd extends StatelessWidget {
               DropdownSearch<CategoryEntity>(
                 items: controller.listCategories,
                 compareFn: (item1, item2) => item1.isEqual(item2),
-                itemAsString: (item) => item.toString(),
+                itemAsString: (item) => FormatUtility.capitalize(
+                  item.toString(),
+                ),
                 selectedItem: controller.categorySelection,
                 onChanged: (CategoryEntity? value) =>
                     controller.changeCategorySelection(value!),
@@ -913,7 +950,9 @@ class DialogProductEdit extends StatelessWidget {
               DropdownSearch<CategoryEntity>(
                 items: controller.listCategories,
                 compareFn: (item1, item2) => item1.isEqual(item2),
-                itemAsString: (item) => item.toString(),
+                itemAsString: (item) => FormatUtility.capitalize(
+                  item.toString(),
+                ),
                 selectedItem: controller.categorySelection,
                 onChanged: (CategoryEntity? value) =>
                     controller.changeCategorySelection(value!),
