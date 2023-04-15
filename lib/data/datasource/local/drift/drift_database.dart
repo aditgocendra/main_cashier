@@ -29,8 +29,8 @@ class CategoryTable extends Table {
 }
 
 class ProductTable extends Table {
-  TextColumn get codeProduct => text().unique()();
-  TextColumn get name => text()();
+  TextColumn get codeProduct => text().withLength(max: 14).unique()();
+  TextColumn get name => text().withLength(max: 24).unique()();
   IntColumn get price => integer()();
   IntColumn get stock => integer()();
   IntColumn get sold => integer().withDefault(const Constant(0))();
