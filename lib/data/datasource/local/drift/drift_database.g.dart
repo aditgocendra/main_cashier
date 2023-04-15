@@ -223,6 +223,7 @@ class $ProductTableTable extends ProductTable
   @override
   late final GeneratedColumn<String> codeProduct = GeneratedColumn<String>(
       'code_product', aliasedName, false,
+      additionalChecks: GeneratedColumn.checkTextLength(maxTextLength: 14),
       type: DriftSqlType.string,
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
@@ -230,11 +231,21 @@ class $ProductTableTable extends ProductTable
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
       'name', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _priceMeta = const VerificationMeta('price');
+      additionalChecks: GeneratedColumn.checkTextLength(maxTextLength: 24),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
+  static const VerificationMeta _capitalPriceMeta =
+      const VerificationMeta('capitalPrice');
   @override
-  late final GeneratedColumn<int> price = GeneratedColumn<int>(
-      'price', aliasedName, false,
+  late final GeneratedColumn<int> capitalPrice = GeneratedColumn<int>(
+      'capital_price', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _sellPriceMeta =
+      const VerificationMeta('sellPrice');
+  @override
+  late final GeneratedColumn<int> sellPrice = GeneratedColumn<int>(
+      'sell_price', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
   static const VerificationMeta _stockMeta = const VerificationMeta('stock');
   @override
@@ -272,8 +283,17 @@ class $ProductTableTable extends ProductTable
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('REFERENCES category_table (id)'));
   @override
-  List<GeneratedColumn> get $columns =>
-      [codeProduct, name, price, stock, sold, createdAt, updatedAt, categoryId];
+  List<GeneratedColumn> get $columns => [
+        codeProduct,
+        name,
+        capitalPrice,
+        sellPrice,
+        stock,
+        sold,
+        createdAt,
+        updatedAt,
+        categoryId
+      ];
   @override
   String get aliasedName => _alias ?? 'product_table';
   @override
@@ -297,11 +317,19 @@ class $ProductTableTable extends ProductTable
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
-    if (data.containsKey('price')) {
+    if (data.containsKey('capital_price')) {
       context.handle(
-          _priceMeta, price.isAcceptableOrUnknown(data['price']!, _priceMeta));
+          _capitalPriceMeta,
+          capitalPrice.isAcceptableOrUnknown(
+              data['capital_price']!, _capitalPriceMeta));
     } else if (isInserting) {
-      context.missing(_priceMeta);
+      context.missing(_capitalPriceMeta);
+    }
+    if (data.containsKey('sell_price')) {
+      context.handle(_sellPriceMeta,
+          sellPrice.isAcceptableOrUnknown(data['sell_price']!, _sellPriceMeta));
+    } else if (isInserting) {
+      context.missing(_sellPriceMeta);
     }
     if (data.containsKey('stock')) {
       context.handle(
@@ -342,8 +370,10 @@ class $ProductTableTable extends ProductTable
           .read(DriftSqlType.string, data['${effectivePrefix}code_product'])!,
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
-      price: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}price'])!,
+      capitalPrice: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}capital_price'])!,
+      sellPrice: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}sell_price'])!,
       stock: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}stock'])!,
       sold: attachedDatabase.typeMapping
@@ -367,7 +397,8 @@ class ProductTableData extends DataClass
     implements Insertable<ProductTableData> {
   final String codeProduct;
   final String name;
-  final int price;
+  final int capitalPrice;
+  final int sellPrice;
   final int stock;
   final int sold;
   final DateTime createdAt;
@@ -376,7 +407,8 @@ class ProductTableData extends DataClass
   const ProductTableData(
       {required this.codeProduct,
       required this.name,
-      required this.price,
+      required this.capitalPrice,
+      required this.sellPrice,
       required this.stock,
       required this.sold,
       required this.createdAt,
@@ -387,7 +419,8 @@ class ProductTableData extends DataClass
     final map = <String, Expression>{};
     map['code_product'] = Variable<String>(codeProduct);
     map['name'] = Variable<String>(name);
-    map['price'] = Variable<int>(price);
+    map['capital_price'] = Variable<int>(capitalPrice);
+    map['sell_price'] = Variable<int>(sellPrice);
     map['stock'] = Variable<int>(stock);
     map['sold'] = Variable<int>(sold);
     map['created_at'] = Variable<DateTime>(createdAt);
@@ -402,7 +435,8 @@ class ProductTableData extends DataClass
     return ProductTableCompanion(
       codeProduct: Value(codeProduct),
       name: Value(name),
-      price: Value(price),
+      capitalPrice: Value(capitalPrice),
+      sellPrice: Value(sellPrice),
       stock: Value(stock),
       sold: Value(sold),
       createdAt: Value(createdAt),
@@ -419,7 +453,8 @@ class ProductTableData extends DataClass
     return ProductTableData(
       codeProduct: serializer.fromJson<String>(json['codeProduct']),
       name: serializer.fromJson<String>(json['name']),
-      price: serializer.fromJson<int>(json['price']),
+      capitalPrice: serializer.fromJson<int>(json['capitalPrice']),
+      sellPrice: serializer.fromJson<int>(json['sellPrice']),
       stock: serializer.fromJson<int>(json['stock']),
       sold: serializer.fromJson<int>(json['sold']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
@@ -433,7 +468,8 @@ class ProductTableData extends DataClass
     return <String, dynamic>{
       'codeProduct': serializer.toJson<String>(codeProduct),
       'name': serializer.toJson<String>(name),
-      'price': serializer.toJson<int>(price),
+      'capitalPrice': serializer.toJson<int>(capitalPrice),
+      'sellPrice': serializer.toJson<int>(sellPrice),
       'stock': serializer.toJson<int>(stock),
       'sold': serializer.toJson<int>(sold),
       'createdAt': serializer.toJson<DateTime>(createdAt),
@@ -445,7 +481,8 @@ class ProductTableData extends DataClass
   ProductTableData copyWith(
           {String? codeProduct,
           String? name,
-          int? price,
+          int? capitalPrice,
+          int? sellPrice,
           int? stock,
           int? sold,
           DateTime? createdAt,
@@ -454,7 +491,8 @@ class ProductTableData extends DataClass
       ProductTableData(
         codeProduct: codeProduct ?? this.codeProduct,
         name: name ?? this.name,
-        price: price ?? this.price,
+        capitalPrice: capitalPrice ?? this.capitalPrice,
+        sellPrice: sellPrice ?? this.sellPrice,
         stock: stock ?? this.stock,
         sold: sold ?? this.sold,
         createdAt: createdAt ?? this.createdAt,
@@ -466,7 +504,8 @@ class ProductTableData extends DataClass
     return (StringBuffer('ProductTableData(')
           ..write('codeProduct: $codeProduct, ')
           ..write('name: $name, ')
-          ..write('price: $price, ')
+          ..write('capitalPrice: $capitalPrice, ')
+          ..write('sellPrice: $sellPrice, ')
           ..write('stock: $stock, ')
           ..write('sold: $sold, ')
           ..write('createdAt: $createdAt, ')
@@ -477,15 +516,16 @@ class ProductTableData extends DataClass
   }
 
   @override
-  int get hashCode => Object.hash(
-      codeProduct, name, price, stock, sold, createdAt, updatedAt, categoryId);
+  int get hashCode => Object.hash(codeProduct, name, capitalPrice, sellPrice,
+      stock, sold, createdAt, updatedAt, categoryId);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is ProductTableData &&
           other.codeProduct == this.codeProduct &&
           other.name == this.name &&
-          other.price == this.price &&
+          other.capitalPrice == this.capitalPrice &&
+          other.sellPrice == this.sellPrice &&
           other.stock == this.stock &&
           other.sold == this.sold &&
           other.createdAt == this.createdAt &&
@@ -496,7 +536,8 @@ class ProductTableData extends DataClass
 class ProductTableCompanion extends UpdateCompanion<ProductTableData> {
   final Value<String> codeProduct;
   final Value<String> name;
-  final Value<int> price;
+  final Value<int> capitalPrice;
+  final Value<int> sellPrice;
   final Value<int> stock;
   final Value<int> sold;
   final Value<DateTime> createdAt;
@@ -506,7 +547,8 @@ class ProductTableCompanion extends UpdateCompanion<ProductTableData> {
   const ProductTableCompanion({
     this.codeProduct = const Value.absent(),
     this.name = const Value.absent(),
-    this.price = const Value.absent(),
+    this.capitalPrice = const Value.absent(),
+    this.sellPrice = const Value.absent(),
     this.stock = const Value.absent(),
     this.sold = const Value.absent(),
     this.createdAt = const Value.absent(),
@@ -517,7 +559,8 @@ class ProductTableCompanion extends UpdateCompanion<ProductTableData> {
   ProductTableCompanion.insert({
     required String codeProduct,
     required String name,
-    required int price,
+    required int capitalPrice,
+    required int sellPrice,
     required int stock,
     this.sold = const Value.absent(),
     this.createdAt = const Value.absent(),
@@ -526,13 +569,15 @@ class ProductTableCompanion extends UpdateCompanion<ProductTableData> {
     this.rowid = const Value.absent(),
   })  : codeProduct = Value(codeProduct),
         name = Value(name),
-        price = Value(price),
+        capitalPrice = Value(capitalPrice),
+        sellPrice = Value(sellPrice),
         stock = Value(stock),
         categoryId = Value(categoryId);
   static Insertable<ProductTableData> custom({
     Expression<String>? codeProduct,
     Expression<String>? name,
-    Expression<int>? price,
+    Expression<int>? capitalPrice,
+    Expression<int>? sellPrice,
     Expression<int>? stock,
     Expression<int>? sold,
     Expression<DateTime>? createdAt,
@@ -543,7 +588,8 @@ class ProductTableCompanion extends UpdateCompanion<ProductTableData> {
     return RawValuesInsertable({
       if (codeProduct != null) 'code_product': codeProduct,
       if (name != null) 'name': name,
-      if (price != null) 'price': price,
+      if (capitalPrice != null) 'capital_price': capitalPrice,
+      if (sellPrice != null) 'sell_price': sellPrice,
       if (stock != null) 'stock': stock,
       if (sold != null) 'sold': sold,
       if (createdAt != null) 'created_at': createdAt,
@@ -556,7 +602,8 @@ class ProductTableCompanion extends UpdateCompanion<ProductTableData> {
   ProductTableCompanion copyWith(
       {Value<String>? codeProduct,
       Value<String>? name,
-      Value<int>? price,
+      Value<int>? capitalPrice,
+      Value<int>? sellPrice,
       Value<int>? stock,
       Value<int>? sold,
       Value<DateTime>? createdAt,
@@ -566,7 +613,8 @@ class ProductTableCompanion extends UpdateCompanion<ProductTableData> {
     return ProductTableCompanion(
       codeProduct: codeProduct ?? this.codeProduct,
       name: name ?? this.name,
-      price: price ?? this.price,
+      capitalPrice: capitalPrice ?? this.capitalPrice,
+      sellPrice: sellPrice ?? this.sellPrice,
       stock: stock ?? this.stock,
       sold: sold ?? this.sold,
       createdAt: createdAt ?? this.createdAt,
@@ -585,8 +633,11 @@ class ProductTableCompanion extends UpdateCompanion<ProductTableData> {
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
-    if (price.present) {
-      map['price'] = Variable<int>(price.value);
+    if (capitalPrice.present) {
+      map['capital_price'] = Variable<int>(capitalPrice.value);
+    }
+    if (sellPrice.present) {
+      map['sell_price'] = Variable<int>(sellPrice.value);
     }
     if (stock.present) {
       map['stock'] = Variable<int>(stock.value);
@@ -614,7 +665,8 @@ class ProductTableCompanion extends UpdateCompanion<ProductTableData> {
     return (StringBuffer('ProductTableCompanion(')
           ..write('codeProduct: $codeProduct, ')
           ..write('name: $name, ')
-          ..write('price: $price, ')
+          ..write('capitalPrice: $capitalPrice, ')
+          ..write('sellPrice: $sellPrice, ')
           ..write('stock: $stock, ')
           ..write('sold: $sold, ')
           ..write('createdAt: $createdAt, ')
@@ -1394,14 +1446,16 @@ class DetailTransactionTableCompanion
 class ProductViewData extends DataClass {
   final String codeProduct;
   final String name;
-  final int price;
+  final int capitalPrice;
+  final int sellPrice;
   final int stock;
   final int sold;
   final String title;
   const ProductViewData(
       {required this.codeProduct,
       required this.name,
-      required this.price,
+      required this.capitalPrice,
+      required this.sellPrice,
       required this.stock,
       required this.sold,
       required this.title});
@@ -1411,7 +1465,8 @@ class ProductViewData extends DataClass {
     return ProductViewData(
       codeProduct: serializer.fromJson<String>(json['codeProduct']),
       name: serializer.fromJson<String>(json['name']),
-      price: serializer.fromJson<int>(json['price']),
+      capitalPrice: serializer.fromJson<int>(json['capitalPrice']),
+      sellPrice: serializer.fromJson<int>(json['sellPrice']),
       stock: serializer.fromJson<int>(json['stock']),
       sold: serializer.fromJson<int>(json['sold']),
       title: serializer.fromJson<String>(json['title']),
@@ -1423,7 +1478,8 @@ class ProductViewData extends DataClass {
     return <String, dynamic>{
       'codeProduct': serializer.toJson<String>(codeProduct),
       'name': serializer.toJson<String>(name),
-      'price': serializer.toJson<int>(price),
+      'capitalPrice': serializer.toJson<int>(capitalPrice),
+      'sellPrice': serializer.toJson<int>(sellPrice),
       'stock': serializer.toJson<int>(stock),
       'sold': serializer.toJson<int>(sold),
       'title': serializer.toJson<String>(title),
@@ -1433,14 +1489,16 @@ class ProductViewData extends DataClass {
   ProductViewData copyWith(
           {String? codeProduct,
           String? name,
-          int? price,
+          int? capitalPrice,
+          int? sellPrice,
           int? stock,
           int? sold,
           String? title}) =>
       ProductViewData(
         codeProduct: codeProduct ?? this.codeProduct,
         name: name ?? this.name,
-        price: price ?? this.price,
+        capitalPrice: capitalPrice ?? this.capitalPrice,
+        sellPrice: sellPrice ?? this.sellPrice,
         stock: stock ?? this.stock,
         sold: sold ?? this.sold,
         title: title ?? this.title,
@@ -1450,7 +1508,8 @@ class ProductViewData extends DataClass {
     return (StringBuffer('ProductViewData(')
           ..write('codeProduct: $codeProduct, ')
           ..write('name: $name, ')
-          ..write('price: $price, ')
+          ..write('capitalPrice: $capitalPrice, ')
+          ..write('sellPrice: $sellPrice, ')
           ..write('stock: $stock, ')
           ..write('sold: $sold, ')
           ..write('title: $title')
@@ -1459,14 +1518,16 @@ class ProductViewData extends DataClass {
   }
 
   @override
-  int get hashCode => Object.hash(codeProduct, name, price, stock, sold, title);
+  int get hashCode => Object.hash(
+      codeProduct, name, capitalPrice, sellPrice, stock, sold, title);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is ProductViewData &&
           other.codeProduct == this.codeProduct &&
           other.name == this.name &&
-          other.price == this.price &&
+          other.capitalPrice == this.capitalPrice &&
+          other.sellPrice == this.sellPrice &&
           other.stock == this.stock &&
           other.sold == this.sold &&
           other.title == this.title);
@@ -1484,7 +1545,7 @@ class $ProductViewView extends ViewInfo<$ProductViewView, ProductViewData>
       attachedDatabase.productTable.createAlias('t1');
   @override
   List<GeneratedColumn> get $columns =>
-      [codeProduct, name, price, stock, sold, title];
+      [codeProduct, name, capitalPrice, sellPrice, stock, sold, title];
   @override
   String get aliasedName => _alias ?? entityName;
   @override
@@ -1501,8 +1562,10 @@ class $ProductViewView extends ViewInfo<$ProductViewView, ProductViewData>
           .read(DriftSqlType.string, data['${effectivePrefix}code_product'])!,
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
-      price: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}price'])!,
+      capitalPrice: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}capital_price'])!,
+      sellPrice: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}sell_price'])!,
       stock: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}stock'])!,
       sold: attachedDatabase.typeMapping
@@ -1520,9 +1583,13 @@ class $ProductViewView extends ViewInfo<$ProductViewView, ProductViewData>
       'name', aliasedName, false,
       generatedAs: GeneratedAs(productTable.name, false),
       type: DriftSqlType.string);
-  late final GeneratedColumn<int> price = GeneratedColumn<int>(
-      'price', aliasedName, false,
-      generatedAs: GeneratedAs(productTable.price, false),
+  late final GeneratedColumn<int> capitalPrice = GeneratedColumn<int>(
+      'capital_price', aliasedName, false,
+      generatedAs: GeneratedAs(productTable.capitalPrice, false),
+      type: DriftSqlType.int);
+  late final GeneratedColumn<int> sellPrice = GeneratedColumn<int>(
+      'sell_price', aliasedName, false,
+      generatedAs: GeneratedAs(productTable.sellPrice, false),
       type: DriftSqlType.int);
   late final GeneratedColumn<int> stock = GeneratedColumn<int>(
       'stock', aliasedName, false,
@@ -2154,14 +2221,14 @@ class $UserViewView extends ViewInfo<$UserViewView, UserViewData>
 class DetailTransactionViewData extends DataClass {
   final String codeProduct;
   final String name;
-  final int price;
+  final int sellPrice;
   final int qty;
   final int total;
   final int id;
   const DetailTransactionViewData(
       {required this.codeProduct,
       required this.name,
-      required this.price,
+      required this.sellPrice,
       required this.qty,
       required this.total,
       required this.id});
@@ -2171,7 +2238,7 @@ class DetailTransactionViewData extends DataClass {
     return DetailTransactionViewData(
       codeProduct: serializer.fromJson<String>(json['codeProduct']),
       name: serializer.fromJson<String>(json['name']),
-      price: serializer.fromJson<int>(json['price']),
+      sellPrice: serializer.fromJson<int>(json['sellPrice']),
       qty: serializer.fromJson<int>(json['qty']),
       total: serializer.fromJson<int>(json['total']),
       id: serializer.fromJson<int>(json['id']),
@@ -2183,7 +2250,7 @@ class DetailTransactionViewData extends DataClass {
     return <String, dynamic>{
       'codeProduct': serializer.toJson<String>(codeProduct),
       'name': serializer.toJson<String>(name),
-      'price': serializer.toJson<int>(price),
+      'sellPrice': serializer.toJson<int>(sellPrice),
       'qty': serializer.toJson<int>(qty),
       'total': serializer.toJson<int>(total),
       'id': serializer.toJson<int>(id),
@@ -2193,14 +2260,14 @@ class DetailTransactionViewData extends DataClass {
   DetailTransactionViewData copyWith(
           {String? codeProduct,
           String? name,
-          int? price,
+          int? sellPrice,
           int? qty,
           int? total,
           int? id}) =>
       DetailTransactionViewData(
         codeProduct: codeProduct ?? this.codeProduct,
         name: name ?? this.name,
-        price: price ?? this.price,
+        sellPrice: sellPrice ?? this.sellPrice,
         qty: qty ?? this.qty,
         total: total ?? this.total,
         id: id ?? this.id,
@@ -2210,7 +2277,7 @@ class DetailTransactionViewData extends DataClass {
     return (StringBuffer('DetailTransactionViewData(')
           ..write('codeProduct: $codeProduct, ')
           ..write('name: $name, ')
-          ..write('price: $price, ')
+          ..write('sellPrice: $sellPrice, ')
           ..write('qty: $qty, ')
           ..write('total: $total, ')
           ..write('id: $id')
@@ -2219,14 +2286,14 @@ class DetailTransactionViewData extends DataClass {
   }
 
   @override
-  int get hashCode => Object.hash(codeProduct, name, price, qty, total, id);
+  int get hashCode => Object.hash(codeProduct, name, sellPrice, qty, total, id);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is DetailTransactionViewData &&
           other.codeProduct == this.codeProduct &&
           other.name == this.name &&
-          other.price == this.price &&
+          other.sellPrice == this.sellPrice &&
           other.qty == this.qty &&
           other.total == this.total &&
           other.id == this.id);
@@ -2247,7 +2314,7 @@ class $DetailTransactionViewView
       attachedDatabase.detailTransactionTable.createAlias('t2');
   @override
   List<GeneratedColumn> get $columns =>
-      [codeProduct, name, price, qty, total, id];
+      [codeProduct, name, sellPrice, qty, total, id];
   @override
   String get aliasedName => _alias ?? entityName;
   @override
@@ -2265,8 +2332,8 @@ class $DetailTransactionViewView
           .read(DriftSqlType.string, data['${effectivePrefix}code_product'])!,
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
-      price: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}price'])!,
+      sellPrice: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}sell_price'])!,
       qty: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}qty'])!,
       total: attachedDatabase.typeMapping
@@ -2284,9 +2351,9 @@ class $DetailTransactionViewView
       'name', aliasedName, false,
       generatedAs: GeneratedAs(productTable.name, false),
       type: DriftSqlType.string);
-  late final GeneratedColumn<int> price = GeneratedColumn<int>(
-      'price', aliasedName, false,
-      generatedAs: GeneratedAs(productTable.price, false),
+  late final GeneratedColumn<int> sellPrice = GeneratedColumn<int>(
+      'sell_price', aliasedName, false,
+      generatedAs: GeneratedAs(productTable.sellPrice, false),
       type: DriftSqlType.int);
   late final GeneratedColumn<int> qty = GeneratedColumn<int>(
       'qty', aliasedName, false,

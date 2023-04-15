@@ -15,7 +15,7 @@ class DetailTransactionViewModel extends DetailTransactionViewEntity {
   DetailTransactionViewModel({
     required super.code,
     required super.name,
-    required super.price,
+    required super.sellPrice,
     required super.qty,
     required super.total,
   });
@@ -24,7 +24,7 @@ class DetailTransactionViewModel extends DetailTransactionViewEntity {
     return DetailTransactionViewModel(
       code: data.codeProduct,
       name: data.name,
-      price: data.price,
+      sellPrice: data.sellPrice,
       qty: data.qty,
       total: data.total,
     );

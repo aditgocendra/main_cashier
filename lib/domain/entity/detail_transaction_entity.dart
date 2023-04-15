@@ -15,14 +15,14 @@ class DetailTransactionEntity {
 class DetailTransactionViewEntity {
   String code;
   String name;
-  int price;
+  int sellPrice;
   int qty;
   int total;
 
   DetailTransactionViewEntity({
     required this.code,
     required this.name,
-    required this.price,
+    required this.sellPrice,
     required this.qty,
     required this.total,
   });

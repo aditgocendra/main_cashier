@@ -1,7 +1,8 @@
 class ProductEntity {
   String code;
   String name;
-  int price;
+  int capitalPrice;
+  int sellPrice;
   int stock;
   int sold;
   int idCategory;
@@ -10,7 +11,8 @@ class ProductEntity {
   ProductEntity({
     required this.code,
     required this.name,
-    required this.price,
+    required this.capitalPrice,
+    required this.sellPrice,
     required this.stock,
     required this.sold,
     required this.idCategory,
@@ -21,7 +23,8 @@ class ProductEntity {
 class ProductViewEntity {
   String code;
   String name;
-  int price;
+  int capitalPrice;
+  int sellPrice;
   int stock;
   int sold;
   String titleCategory;
@@ -29,7 +32,8 @@ class ProductViewEntity {
   ProductViewEntity({
     required this.code,
     required this.name,
-    required this.price,
+    required this.capitalPrice,
+    required this.sellPrice,
     required this.stock,
     required this.sold,
     required this.titleCategory,

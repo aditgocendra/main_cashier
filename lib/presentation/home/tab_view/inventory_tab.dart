@@ -28,7 +28,8 @@ class _InventoryTabState extends State<InventoryTab> {
   final TextEditingController tecSearch = TextEditingController();
   final TextEditingController tecCode = TextEditingController();
   final TextEditingController tecName = TextEditingController();
-  final TextEditingController tecPrice = TextEditingController();
+  final TextEditingController tecCapitalPrice = TextEditingController();
+  final TextEditingController tecSellPrice = TextEditingController();
   final TextEditingController tecStock = TextEditingController();
   final ScrollController scrollController = ScrollController();
 
@@ -46,7 +47,8 @@ class _InventoryTabState extends State<InventoryTab> {
     super.dispose();
     tecCode.dispose();
     tecName.dispose();
-    tecPrice.dispose();
+    tecCapitalPrice.dispose();
+    // tecSellPrice.dispose();
     tecStock.dispose();
     tecSearch.dispose();
   }
@@ -54,7 +56,8 @@ class _InventoryTabState extends State<InventoryTab> {
   void resetTec() {
     tecCode.clear();
     tecName.clear();
-    tecPrice.clear();
+    tecCapitalPrice.clear();
+    tecSellPrice.clear();
     tecName.clear();
     tecStock.clear();
   }
@@ -63,11 +66,11 @@ class _InventoryTabState extends State<InventoryTab> {
     double widthScreen,
     bool isSidebarExpanded,
   ) {
-    if (widthScreen < 1150 && isSidebarExpanded) {
+    if (widthScreen < 1200 && isSidebarExpanded) {
       return Axis.horizontal;
     }
 
-    if (widthScreen < 950 && !isSidebarExpanded) {
+    if (widthScreen < 1000 && !isSidebarExpanded) {
       return Axis.horizontal;
     }
 
@@ -260,7 +263,8 @@ class _InventoryTabState extends State<InventoryTab> {
                                     child: DialogProductAdd(
                                       tecCode: tecCode,
                                       tecName: tecName,
-                                      tecPrice: tecPrice,
+                                      tecCapitalPrice: tecCapitalPrice,
+                                      tecSellPrice: tecSellPrice,
                                       tecStock: tecStock,
                                     ),
                                   );
@@ -311,12 +315,13 @@ class _InventoryTabState extends State<InventoryTab> {
                       columnWidths: const <int, TableColumnWidth>{
                         0: IntrinsicColumnWidth(),
                         1: IntrinsicColumnWidth(),
-                        2: FixedColumnWidth(200),
+                        2: FixedColumnWidth(150),
                         3: IntrinsicColumnWidth(),
                         4: IntrinsicColumnWidth(),
                         5: IntrinsicColumnWidth(),
                         6: IntrinsicColumnWidth(),
                         7: IntrinsicColumnWidth(),
+                        8: IntrinsicColumnWidth(),
                       },
                       defaultVerticalAlignment:
                           TableCellVerticalAlignment.middle,
@@ -327,7 +332,8 @@ class _InventoryTabState extends State<InventoryTab> {
                             "Number",
                             "Code",
                             "Name",
-                            "Price",
+                            "Capital Price",
+                            "Sell Price",
                             "Stock",
                             "Sold",
                             "Category",
@@ -377,6 +383,7 @@ class _InventoryTabState extends State<InventoryTab> {
                                             style: const TextStyle(
                                               fontSize: 14,
                                             ),
+                                            textAlign: TextAlign.center,
                                           ),
                                         ),
                                       ),
@@ -386,7 +393,23 @@ class _InventoryTabState extends State<InventoryTab> {
                                         padding: const EdgeInsets.all(8.0),
                                         child: Center(
                                           child: Text(
-                                            FormatUtility.currencyRp(val.price),
+                                            FormatUtility.currencyRp(
+                                                val.capitalPrice),
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    TableCell(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Center(
+                                          child: Text(
+                                            FormatUtility.currencyRp(
+                                              val.sellPrice,
+                                            ),
                                             style: const TextStyle(
                                               fontSize: 14,
                                             ),
@@ -466,7 +489,10 @@ class _InventoryTabState extends State<InventoryTab> {
                                                           product: val,
                                                           tecCode: tecCode,
                                                           tecName: tecName,
-                                                          tecPrice: tecPrice,
+                                                          tecCapitalPrice:
+                                                              tecCapitalPrice,
+                                                          tecSellPrice:
+                                                              tecSellPrice,
                                                           tecStock: tecStock,
                                                         ),
                                                       );
@@ -631,13 +657,15 @@ class _InventoryTabState extends State<InventoryTab> {
 class DialogProductAdd extends StatelessWidget {
   final TextEditingController tecCode;
   final TextEditingController tecName;
-  final TextEditingController tecPrice;
+  final TextEditingController tecCapitalPrice;
+  final TextEditingController tecSellPrice;
   final TextEditingController tecStock;
 
   const DialogProductAdd({
     required this.tecCode,
     required this.tecName,
-    required this.tecPrice,
+    required this.tecCapitalPrice,
+    required this.tecSellPrice,
     required this.tecStock,
     super.key,
   });
@@ -696,7 +724,7 @@ class DialogProductAdd extends StatelessWidget {
                 height: 16,
               ),
               TextFormField(
-                controller: tecPrice,
+                controller: tecCapitalPrice,
                 validator: (code) {
                   if (code == null || code.isEmpty) {
                     return fieldRequired;
@@ -708,7 +736,27 @@ class DialogProductAdd extends StatelessWidget {
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 keyboardType: TextInputType.number,
                 decoration: DecorationUtils.textFieldDecoration(
-                  label: "Price",
+                  label: "Capital Price",
+                  hint: "Example : 20000",
+                ),
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              TextFormField(
+                controller: tecSellPrice,
+                validator: (code) {
+                  if (code == null || code.isEmpty) {
+                    return fieldRequired;
+                  }
+
+                  return null;
+                },
+                style: const TextStyle(fontSize: 14),
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                keyboardType: TextInputType.number,
+                decoration: DecorationUtils.textFieldDecoration(
+                  label: "Sell Price",
                   hint: "Example : 20000",
                 ),
               ),
@@ -798,7 +846,8 @@ class DialogProductAdd extends StatelessWidget {
             controller.addProduct(
               code: tecCode.text,
               name: tecName.text,
-              price: int.parse(tecPrice.text),
+              capitalPrice: int.parse(tecCapitalPrice.text),
+              sellPrice: int.parse(tecSellPrice.text),
               stock: int.parse(tecStock.text),
               sold: 0,
               idCategory: controller.categorySelection!.id,
@@ -831,14 +880,16 @@ class DialogProductEdit extends StatelessWidget {
   final ProductViewEntity product;
   final TextEditingController tecCode;
   final TextEditingController tecName;
-  final TextEditingController tecPrice;
+  final TextEditingController tecCapitalPrice;
+  final TextEditingController tecSellPrice;
   final TextEditingController tecStock;
 
   const DialogProductEdit({
     required this.product,
     required this.tecCode,
     required this.tecName,
-    required this.tecPrice,
+    required this.tecCapitalPrice,
+    required this.tecSellPrice,
     required this.tecStock,
     super.key,
   });
@@ -852,7 +903,8 @@ class DialogProductEdit extends StatelessWidget {
     // Set attr value
     tecCode.text = product.code;
     tecName.text = product.name;
-    tecPrice.text = product.price.toString();
+    tecCapitalPrice.text = product.capitalPrice.toString();
+    tecSellPrice.text = product.sellPrice.toString();
     tecStock.text = product.stock.toString();
 
     controller.changeCategorySelection(
@@ -908,7 +960,7 @@ class DialogProductEdit extends StatelessWidget {
                 height: 16,
               ),
               TextFormField(
-                controller: tecPrice,
+                controller: tecCapitalPrice,
                 validator: (code) {
                   if (code == null || code.isEmpty) {
                     return fieldRequired;
@@ -920,7 +972,27 @@ class DialogProductEdit extends StatelessWidget {
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 keyboardType: TextInputType.number,
                 decoration: DecorationUtils.textFieldDecoration(
-                  label: "Price",
+                  label: "Capital Price",
+                  hint: "Example : 20000",
+                ),
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              TextFormField(
+                controller: tecSellPrice,
+                validator: (code) {
+                  if (code == null || code.isEmpty) {
+                    return fieldRequired;
+                  }
+
+                  return null;
+                },
+                style: const TextStyle(fontSize: 14),
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                keyboardType: TextInputType.number,
+                decoration: DecorationUtils.textFieldDecoration(
+                  label: "Selling Price",
                   hint: "Example : 20000",
                 ),
               ),
@@ -1011,7 +1083,8 @@ class DialogProductEdit extends StatelessWidget {
               ProductEntity(
                 code: product.code,
                 name: tecName.text,
-                price: int.parse(tecPrice.text),
+                capitalPrice: int.parse(tecCapitalPrice.text),
+                sellPrice: int.parse(tecSellPrice.text),
                 stock: int.parse(tecStock.text),
                 sold: product.sold,
                 idCategory: controller.categorySelection!.id,

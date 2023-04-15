@@ -5,7 +5,8 @@ class ProductModel extends ProductEntity {
   ProductModel({
     required super.code,
     required super.name,
-    required super.price,
+    required super.capitalPrice,
+    required super.sellPrice,
     required super.stock,
     required super.sold,
     required super.idCategory,
@@ -16,7 +17,8 @@ class ProductModel extends ProductEntity {
     return ProductTableData(
       codeProduct: productModel.code,
       name: productModel.name,
-      price: productModel.price,
+      capitalPrice: productModel.capitalPrice,
+      sellPrice: productModel.sellPrice,
       stock: productModel.stock,
       sold: productModel.sold,
       categoryId: productModel.idCategory,
@@ -28,7 +30,8 @@ class ProductModel extends ProductEntity {
     return ProductModel(
       code: data.codeProduct,
       name: data.name,
-      price: data.price,
+      capitalPrice: data.capitalPrice,
+      sellPrice: data.sellPrice,
       stock: data.stock,
       sold: data.sold,
       idCategory: data.categoryId,
@@ -46,7 +49,8 @@ class ProductViewModel extends ProductViewEntity {
   ProductViewModel({
     required super.code,
     required super.name,
-    required super.price,
+    required super.capitalPrice,
+    required super.sellPrice,
     required super.stock,
     required super.sold,
     required super.titleCategory,
@@ -56,7 +60,8 @@ class ProductViewModel extends ProductViewEntity {
     return ProductViewModel(
       code: data.codeProduct,
       name: data.name,
-      price: data.price,
+      capitalPrice: data.capitalPrice,
+      sellPrice: data.sellPrice,
       stock: data.stock,
       sold: data.sold,
       titleCategory: data.title,

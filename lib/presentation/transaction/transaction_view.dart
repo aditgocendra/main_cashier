@@ -168,7 +168,9 @@ class TransactionView extends StatelessWidget {
                                         padding: const EdgeInsets.all(8.0),
                                         child: Center(
                                           child: Text(
-                                            FormatUtility.currencyRp(val.price),
+                                            FormatUtility.currencyRp(
+                                              val.sellPrice,
+                                            ),
                                             style:
                                                 const TextStyle(fontSize: 14),
                                           ),

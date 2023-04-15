@@ -46,7 +46,7 @@ class TransactionController extends ChangeNotifier {
 
     await selectProduct.call(code).then((value) {
       _listTecQty.add(TextEditingController(text: "1"));
-      _listTotalQty.add(value.price);
+      _listTotalQty.add(value.sellPrice);
 
       _listProduct.add(value);
       calculateTotalPay();
@@ -58,7 +58,7 @@ class TransactionController extends ChangeNotifier {
 
   void changeQtyPrice(int index) {
     final val = listTecQty[index].text;
-    final price = listProduct[index].price;
+    final price = listProduct[index].sellPrice;
 
     if (val.isEmpty || val == "0") {
       _listTecQty[index].text = "1";

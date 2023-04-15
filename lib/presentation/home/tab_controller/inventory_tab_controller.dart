@@ -79,7 +79,8 @@ class InventoryTabController extends ChangeNotifier {
   void addProduct({
     required String code,
     required String name,
-    required int price,
+    required int capitalPrice,
+    required int sellPrice,
     required int stock,
     required int sold,
     required int idCategory,
@@ -88,7 +89,8 @@ class InventoryTabController extends ChangeNotifier {
     ProductEntity productEntity = ProductEntity(
       code: code,
       name: name,
-      price: price,
+      capitalPrice: capitalPrice,
+      sellPrice: sellPrice,
       stock: stock,
       sold: sold,
       idCategory: idCategory,

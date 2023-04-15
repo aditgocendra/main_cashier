@@ -31,7 +31,8 @@ class CategoryTable extends Table {
 class ProductTable extends Table {
   TextColumn get codeProduct => text().withLength(max: 14).unique()();
   TextColumn get name => text().withLength(max: 24).unique()();
-  IntColumn get price => integer()();
+  IntColumn get capitalPrice => integer()();
+  IntColumn get sellPrice => integer()();
   IntColumn get stock => integer()();
   IntColumn get sold => integer().withDefault(const Constant(0))();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
@@ -73,7 +74,8 @@ abstract class ProductView extends View {
   Query as() => select([
         productTable.codeProduct,
         productTable.name,
-        productTable.price,
+        productTable.capitalPrice,
+        productTable.sellPrice,
         productTable.stock,
         productTable.sold,
         categoryTable.title,
@@ -118,7 +120,7 @@ abstract class DetailTransactionView extends View {
   Query as() => select([
         productTable.codeProduct,
         productTable.name,
-        productTable.price,
+        productTable.sellPrice,
         detailTransactionTable.qty,
         detailTransactionTable.total,
         transactionTable.id,

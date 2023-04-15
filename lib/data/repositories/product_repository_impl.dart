@@ -25,7 +25,8 @@ class ProductRepositoryImpl implements ProductRepository {
       await productLocalDataSource.create(ProductModel(
         code: productEntity.code,
         name: productEntity.name,
-        price: productEntity.price,
+        capitalPrice: productEntity.capitalPrice,
+        sellPrice: productEntity.sellPrice,
         stock: productEntity.stock,
         sold: productEntity.sold,
         idCategory: productEntity.idCategory,
@@ -81,7 +82,8 @@ class ProductRepositoryImpl implements ProductRepository {
       final result = await productLocalDataSource.update(ProductModel(
         code: productEntity.code,
         name: productEntity.name,
-        price: productEntity.price,
+        capitalPrice: productEntity.capitalPrice,
+        sellPrice: productEntity.sellPrice,
         stock: productEntity.stock,
         sold: productEntity.sold,
         idCategory: productEntity.idCategory,

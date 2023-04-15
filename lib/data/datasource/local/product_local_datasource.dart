@@ -40,7 +40,8 @@ class ProductLocalDataSourceImpl implements ProductLocalDataSource {
         .insert(ProductTableCompanion.insert(
           codeProduct: productModel.code,
           name: productModel.name,
-          price: productModel.price,
+          capitalPrice: productModel.capitalPrice,
+          sellPrice: productModel.sellPrice,
           stock: productModel.stock,
           categoryId: productModel.idCategory,
         ));
@@ -68,7 +69,7 @@ class ProductLocalDataSourceImpl implements ProductLocalDataSource {
                 expression: (orderColumn == 1)
                     ? tbl.name
                     : (orderColumn == 2)
-                        ? tbl.price
+                        ? tbl.capitalPrice
                         : (orderColumn == 3)
                             ? tbl.sold
                             : (orderColumn == 4)
