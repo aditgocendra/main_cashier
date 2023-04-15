@@ -28,6 +28,7 @@ class _InventoryTabState extends State<InventoryTab> {
   final TextEditingController tecName = TextEditingController();
   final TextEditingController tecPrice = TextEditingController();
   final TextEditingController tecStock = TextEditingController();
+  final ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
@@ -268,209 +269,223 @@ class _InventoryTabState extends State<InventoryTab> {
                 ),
               ),
               SelectionArea(
-                child: SingleChildScrollView(
-                  scrollDirection:
-                      size >= 770 ? Axis.vertical : Axis.horizontal,
-                  child: Table(
-                    border: const TableBorder(
-                      horizontalInside: BorderSide(
-                        width: 0.1,
+                child: Scrollbar(
+                  controller: scrollController,
+                  child: SingleChildScrollView(
+                    controller: scrollController,
+                    scrollDirection:
+                        size >= 770 ? Axis.vertical : Axis.horizontal,
+                    child: Table(
+                      border: const TableBorder(
+                        horizontalInside: BorderSide(
+                          width: 0.1,
+                        ),
+                        top: BorderSide(
+                          width: 0.1,
+                        ),
+                        bottom: BorderSide(
+                          width: 0.1,
+                        ),
                       ),
-                      top: BorderSide(
-                        width: 0.1,
-                      ),
-                      bottom: BorderSide(
-                        width: 0.1,
-                      ),
-                    ),
-                    // defaultColumnWidth: FixedColumnWidth(1800 / 3),
-                    columnWidths: const <int, TableColumnWidth>{
-                      0: IntrinsicColumnWidth(),
-                      1: IntrinsicColumnWidth(),
-                      2: IntrinsicColumnWidth(),
-                      3: IntrinsicColumnWidth(),
-                      4: IntrinsicColumnWidth(),
-                      5: IntrinsicColumnWidth(),
-                      6: IntrinsicColumnWidth(),
-                      7: IntrinsicColumnWidth(),
-                    },
-                    defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                    children: <TableRow>[
-                      // Header Data Table
-                      TableComponent.headerTable(
-                        [
-                          "Number",
-                          "Code",
-                          "Name",
-                          "Price",
-                          "Stock",
-                          "Sold",
-                          "Category",
-                          "Action",
-                        ],
-                      ),
-                      // Body Data Table
-                      ...controller.listProduct
-                          .asMap()
-                          .map(
-                            (index, val) => MapEntry(
-                              index,
-                              TableRow(
-                                children: [
-                                  TableCell(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Center(
-                                        child: Text(
-                                          "${index + 1}",
-                                          style: const TextStyle(fontSize: 14),
+                      // defaultColumnWidth: FixedColumnWidth(1800 / 3),
+                      columnWidths: const <int, TableColumnWidth>{
+                        0: IntrinsicColumnWidth(),
+                        1: IntrinsicColumnWidth(),
+                        2: IntrinsicColumnWidth(),
+                        3: IntrinsicColumnWidth(),
+                        4: IntrinsicColumnWidth(),
+                        5: IntrinsicColumnWidth(),
+                        6: IntrinsicColumnWidth(),
+                        7: IntrinsicColumnWidth(),
+                      },
+                      defaultVerticalAlignment:
+                          TableCellVerticalAlignment.middle,
+                      children: <TableRow>[
+                        // Header Data Table
+                        TableComponent.headerTable(
+                          [
+                            "Number",
+                            "Code",
+                            "Name",
+                            "Price",
+                            "Stock",
+                            "Sold",
+                            "Category",
+                            "Action",
+                          ],
+                        ),
+                        // Body Data Table
+                        ...controller.listProduct
+                            .asMap()
+                            .map(
+                              (index, val) => MapEntry(
+                                index,
+                                TableRow(
+                                  children: [
+                                    TableCell(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Center(
+                                          child: Text(
+                                            "${index + 1}",
+                                            style:
+                                                const TextStyle(fontSize: 14),
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  TableCell(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Center(
-                                        child: Text(
-                                          val.code,
-                                          style: const TextStyle(fontSize: 14),
+                                    TableCell(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Center(
+                                          child: Text(
+                                            val.code,
+                                            style:
+                                                const TextStyle(fontSize: 14),
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  TableCell(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Center(
-                                        child: Text(
-                                          val.name,
-                                          style: const TextStyle(fontSize: 14),
+                                    TableCell(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Center(
+                                          child: Text(
+                                            val.name,
+                                            style:
+                                                const TextStyle(fontSize: 14),
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  TableCell(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Center(
-                                        child: Text(
-                                          val.price.toString(),
-                                          style: const TextStyle(fontSize: 14),
+                                    TableCell(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Center(
+                                          child: Text(
+                                            val.price.toString(),
+                                            style:
+                                                const TextStyle(fontSize: 14),
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  TableCell(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Center(
-                                        child: Text(
-                                          val.stock.toString(),
-                                          style: const TextStyle(fontSize: 14),
+                                    TableCell(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Center(
+                                          child: Text(
+                                            val.stock.toString(),
+                                            style:
+                                                const TextStyle(fontSize: 14),
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  TableCell(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Center(
-                                        child: Text(
-                                          val.sold.toString(),
-                                          style: const TextStyle(fontSize: 14),
+                                    TableCell(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Center(
+                                          child: Text(
+                                            val.sold.toString(),
+                                            style:
+                                                const TextStyle(fontSize: 14),
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  TableCell(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Center(
-                                        child: Text(
-                                          val.titleCategory,
-                                          style: const TextStyle(fontSize: 14),
+                                    TableCell(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Center(
+                                          child: Text(
+                                            val.titleCategory,
+                                            style:
+                                                const TextStyle(fontSize: 14),
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  TableCell(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Center(
-                                        child: Wrap(
-                                          children: [
-                                            // Edit
-                                            IconButton(
-                                              onPressed: () {
-                                                showDialog(
-                                                  context: context,
-                                                  builder: (context) {
-                                                    resetTec();
-                                                    controller
-                                                        .resetDialogAttr();
-                                                    return Dialog(
-                                                      shape:
-                                                          RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(16),
-                                                      ),
-                                                      child: DialogProductEdit(
-                                                        product: val,
-                                                        tecCode: tecCode,
-                                                        tecName: tecName,
-                                                        tecPrice: tecPrice,
-                                                        tecStock: tecStock,
-                                                      ),
-                                                    );
-                                                  },
-                                                );
-                                              },
-                                              icon:
-                                                  const Icon(UniconsLine.edit),
-                                            ),
-                                            // Delete
-                                            IconButton(
-                                              onPressed: () {
-                                                showDialog(
-                                                  context: context,
-                                                  builder: (context) {
-                                                    return DialogUtils
-                                                        .dialogConfirmation(
-                                                      title: "Delete Product",
-                                                      message:
-                                                          "Are you sure delete this product ?",
-                                                      callbackConfirmation: () {
-                                                        controller
-                                                            .removeProduct(
-                                                          val.code,
-                                                        );
+                                    TableCell(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Center(
+                                          child: Wrap(
+                                            children: [
+                                              // Edit
+                                              IconButton(
+                                                onPressed: () {
+                                                  showDialog(
+                                                    context: context,
+                                                    builder: (context) {
+                                                      resetTec();
+                                                      controller
+                                                          .resetDialogAttr();
+                                                      return Dialog(
+                                                        shape:
+                                                            RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(16),
+                                                        ),
+                                                        child:
+                                                            DialogProductEdit(
+                                                          product: val,
+                                                          tecCode: tecCode,
+                                                          tecName: tecName,
+                                                          tecPrice: tecPrice,
+                                                          tecStock: tecStock,
+                                                        ),
+                                                      );
+                                                    },
+                                                  );
+                                                },
+                                                icon: const Icon(
+                                                    UniconsLine.edit),
+                                              ),
+                                              // Delete
+                                              IconButton(
+                                                onPressed: () {
+                                                  showDialog(
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return DialogUtils
+                                                          .dialogConfirmation(
+                                                        title: "Delete Product",
+                                                        message:
+                                                            "Are you sure delete this product ?",
+                                                        callbackConfirmation:
+                                                            () {
+                                                          controller
+                                                              .removeProduct(
+                                                            val.code,
+                                                          );
 
-                                                        navigator.pop();
-                                                      },
-                                                      callbackCancel: () {
-                                                        navigator.pop();
-                                                      },
-                                                    );
-                                                  },
-                                                );
-                                              },
-                                              icon:
-                                                  const Icon(UniconsLine.trash),
-                                            )
-                                          ],
+                                                          navigator.pop();
+                                                        },
+                                                        callbackCancel: () {
+                                                          navigator.pop();
+                                                        },
+                                                      );
+                                                    },
+                                                  );
+                                                },
+                                                icon: const Icon(
+                                                    UniconsLine.trash),
+                                              )
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
-                          )
-                          .values
-                          .toList()
-                    ],
+                            )
+                            .values
+                            .toList()
+                      ],
+                    ),
                   ),
                 ),
               ),
