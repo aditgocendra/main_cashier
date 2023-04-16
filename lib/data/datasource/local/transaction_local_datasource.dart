@@ -73,6 +73,13 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
       await databaseApp.customStatement(
         "UPDATE 'counter_transaction_table' SET total_transaction = total_transaction + 1 WHERE id = 1",
       );
+
+      // Update table sold & stock product
+      for (var element in list) {
+        await databaseApp.customStatement(
+          "UPDATE 'product_table' SET stock = stock - ${element.qty}, sold = sold + ${element.qty} WHERE code_product = '${element.idProduct}'",
+        );
+      }
     });
   }
 
