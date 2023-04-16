@@ -231,7 +231,7 @@ class $ProductTableTable extends ProductTable
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
       'name', aliasedName, false,
-      additionalChecks: GeneratedColumn.checkTextLength(maxTextLength: 24),
+      additionalChecks: GeneratedColumn.checkTextLength(maxTextLength: 48),
       type: DriftSqlType.string,
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));

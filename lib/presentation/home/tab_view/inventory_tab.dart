@@ -315,7 +315,7 @@ class _InventoryTabState extends State<InventoryTab> {
                       columnWidths: const <int, TableColumnWidth>{
                         0: IntrinsicColumnWidth(),
                         1: IntrinsicColumnWidth(),
-                        2: FixedColumnWidth(150),
+                        2: FixedColumnWidth(200),
                         3: IntrinsicColumnWidth(),
                         4: IntrinsicColumnWidth(),
                         5: IntrinsicColumnWidth(),
@@ -706,7 +706,7 @@ class DialogProductAdd extends StatelessWidget {
               ),
               TextFormField(
                 controller: tecName,
-                maxLength: 24,
+                maxLength: 48,
                 validator: (code) {
                   if (code == null || code.isEmpty) {
                     return fieldRequired;

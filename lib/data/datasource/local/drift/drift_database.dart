@@ -30,7 +30,7 @@ class CategoryTable extends Table {
 
 class ProductTable extends Table {
   TextColumn get codeProduct => text().withLength(max: 14).unique()();
-  TextColumn get name => text().withLength(max: 24).unique()();
+  TextColumn get name => text().withLength(max: 48).unique()();
   IntColumn get capitalPrice => integer()();
   IntColumn get sellPrice => integer()();
   IntColumn get stock => integer()();
