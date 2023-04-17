@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart';
 import 'package:main_cashier/data/models/counter_transaction_model.dart';
 import 'package:main_cashier/data/models/detail_transaction_model.dart';
 
@@ -17,6 +18,8 @@ abstract class TransactionLocalDataSource {
   });
 
   Future<CounterTransactionModel> getCounterTransaction();
+
+  Future<List<TransactionModel>> search(String keyword);
 
   Future<bool> updateCounterTransaction(
     CounterTransactionModel counterTransactionModel,
@@ -54,7 +57,7 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
                 ),
               );
 
-      // Create product transaction
+      // Create detail transaction
       for (var element in list) {
         listProductInsert.add(DetailTransactionTableCompanion.insert(
           qty: element.qty,
@@ -91,6 +94,7 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
             ..where((tbl) => tbl.idTransaction.equals(idTransaction)))
           .go();
 
+      // Delete transaction
       await (databaseApp.delete(databaseApp.transactionTable)
             ..where((tbl) => tbl.id.equals(idTransaction)))
           .go();
@@ -113,10 +117,19 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
   Future<List<DetailTransactionViewModel>> getDetailTransaction(
     int idTransaction,
   ) async {
-    final result =
-        await databaseApp.select(databaseApp.detailTransactionView).get();
+    final result = await (databaseApp.select(databaseApp.detailTransactionView)
+          ..where((tbl) => tbl.id.equals(idTransaction)))
+        .get();
 
     return DetailTransactionViewModel.fromTableList(result);
+  }
+
+  @override
+  Future<List<TransactionModel>> search(String keyword) async {
+    final result = await (databaseApp.select(databaseApp.transactionTable)
+          ..where((tbl) => tbl.no.like('%$keyword%')))
+        .get();
+    return TransactionModel.fromTableList(result);
   }
 
   @override

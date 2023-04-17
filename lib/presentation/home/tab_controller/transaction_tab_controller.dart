@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:main_cashier/domain/usecase/transaction/delete_transaction_usecase.dart';
+import 'package:main_cashier/domain/usecase/transaction/search_transaction_usecase.dart';
 import '../../../domain/entity/detail_transaction_entity.dart';
 import '../../../domain/entity/transaction_entity.dart';
 import '../../../domain/usecase/transaction/get_detail_transaction_usecase.dart';
@@ -22,14 +23,22 @@ class TransactionTabController extends ChangeNotifier {
   int _activeRowPage = 1;
   int get activeRowPage => _activeRowPage;
 
+  bool _isSearch = false;
+  bool get isSearch => _isSearch;
+
+  String _errDialogMessage = "";
+  String get errDialogMessage => _errDialogMessage;
+
   final GetAllTransaction getAllTransaction;
   final GetDetailTransaction getDetailTransaction;
   final DeleteTransaction deleteTransaction;
+  final SearchTransaction searchTransaction;
 
   TransactionTabController({
     required this.getAllTransaction,
     required this.getDetailTransaction,
     required this.deleteTransaction,
+    required this.searchTransaction,
   });
 
   void setTransaction() async {
@@ -41,26 +50,78 @@ class TransactionTabController extends ChangeNotifier {
     await getAllTransaction.call(params).then((value) {
       _listTransaction = value;
       notifyListeners();
-    }).catchError((e) {
-      print(e.toString());
     });
   }
 
-  void setDetailTransaction(int idTransaction) async {
+  void setDetailTransaction({
+    required int idTransaction,
+    required VoidCallback callbackSuccess,
+    required VoidCallback callbackFail,
+  }) async {
     await getDetailTransaction.call(idTransaction).then((value) {
       _listDetailTransaction = value;
       notifyListeners();
+      callbackSuccess.call();
     }).catchError((e) {
-      print(e.toString());
+      _setError(e.toString());
+      callbackFail.call();
+      _setError("");
     });
   }
 
-  void removeTransaction(int idTransaction) async {
+  void searchDataTransaction(String keyword) async {
+    await searchTransaction.call(keyword).then((value) {
+      _listTransaction = value;
+      tooggleIsSearch();
+      notifyListeners();
+    });
+  }
+
+  void removeTransaction({
+    required int idTransaction,
+    required VoidCallback callbackFail,
+    required VoidCallback callbackSuccess,
+  }) async {
     await deleteTransaction.call(idTransaction).then((value) {
       _listTransaction.removeWhere((element) => element.id == idTransaction);
       notifyListeners();
+      callbackSuccess.call();
     }).catchError((e) {
-      print(e.toString());
+      _setError(e.toString());
+      callbackFail.call();
+      _setError("");
     });
+  }
+
+  void _setError(String e) => _errDialogMessage = e;
+
+  void tooggleIsSearch() => _isSearch = isSearch ? false : true;
+
+  void updateRowPage(int newRowPage) {
+    _rowPage = newRowPage;
+    _offsetRowPage = 0;
+    _activeRowPage = 1;
+    setTransaction();
+  }
+
+  void nextPage() {
+    if (isSearch) {
+      return;
+    }
+
+    _offsetRowPage = offsetRowPage + rowPage;
+    _activeRowPage += 1;
+    setTransaction();
+  }
+
+  void backPage() {
+    if (isSearch) return;
+    if (offsetRowPage <= 0) {
+      return;
+    }
+
+    _offsetRowPage = offsetRowPage - rowPage;
+    _activeRowPage -= 1;
+    setTransaction();
   }
 }

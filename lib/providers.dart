@@ -10,6 +10,7 @@ import 'package:main_cashier/domain/usecase/transaction/delete_transaction_useca
 import 'package:main_cashier/domain/usecase/transaction/get_all_transaction_usecase.dart';
 import 'package:main_cashier/domain/usecase/transaction/get_counter_transaction_usecase.dart';
 import 'package:main_cashier/domain/usecase/transaction/get_detail_transaction_usecase.dart';
+import 'package:main_cashier/domain/usecase/transaction/search_transaction_usecase.dart';
 import 'package:main_cashier/domain/usecase/transaction/update_counter_transaction_usecase.dart';
 import 'package:main_cashier/domain/usecase/user/change_pass_user_usecase.dart';
 import 'package:main_cashier/domain/usecase/user/create_user_usecase.dart';
@@ -184,6 +185,10 @@ GetDetailTransaction _getDetailTransaction = GetDetailTransaction(
   repository: _transactionRepository,
 );
 
+SearchTransaction _searchTransaction = SearchTransaction(
+  repository: _transactionRepository,
+);
+
 GetCounterTransaction _getCounterTransaction = GetCounterTransaction(
   repository: _transactionRepository,
 );
@@ -234,9 +239,11 @@ List<SingleChildWidget> _listProvider = [
   ),
   ChangeNotifierProvider(
     create: (context) => TransactionTabController(
-        getAllTransaction: _getAllTransaction,
-        getDetailTransaction: _getDetailTransaction,
-        deleteTransaction: _deleteTransaction),
+      getAllTransaction: _getAllTransaction,
+      getDetailTransaction: _getDetailTransaction,
+      deleteTransaction: _deleteTransaction,
+      searchTransaction: _searchTransaction,
+    ),
   ),
   ChangeNotifierProvider(
     create: (context) => TransactionController(

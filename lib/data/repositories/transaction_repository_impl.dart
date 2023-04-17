@@ -1,12 +1,14 @@
-import 'package:main_cashier/core/error/exception.dart';
-import 'package:main_cashier/data/datasource/local/transaction_local_datasource.dart';
-import 'package:main_cashier/data/models/counter_transaction_model.dart';
-import 'package:main_cashier/domain/entity/counter_transaction_entity.dart';
-import 'package:main_cashier/domain/entity/transaction_entity.dart';
-import 'package:main_cashier/domain/repostitories/transaction_repository.dart';
+import '../../core/error/exception.dart';
 
+import '../../domain/entity/counter_transaction_entity.dart';
+import '../../domain/entity/transaction_entity.dart';
+import '../../domain/repostitories/transaction_repository.dart';
 import '../../domain/entity/detail_transaction_entity.dart';
+
+import '../models/counter_transaction_model.dart';
 import '../models/detail_transaction_model.dart';
+
+import '../datasource/local/transaction_local_datasource.dart';
 
 class TransactionRepositoryImpl implements TransactionRepository {
   final TransactionLocalDataSource transactionLocalDataSource;
@@ -25,10 +27,11 @@ class TransactionRepositoryImpl implements TransactionRepository {
 
     for (var element in list) {
       listModel.add(DetailTransactionModel(
-          id: element.id,
-          qty: element.qty,
-          total: element.total,
-          idProduct: element.idProduct));
+        id: element.id,
+        qty: element.qty,
+        total: element.total,
+        idProduct: element.idProduct,
+      ));
     }
 
     try {
@@ -76,6 +79,15 @@ class TransactionRepositoryImpl implements TransactionRepository {
       );
     } catch (_) {
       throw DatabaseDriftException("Fail get detail transaction");
+    }
+  }
+
+  @override
+  Future<List<TransactionEntity>> searchTransaction(String keyword) async {
+    try {
+      return await transactionLocalDataSource.search(keyword);
+    } catch (_) {
+      throw DatabaseDriftException("Fail search transaction");
     }
   }
 

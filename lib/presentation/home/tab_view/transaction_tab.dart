@@ -20,6 +20,8 @@ class TransactionTab extends StatefulWidget {
 }
 
 class _TransactionTabState extends State<TransactionTab> {
+  final TextEditingController tecSearch = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -53,7 +55,7 @@ class _TransactionTabState extends State<TransactionTab> {
                     SizedBox(
                       width: 200,
                       child: TextField(
-                        // controller: tecSearch,
+                        controller: tecSearch,
                         style: const TextStyle(fontSize: 14),
                         decoration: InputDecoration(
                           fillColor: Colors.white60,
@@ -72,21 +74,23 @@ class _TransactionTabState extends State<TransactionTab> {
                           ),
                           suffixIcon: InkWell(
                             onTap: () {
-                              // if (ctgTabController.isSearch) {
-                              //   ctgTabController.tooggleIsSearch();
-                              //   ctgTabController.setCategories();
-                              //   tecSearch.clear();
-                              //   return;
-                              // }
+                              if (controller.isSearch) {
+                                controller.tooggleIsSearch();
+                                controller.setTransaction();
+                                tecSearch.clear();
+                                return;
+                              }
 
-                              // if (tecSearch.text.isEmpty) return;
+                              if (tecSearch.text.isEmpty) return;
 
-                              // ctgTabController.searchDataCategories(
-                              //   tecSearch.text,
-                              // );
+                              controller.searchDataTransaction(
+                                tecSearch.text,
+                              );
                             },
-                            child: const Icon(
-                              UniconsLine.search_alt,
+                            child: Icon(
+                              controller.isSearch
+                                  ? UniconsLine.times
+                                  : UniconsLine.search_alt,
                               size: 20,
                             ),
                           ),
@@ -101,20 +105,6 @@ class _TransactionTabState extends State<TransactionTab> {
                         ElevatedButton(
                           onPressed: () {
                             context.go('/transaction');
-                            // showDialog(
-                            //   context: context,
-                            //   builder: (context) {
-                            //     return Dialog(
-                            //       shape: RoundedRectangleBorder(
-                            //         borderRadius: BorderRadius.circular(16),
-                            //       ),
-                            //       child: DialogCategoryAdd(
-                            //         ctgTabController: ctgTabController,
-                            //         tecTitle: tecTitle,
-                            //       ),
-                            //     );
-                            //   },
-                            // );
                           },
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.all(18),
@@ -150,7 +140,6 @@ class _TransactionTabState extends State<TransactionTab> {
                         width: 0.1,
                       ),
                     ),
-                    // defaultColumnWidth: FixedColumnWidth(1800 / 3),
                     columnWidths: const <int, TableColumnWidth>{
                       0: IntrinsicColumnWidth(),
                       1: IntrinsicColumnWidth(),
@@ -217,22 +206,35 @@ class _TransactionTabState extends State<TransactionTab> {
                                       IconButton(
                                         onPressed: () {
                                           controller.setDetailTransaction(
-                                            val.id,
-                                          );
-                                          showDialog(
-                                            context: context,
-                                            builder: (context) {
-                                              return Dialog(
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(16),
-                                                ),
-                                                child: DialogDetailTransaction(
-                                                  transactionEntity: val,
-                                                ),
-                                              );
-                                            },
-                                          );
+                                              idTransaction: val.id,
+                                              callbackFail: () => showDialog(
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return DialogUtils
+                                                          .dialogInformation(
+                                                        title:
+                                                            "Detail Transaction",
+                                                        message: controller
+                                                            .errDialogMessage,
+                                                        callbackConfirmation:
+                                                            () =>
+                                                                navigator.pop(),
+                                                      );
+                                                    },
+                                                  ),
+                                              callbackSuccess: () {
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return Dialog(
+                                                      child:
+                                                          DialogDetailTransaction(
+                                                        transactionEntity: val,
+                                                      ),
+                                                    );
+                                                  },
+                                                );
+                                              });
                                         },
                                         icon: const Icon(UniconsLine.eye),
                                       ),
@@ -249,9 +251,28 @@ class _TransactionTabState extends State<TransactionTab> {
                                                     "Are you sure delete this transaction ?",
                                                 callbackConfirmation: () {
                                                   controller.removeTransaction(
-                                                    val.id,
+                                                    idTransaction: val.id,
+                                                    callbackFail: () {
+                                                      showDialog(
+                                                        context: context,
+                                                        builder: (context) {
+                                                          return DialogUtils
+                                                              .dialogInformation(
+                                                            title:
+                                                                "Delete Fail",
+                                                            message:
+                                                                "Fail remove this transaction",
+                                                            callbackConfirmation:
+                                                                () {
+                                                              navigator.pop();
+                                                            },
+                                                          );
+                                                        },
+                                                      );
+                                                    },
+                                                    callbackSuccess: () =>
+                                                        navigator.pop(),
                                                   );
-                                                  navigator.pop();
                                                 },
                                                 callbackCancel: () {
                                                   navigator.pop();

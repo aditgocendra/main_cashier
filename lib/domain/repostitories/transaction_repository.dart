@@ -15,7 +15,10 @@ abstract class TransactionRepository {
   });
 
   Future<List<DetailTransactionViewEntity>> getDetailTransaction(
-      int idTransaction);
+    int idTransaction,
+  );
+
+  Future<List<TransactionEntity>> searchTransaction(String keyword);
 
   Future deleteTransaction(int id);
 
