@@ -176,9 +176,10 @@ class InventoryTabController extends ChangeNotifier {
   void changeOrderColumn(String order) {
     if (order == "Code") _orderColumn = 0;
     if (order == "Name") _orderColumn = 1;
-    if (order == "Price") _orderColumn = 2;
-    if (order == "Sold") _orderColumn = 3;
-    if (order == "Stock") _orderColumn = 4;
+    if (order == "Capital Price") _orderColumn = 2;
+    if (order == "Selling Price") _orderColumn = 3;
+    if (order == "Sold") _orderColumn = 4;
+    if (order == "Stock") _orderColumn = 5;
   }
 
   void tooggleIsSearch() => _isSearch = isSearch ? false : true;

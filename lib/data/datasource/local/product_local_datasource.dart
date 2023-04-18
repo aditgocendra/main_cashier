@@ -71,10 +71,12 @@ class ProductLocalDataSourceImpl implements ProductLocalDataSource {
                     : (orderColumn == 2)
                         ? tbl.capitalPrice
                         : (orderColumn == 3)
-                            ? tbl.sold
+                            ? tbl.sellPrice
                             : (orderColumn == 4)
-                                ? tbl.stock
-                                : tbl.codeProduct,
+                                ? tbl.sold
+                                : (orderColumn == 5)
+                                    ? tbl.stock
+                                    : tbl.codeProduct,
                 mode: orderMode ? OrderingMode.desc : OrderingMode.asc)
           ]))
           ..limit(limit, offset: offset))
