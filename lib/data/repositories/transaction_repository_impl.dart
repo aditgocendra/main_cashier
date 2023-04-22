@@ -83,6 +83,19 @@ class TransactionRepositoryImpl implements TransactionRepository {
   }
 
   @override
+  Future<List<TransactionEntity>> getTransactionWithRangeDate(
+    List<DateTime> rangeDate,
+  ) async {
+    try {
+      return await transactionLocalDataSource.getTransactionWithRangeDate(
+        rangeDate,
+      );
+    } catch (_) {
+      throw DatabaseDriftException("Fail get transaction with range");
+    }
+  }
+
+  @override
   Future<List<TransactionEntity>> searchTransaction(String keyword) async {
     try {
       return await transactionLocalDataSource.search(keyword);

@@ -17,9 +17,15 @@ abstract class TransactionLocalDataSource {
     required int offset,
   });
 
+  Future<List<TransactionModel>> getTransactionWithRangeDate(
+    List<DateTime> dateRange,
+  );
+
   Future<CounterTransactionModel> getCounterTransaction();
 
-  Future<List<TransactionModel>> search(String keyword);
+  Future<List<TransactionModel>> search(
+    String keyword,
+  );
 
   Future<bool> updateCounterTransaction(
     CounterTransactionModel counterTransactionModel,
@@ -122,6 +128,22 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
         .get();
 
     return DetailTransactionViewModel.fromTableList(result);
+  }
+
+  @override
+  Future<List<TransactionModel>> getTransactionWithRangeDate(
+    List<DateTime> dateRange,
+  ) async {
+    final result = await (databaseApp.select(databaseApp.transactionTable)
+          ..where(
+            (tbl) => tbl.dateTransaction.isBetweenValues(
+              dateRange[0],
+              dateRange[1],
+            ),
+          ))
+        .get();
+
+    return TransactionModel.fromTableList(result);
   }
 
   @override

@@ -10,6 +10,7 @@ import 'package:main_cashier/domain/usecase/transaction/delete_transaction_useca
 import 'package:main_cashier/domain/usecase/transaction/get_all_transaction_usecase.dart';
 import 'package:main_cashier/domain/usecase/transaction/get_counter_transaction_usecase.dart';
 import 'package:main_cashier/domain/usecase/transaction/get_detail_transaction_usecase.dart';
+import 'package:main_cashier/domain/usecase/transaction/get_transaction_with_range_date_usecase.dart';
 import 'package:main_cashier/domain/usecase/transaction/search_transaction_usecase.dart';
 import 'package:main_cashier/domain/usecase/transaction/update_counter_transaction_usecase.dart';
 import 'package:main_cashier/domain/usecase/user/change_pass_user_usecase.dart';
@@ -185,6 +186,11 @@ GetDetailTransaction _getDetailTransaction = GetDetailTransaction(
   repository: _transactionRepository,
 );
 
+GetTransactionWithRangeDate _getTransactionWithRangeDate =
+    GetTransactionWithRangeDate(
+  repository: _transactionRepository,
+);
+
 SearchTransaction _searchTransaction = SearchTransaction(
   repository: _transactionRepository,
 );
@@ -243,6 +249,7 @@ List<SingleChildWidget> _listProvider = [
       getDetailTransaction: _getDetailTransaction,
       deleteTransaction: _deleteTransaction,
       searchTransaction: _searchTransaction,
+      getTransactionWithRangeDate: _getTransactionWithRangeDate,
     ),
   ),
   ChangeNotifierProvider(

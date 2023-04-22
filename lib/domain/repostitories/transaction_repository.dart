@@ -18,6 +18,10 @@ abstract class TransactionRepository {
     int idTransaction,
   );
 
+  Future<List<TransactionEntity>> getTransactionWithRangeDate(
+    List<DateTime> rangeDate,
+  );
+
   Future<List<TransactionEntity>> searchTransaction(String keyword);
 
   Future deleteTransaction(int id);
