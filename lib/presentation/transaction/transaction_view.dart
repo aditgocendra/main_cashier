@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import '../../core/utils/format_utils.dart';
-
 import 'package:provider/provider.dart';
 import 'package:unicons/unicons.dart';
 
+import '../../core/utils/dialog_utils.dart';
+import '../../core/utils/format_utils.dart';
 import '../../core/components/table_components.dart';
 import '../../core/constant/color_constant.dart';
 import 'transaction_controller.dart';
@@ -76,7 +76,20 @@ class TransactionView extends StatelessWidget {
                                 if (code.isEmpty) return;
 
                                 controller.selectProductData(
-                                  tecProductAdd.text,
+                                  code: tecProductAdd.text,
+                                  callbackFail: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return DialogUtils.dialogInformation(
+                                          title: "Fail Add Product",
+                                          message: controller.errSelectProduct,
+                                          callbackConfirmation: () =>
+                                              navigator.pop(),
+                                        );
+                                      },
+                                    );
+                                  },
                                 );
 
                                 tecProductAdd.clear();

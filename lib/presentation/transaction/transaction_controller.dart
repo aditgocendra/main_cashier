@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:main_cashier/domain/usecase/transaction/update_counter_transaction_usecase.dart';
+
 import '../../core/usecase/usecase.dart';
+
+import '../../domain/usecase/transaction/update_counter_transaction_usecase.dart';
 import '../../domain/usecase/transaction/get_counter_transaction_usecase.dart';
-import '../../domain/entity/product_entity.dart';
-import '../../domain/entity/detail_transaction_entity.dart';
 import '../../domain/usecase/product/select_product_usecase.dart';
 import '../../domain/usecase/transaction/create_transaction_usecase.dart';
+import '../../domain/entity/product_entity.dart';
+import '../../domain/entity/detail_transaction_entity.dart';
 
 class TransactionController extends ChangeNotifier {
   List<ProductEntity> _listProduct = [];
@@ -20,8 +22,8 @@ class TransactionController extends ChangeNotifier {
   int _totalPay = 0;
   int get totalPay => _totalPay;
 
-  String? _errSelectProduct;
-  String? get errSelectProduct => _errSelectProduct;
+  String _errSelectProduct = "";
+  String get errSelectProduct => _errSelectProduct;
 
   final SelectProduct selectProduct;
   final CreateTransaction createTransaction;
@@ -35,16 +37,28 @@ class TransactionController extends ChangeNotifier {
     required this.updateCounterTransaction,
   });
 
-  void selectProductData(String code) async {
+  void selectProductData({
+    required String code,
+    required VoidCallback callbackFail,
+  }) async {
+    // Check product is already add or not
     if (listProduct.isNotEmpty) {
-      final product = listProduct.where((element) => element.code == code);
+      final products = listProduct.where((element) => element.code == code);
 
-      if (product.isNotEmpty) {
+      if (products.isNotEmpty) {
         return;
       }
     }
 
+    // Select product from database
     await selectProduct.call(code).then((value) {
+      if (value.stock < 1) {
+        _errSelectProduct = "This product has no stock";
+        callbackFail.call();
+        _errSelectProduct = "";
+        return;
+      }
+
       _listTecQty.add(TextEditingController(text: "1"));
       _listTotalQty.add(value.sellPrice);
 
@@ -52,7 +66,9 @@ class TransactionController extends ChangeNotifier {
       calculateTotalPay();
       notifyListeners();
     }).catchError((e) {
-      print(e.toString());
+      _errSelectProduct = e.toString();
+      callbackFail.call();
+      _errSelectProduct = "";
     });
   }
 
@@ -95,9 +111,7 @@ class TransactionController extends ChangeNotifier {
   Future<String> _generateNoInvoice() async {
     final date = DateTime.now();
 
-    var result = await getCounterTransaction.call(NoParans()).catchError(
-          (e) => print,
-        );
+    var result = await getCounterTransaction.call(NoParans());
 
     // Check month
     if (date.month > result.dateTime.month) {
@@ -108,17 +122,18 @@ class TransactionController extends ChangeNotifier {
         if (!value) {
           return;
         }
-      }).catchError((e) {
-        print(e);
-        return;
       });
     }
 
-    return "${date.day}${date.month}${date.year}-${result.totalTransaction.toString().padLeft(4, '0')}";
+    return "${date.day}${date.month.toString().padLeft(2, '0')}${date.year}-${result.totalTransaction.toString().padLeft(4, '0')}";
   }
 
   void addTransaction() async {
     List<DetailTransactionEntity> list = [];
+
+    if (listProduct.isEmpty) {
+      return;
+    }
 
     for (var i = 0; i < listProduct.length; i++) {
       list.add(DetailTransactionEntity(
