@@ -1,3 +1,5 @@
+import '../../core/utils/format_utils.dart';
+
 class TransactionEntity {
   int id;
   String numInvoice;
@@ -10,4 +12,18 @@ class TransactionEntity {
     required this.totalPay,
     required this.dateTransaction,
   });
+
+  String getIndex(int index) {
+    switch (index) {
+      case 0:
+        return numInvoice;
+      case 1:
+        return FormatUtility.currencyRp(totalPay);
+      case 2:
+        return FormatUtility.dMMMyFormat(dateTransaction);
+
+      default:
+        return '';
+    }
+  }
 }
