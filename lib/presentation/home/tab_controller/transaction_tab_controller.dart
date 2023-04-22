@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:main_cashier/domain/usecase/transaction/delete_transaction_usecase.dart';
+import 'package:main_cashier/domain/usecase/transaction/get_transaction_with_range_date_usecase.dart';
 import 'package:main_cashier/domain/usecase/transaction/search_transaction_usecase.dart';
 import '../../../domain/entity/detail_transaction_entity.dart';
 import '../../../domain/entity/transaction_entity.dart';
@@ -13,6 +14,12 @@ class TransactionTabController extends ChangeNotifier {
   List<DetailTransactionViewEntity> _listDetailTransaction = [];
   List<DetailTransactionViewEntity> get listDetailTransaction =>
       _listDetailTransaction;
+
+  List<DateTime> _rangeDatePicker = [
+    DateTime.now(),
+    DateTime.now(),
+  ];
+  List<DateTime> get rangeDatePicker => _rangeDatePicker;
 
   int _rowPage = 10;
   int get rowPage => _rowPage;
@@ -33,13 +40,22 @@ class TransactionTabController extends ChangeNotifier {
   final GetDetailTransaction getDetailTransaction;
   final DeleteTransaction deleteTransaction;
   final SearchTransaction searchTransaction;
+  final GetTransactionWithRangeDate getTransactionWithRangeDate;
 
   TransactionTabController({
     required this.getAllTransaction,
     required this.getDetailTransaction,
     required this.deleteTransaction,
     required this.searchTransaction,
+    required this.getTransactionWithRangeDate,
   });
+
+  Future<List<TransactionEntity>> getReportTransaction() async {
+    return await getTransactionWithRangeDate.call([
+      rangeDatePicker[0],
+      rangeDatePicker[1],
+    ]);
+  }
 
   void setTransaction() async {
     final params = ParamGetAllTransaction(
@@ -123,5 +139,18 @@ class TransactionTabController extends ChangeNotifier {
     _offsetRowPage = offsetRowPage - rowPage;
     _activeRowPage -= 1;
     setTransaction();
+  }
+
+  void setSelectionRangeDate(List<DateTime?> newRangeDate) {
+    final endDate = DateTime(
+      newRangeDate[1]!.year,
+      newRangeDate[1]!.month,
+      newRangeDate[1]!.day,
+      23,
+      59,
+      59,
+    );
+
+    _rangeDatePicker = [newRangeDate[0]!, endDate];
   }
 }

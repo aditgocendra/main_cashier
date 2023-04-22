@@ -1,6 +1,8 @@
+import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:main_cashier/core/utils/pdf_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:unicons/unicons.dart';
 
@@ -99,6 +101,30 @@ class _TransactionTabState extends State<TransactionTab> {
                     ),
                     Wrap(
                       children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return const Dialog(
+                                  child: DialogGenerateReport(),
+                                );
+                              },
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.all(18),
+                            backgroundColor: primaryColor,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          child: const Text(
+                            "Generate Report",
+                            style: TextStyle(fontSize: 12),
+                          ),
+                        ),
                         const SizedBox(
                           width: 12,
                         ),
@@ -575,11 +601,12 @@ class DialogDetailTransaction extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(
-          height: 16,
-        ),
         ElevatedButton(
           onPressed: () {
+            PdfUtility.generateInvoicePdf(
+              transactionEntity: transactionEntity,
+              detailTransaction: controller.listDetailTransaction,
+            );
             navigator.pop();
           },
           style: DecorationUtils.buttonDialogStyle(),
@@ -589,6 +616,62 @@ class DialogDetailTransaction extends StatelessWidget {
       callbackClose: () {
         navigator.pop();
       },
+    );
+  }
+}
+
+class DialogGenerateReport extends StatelessWidget {
+  const DialogGenerateReport({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final navigator = Navigator.of(context);
+    final controller = context.watch<TransactionTabController>();
+
+    final config = CalendarDatePicker2Config(
+      calendarType: CalendarDatePicker2Type.range,
+      selectedDayHighlightColor: primaryColor,
+      weekdayLabelTextStyle: const TextStyle(
+        color: Colors.black87,
+        fontWeight: FontWeight.bold,
+      ),
+      controlsTextStyle: const TextStyle(
+        color: Colors.black,
+        fontSize: 15,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+
+    return DialogUtils.layoutCustomDialog(
+      dialogHeaderText: "Generate Report Transaction",
+      childern: [
+        CalendarDatePicker2(
+          config: config,
+          value: controller.rangeDatePicker,
+          onValueChanged: (value) {
+            if (value.length < 2) return;
+            controller.setSelectionRangeDate(value);
+          },
+        ),
+        const SizedBox(
+          height: 16,
+        ),
+        ElevatedButton(
+          onPressed: () async {
+            final result = await controller.getReportTransaction();
+
+            await PdfUtility.generateReportTransaction(
+              rangeDate: controller.rangeDatePicker,
+              transactions: result,
+            );
+
+            navigator.pop();
+          },
+          style: DecorationUtils.buttonDialogStyle(),
+          child: const Text("Generate Invoice"),
+        ),
+      ],
+      callbackClose: () => navigator.pop(),
     );
   }
 }
