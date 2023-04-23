@@ -61,7 +61,9 @@ class PdfUtility {
 
   static Future generateReportTransaction({
     required List<DateTime> rangeDate,
-    required List<TransactionEntity> transactions,
+    required List<DetailTransactionViewEntity> reportTransaction,
+    required int omzet,
+    required int profit,
   }) async {
     final doc = pw.Document();
 
@@ -86,14 +88,17 @@ class PdfUtility {
         footer: _buildFooter,
         build: (context) => [
           // _contentHeader(context),
+          _contentHeaderReportTransaction(
+            rangeDate[0],
+            rangeDate[1],
+          ),
+          pw.SizedBox(height: 20),
           _contentTableReportTransaction(
             context,
-            transactions,
+            reportTransaction,
           ),
-          // pw.SizedBox(height: 20),
-          // _contentFooter(context),
-          // pw.SizedBox(height: 20),
-          // _termsAndConditions(context),
+          pw.SizedBox(height: 20),
+          _contentFooterReportTransaction(omzet, profit)
         ],
       ),
     );
@@ -117,68 +122,6 @@ class PdfUtility {
       ),
     );
   }
-
-  // static pw.Widget _buildHeader(pw.Context context) {
-  //   return pw.Column(
-  //     children: [
-  //       pw.Row(
-  //         crossAxisAlignment: pw.CrossAxisAlignment.start,
-  //         children: [
-  //           pw.Expanded(
-  //             child: pw.Column(
-  //               children: [
-  //                 pw.Container(
-  //                   height: 50,
-  //                   padding: const pw.EdgeInsets.only(left: 20),
-  //                   alignment: pw.Alignment.centerLeft,
-  //                   child: pw.Text(
-  //                     'INVOICE',
-  //                     style: pw.TextStyle(
-  //                       color: PdfColors.amber,
-  //                       fontWeight: pw.FontWeight.bold,
-  //                       fontSize: 20,
-  //                     ),
-  //                   ),
-  //                 ),
-  //                 pw.Container(
-  //                   decoration: pw.BoxDecoration(
-  //                     borderRadius:
-  //                         const pw.BorderRadius.all(pw.Radius.circular(2)),
-  //                     color: PdfColors.amber,
-  //                   ),
-  //                   padding: const pw.EdgeInsets.only(
-  //                     left: 20,
-  //                     top: 5,
-  //                     bottom: 5,
-  //                     right: 10,
-  //                   ),
-  //                   alignment: pw.Alignment.centerLeft,
-  //                   height: 30,
-  //                   child: pw.DefaultTextStyle(
-  //                     style: pw.TextStyle(
-  //                       color: PdfColors.amber,
-  //                       fontSize: 12,
-  //                     ),
-  //                     child: pw.GridView(
-  //                       crossAxisCount: 2,
-  //                       children: [
-  //                         pw.Text('Invoice #'),
-  //                         pw.Text("invoiceNumber"),
-  //                         pw.Text('Date:'),
-  //                         pw.Text("asdasd"),
-  //                       ],
-  //                     ),
-  //                   ),
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //       if (context.pageNumber > 1) pw.SizedBox(height: 20)
-  //     ],
-  //   );
-  // }
 
   static pw.Widget _buildFooter(pw.Context context) {
     return pw.Row(
@@ -206,7 +149,9 @@ class PdfUtility {
   }
 
   static pw.Widget _contentHeaderTransaction(
-      pw.Context context, String numInvoice) {
+    pw.Context context,
+    String numInvoice,
+  ) {
     return pw.Row(
       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
       children: [
@@ -229,7 +174,9 @@ class PdfUtility {
   }
 
   static pw.Widget _contentTableTransaction(
-      pw.Context context, List<DetailTransactionViewEntity> listTransaction) {
+    pw.Context context,
+    List<DetailTransactionViewEntity> listTransaction,
+  ) {
     const tableHeaders = [
       'Product Name',
       'Price',
@@ -281,18 +228,40 @@ class PdfUtility {
         listTransaction.length,
         (row) => List<String>.generate(
           tableHeaders.length,
-          (col) => listTransaction[row].getIndex(col),
+          (col) => listTransaction[row].getIndexInvoice(col),
         ),
       ),
     );
   }
 
+  static pw.Widget _contentHeaderReportTransaction(
+    DateTime fromDate,
+    DateTime toDate,
+  ) {
+    return pw.Row(
+      mainAxisAlignment: pw.MainAxisAlignment.end,
+      children: [
+        pw.Text(
+          '${FormatUtility.dMMMyFormat(fromDate)} - ${FormatUtility.dMMMyFormat(toDate)}',
+          style: pw.TextStyle(
+            fontSize: 8,
+            fontWeight: pw.FontWeight.bold,
+          ),
+        ),
+      ],
+    );
+  }
+
   static pw.Widget _contentTableReportTransaction(
-      pw.Context context, List<TransactionEntity> transactions) {
+      pw.Context context, List<DetailTransactionViewEntity> reportTransaction) {
     const tableHeaders = [
-      'No Invoice',
-      'Total Payment',
-      'Date Transaction',
+      'No',
+      'Product Name',
+      'Capital Price',
+      'Selling Price',
+      'Qty',
+      'Total',
+      'Date',
     ];
 
     return pw.Table.fromTextArray(
@@ -311,16 +280,21 @@ class PdfUtility {
       cellAlignments: {
         0: pw.Alignment.centerLeft,
         1: pw.Alignment.center,
-        2: pw.Alignment.centerRight,
+        2: pw.Alignment.center,
+        3: pw.Alignment.center,
+        4: pw.Alignment.center,
+        5: pw.Alignment.center,
+        6: pw.Alignment.center,
+        7: pw.Alignment.center,
       },
       headerStyle: pw.TextStyle(
         color: PdfColors.black,
-        fontSize: 12,
+        fontSize: 8,
         fontWeight: pw.FontWeight.bold,
       ),
       cellStyle: const pw.TextStyle(
         color: PdfColors.black,
-        fontSize: 12,
+        fontSize: 8,
       ),
       rowDecoration: const pw.BoxDecoration(
         border: pw.Border(
@@ -335,12 +309,59 @@ class PdfUtility {
         (col) => tableHeaders[col],
       ),
       data: List<List<String>>.generate(
-        transactions.length,
+        reportTransaction.length,
         (row) => List<String>.generate(
           tableHeaders.length,
-          (col) => transactions[row].getIndex(col),
+          (col) => reportTransaction[row].getIndexReport(col),
         ),
       ),
+    );
+  }
+
+  static pw.Widget _contentFooterReportTransaction(
+    int omzet,
+    int profit,
+  ) {
+    return pw.Row(
+      mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
+      children: [
+        pw.Column(
+          children: [
+            pw.Text(
+              "Omzet",
+              style: pw.TextStyle(
+                fontSize: 10,
+                fontWeight: pw.FontWeight.bold,
+              ),
+            ),
+            pw.Text(
+              FormatUtility.currencyRp(omzet),
+              style: pw.TextStyle(
+                fontSize: 10,
+                fontWeight: pw.FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+        pw.Column(
+          children: [
+            pw.Text(
+              "Profit",
+              style: pw.TextStyle(
+                fontSize: 10,
+                fontWeight: pw.FontWeight.bold,
+              ),
+            ),
+            pw.Text(
+              FormatUtility.currencyRp(profit),
+              style: pw.TextStyle(
+                fontSize: 10,
+                fontWeight: pw.FontWeight.bold,
+              ),
+            ),
+          ],
+        )
+      ],
     );
   }
 

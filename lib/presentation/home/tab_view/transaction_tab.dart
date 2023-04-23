@@ -2,10 +2,10 @@ import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:main_cashier/core/utils/pdf_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:unicons/unicons.dart';
 
+import '../../../core/utils/pdf_utils.dart';
 import '../../../core/utils/format_utils.dart';
 import '../../../domain/entity/transaction_entity.dart';
 import '../../../core/components/table_components.dart';
@@ -659,10 +659,14 @@ class DialogGenerateReport extends StatelessWidget {
         ElevatedButton(
           onPressed: () async {
             final result = await controller.getReportTransaction();
+            final omzet = await controller.getOmzetTransactionWithRange();
+            final profit = await controller.getProfitTransactionWithRange();
 
             await PdfUtility.generateReportTransaction(
               rangeDate: controller.rangeDatePicker,
-              transactions: result,
+              reportTransaction: result,
+              omzet: omzet!,
+              profit: profit,
             );
 
             navigator.pop();
