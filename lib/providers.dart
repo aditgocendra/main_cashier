@@ -10,6 +10,9 @@ import 'package:main_cashier/domain/usecase/transaction/delete_transaction_useca
 import 'package:main_cashier/domain/usecase/transaction/get_all_transaction_usecase.dart';
 import 'package:main_cashier/domain/usecase/transaction/get_counter_transaction_usecase.dart';
 import 'package:main_cashier/domain/usecase/transaction/get_detail_transaction_usecase.dart';
+import 'package:main_cashier/domain/usecase/transaction/get_omzet_transaction_with_range_usecase.dart';
+import 'package:main_cashier/domain/usecase/transaction/get_profit_transaction_with_range_usecase.dart';
+import 'package:main_cashier/domain/usecase/transaction/get_report_transactions_usecase.dart';
 import 'package:main_cashier/domain/usecase/transaction/get_transaction_with_range_date_usecase.dart';
 import 'package:main_cashier/domain/usecase/transaction/search_transaction_usecase.dart';
 import 'package:main_cashier/domain/usecase/transaction/update_counter_transaction_usecase.dart';
@@ -207,6 +210,18 @@ UpdateCounterTransaction _updateCounterTransaction = UpdateCounterTransaction(
   repository: _transactionRepository,
 );
 
+GetReportTransactions _getReportTransactions = GetReportTransactions(
+  repository: _transactionRepository,
+);
+
+GetOmzetWithRange _getOmzetWithRange = GetOmzetWithRange(
+  repository: _transactionRepository,
+);
+
+GetProfitWithRange _getProfitWithRange = GetProfitWithRange(
+  repository: _transactionRepository,
+);
+
 List<SingleChildWidget> _listProvider = [
   ChangeNotifierProvider(
     create: (context) => HomeController(),
@@ -249,7 +264,9 @@ List<SingleChildWidget> _listProvider = [
       getDetailTransaction: _getDetailTransaction,
       deleteTransaction: _deleteTransaction,
       searchTransaction: _searchTransaction,
-      getTransactionWithRangeDate: _getTransactionWithRangeDate,
+      getReportTransactions: _getReportTransactions,
+      getOmzetWithRange: _getOmzetWithRange,
+      getProfitWithRange: _getProfitWithRange,
     ),
   ),
   ChangeNotifierProvider(
