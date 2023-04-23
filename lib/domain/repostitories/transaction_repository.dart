@@ -22,6 +22,14 @@ abstract class TransactionRepository {
     List<DateTime> rangeDate,
   );
 
+  Future<List<DetailTransactionViewEntity>> getReportTransactions(
+    List<DateTime> rangeDate,
+  );
+
+  Future<int?> getOmzetWithRange(List<DateTime> rangeDate);
+
+  Future<int> getProfitWithRange(List<DateTime> rangeDate);
+
   Future<List<TransactionEntity>> searchTransaction(String keyword);
 
   Future deleteTransaction(int id);

@@ -127,4 +127,35 @@ class TransactionRepositoryImpl implements TransactionRepository {
       throw DatabaseDriftException("Fail update counter transaction");
     }
   }
+
+  @override
+  Future<List<DetailTransactionViewEntity>> getReportTransactions(
+    List<DateTime> rangeDate,
+  ) async {
+    try {
+      return await transactionLocalDataSource.getViewDetailTransactions(
+        rangeDate,
+      );
+    } catch (e) {
+      throw DatabaseDriftException("Fail get report transactions");
+    }
+  }
+
+  @override
+  Future<int?> getOmzetWithRange(List<DateTime> rangeDate) async {
+    try {
+      return await transactionLocalDataSource.getOmzetWithRange(rangeDate);
+    } catch (_) {
+      throw DatabaseDriftException("Fail get omzet");
+    }
+  }
+
+  @override
+  Future<int> getProfitWithRange(List<DateTime> rangeDate) async {
+    try {
+      return await transactionLocalDataSource.getProfitWithRange(rangeDate);
+    } catch (_) {
+      throw DatabaseDriftException("Fail get profit");
+    }
+  }
 }

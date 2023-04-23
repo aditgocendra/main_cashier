@@ -1,7 +1,9 @@
 import 'package:flutter/foundation.dart';
-import 'package:main_cashier/domain/usecase/transaction/delete_transaction_usecase.dart';
-import 'package:main_cashier/domain/usecase/transaction/get_transaction_with_range_date_usecase.dart';
-import 'package:main_cashier/domain/usecase/transaction/search_transaction_usecase.dart';
+import '../../../domain/usecase/transaction/delete_transaction_usecase.dart';
+import '../../../domain/usecase/transaction/get_omzet_transaction_with_range_usecase.dart';
+import '../../../domain/usecase/transaction/get_profit_transaction_with_range_usecase.dart';
+import '../../../domain/usecase/transaction/get_report_transactions_usecase.dart';
+import '../../../domain/usecase/transaction/search_transaction_usecase.dart';
 import '../../../domain/entity/detail_transaction_entity.dart';
 import '../../../domain/entity/transaction_entity.dart';
 import '../../../domain/usecase/transaction/get_detail_transaction_usecase.dart';
@@ -40,18 +42,22 @@ class TransactionTabController extends ChangeNotifier {
   final GetDetailTransaction getDetailTransaction;
   final DeleteTransaction deleteTransaction;
   final SearchTransaction searchTransaction;
-  final GetTransactionWithRangeDate getTransactionWithRangeDate;
+  final GetReportTransactions getReportTransactions;
+  final GetOmzetWithRange getOmzetWithRange;
+  final GetProfitWithRange getProfitWithRange;
 
   TransactionTabController({
     required this.getAllTransaction,
     required this.getDetailTransaction,
     required this.deleteTransaction,
     required this.searchTransaction,
-    required this.getTransactionWithRangeDate,
+    required this.getReportTransactions,
+    required this.getOmzetWithRange,
+    required this.getProfitWithRange,
   });
 
-  Future<List<TransactionEntity>> getReportTransaction() async {
-    return await getTransactionWithRangeDate.call([
+  Future<List<DetailTransactionViewEntity>> getReportTransaction() async {
+    return await getReportTransactions.call([
       rangeDatePicker[0],
       rangeDatePicker[1],
     ]);
@@ -91,6 +97,14 @@ class TransactionTabController extends ChangeNotifier {
       tooggleIsSearch();
       notifyListeners();
     });
+  }
+
+  Future<int?> getOmzetTransactionWithRange() async {
+    return await getOmzetWithRange.call(rangeDatePicker);
+  }
+
+  Future<int> getProfitTransactionWithRange() async {
+    return await getProfitWithRange.call(rangeDatePicker);
   }
 
   void removeTransaction({
