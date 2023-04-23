@@ -2219,84 +2219,109 @@ class $UserViewView extends ViewInfo<$UserViewView, UserViewData>
 }
 
 class DetailTransactionViewData extends DataClass {
+  final String no;
   final String codeProduct;
   final String name;
+  final int capitalPrice;
   final int sellPrice;
   final int qty;
   final int total;
   final int id;
+  final DateTime dateTransaction;
   const DetailTransactionViewData(
-      {required this.codeProduct,
+      {required this.no,
+      required this.codeProduct,
       required this.name,
+      required this.capitalPrice,
       required this.sellPrice,
       required this.qty,
       required this.total,
-      required this.id});
+      required this.id,
+      required this.dateTransaction});
   factory DetailTransactionViewData.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return DetailTransactionViewData(
+      no: serializer.fromJson<String>(json['no']),
       codeProduct: serializer.fromJson<String>(json['codeProduct']),
       name: serializer.fromJson<String>(json['name']),
+      capitalPrice: serializer.fromJson<int>(json['capitalPrice']),
       sellPrice: serializer.fromJson<int>(json['sellPrice']),
       qty: serializer.fromJson<int>(json['qty']),
       total: serializer.fromJson<int>(json['total']),
       id: serializer.fromJson<int>(json['id']),
+      dateTransaction: serializer.fromJson<DateTime>(json['dateTransaction']),
     );
   }
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
+      'no': serializer.toJson<String>(no),
       'codeProduct': serializer.toJson<String>(codeProduct),
       'name': serializer.toJson<String>(name),
+      'capitalPrice': serializer.toJson<int>(capitalPrice),
       'sellPrice': serializer.toJson<int>(sellPrice),
       'qty': serializer.toJson<int>(qty),
       'total': serializer.toJson<int>(total),
       'id': serializer.toJson<int>(id),
+      'dateTransaction': serializer.toJson<DateTime>(dateTransaction),
     };
   }
 
   DetailTransactionViewData copyWith(
-          {String? codeProduct,
+          {String? no,
+          String? codeProduct,
           String? name,
+          int? capitalPrice,
           int? sellPrice,
           int? qty,
           int? total,
-          int? id}) =>
+          int? id,
+          DateTime? dateTransaction}) =>
       DetailTransactionViewData(
+        no: no ?? this.no,
         codeProduct: codeProduct ?? this.codeProduct,
         name: name ?? this.name,
+        capitalPrice: capitalPrice ?? this.capitalPrice,
         sellPrice: sellPrice ?? this.sellPrice,
         qty: qty ?? this.qty,
         total: total ?? this.total,
         id: id ?? this.id,
+        dateTransaction: dateTransaction ?? this.dateTransaction,
       );
   @override
   String toString() {
     return (StringBuffer('DetailTransactionViewData(')
+          ..write('no: $no, ')
           ..write('codeProduct: $codeProduct, ')
           ..write('name: $name, ')
+          ..write('capitalPrice: $capitalPrice, ')
           ..write('sellPrice: $sellPrice, ')
           ..write('qty: $qty, ')
           ..write('total: $total, ')
-          ..write('id: $id')
+          ..write('id: $id, ')
+          ..write('dateTransaction: $dateTransaction')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(codeProduct, name, sellPrice, qty, total, id);
+  int get hashCode => Object.hash(no, codeProduct, name, capitalPrice,
+      sellPrice, qty, total, id, dateTransaction);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is DetailTransactionViewData &&
+          other.no == this.no &&
           other.codeProduct == this.codeProduct &&
           other.name == this.name &&
+          other.capitalPrice == this.capitalPrice &&
           other.sellPrice == this.sellPrice &&
           other.qty == this.qty &&
           other.total == this.total &&
-          other.id == this.id);
+          other.id == this.id &&
+          other.dateTransaction == this.dateTransaction);
 }
 
 class $DetailTransactionViewView
@@ -2313,8 +2338,17 @@ class $DetailTransactionViewView
   $DetailTransactionTableTable get detailTransactionTable =>
       attachedDatabase.detailTransactionTable.createAlias('t2');
   @override
-  List<GeneratedColumn> get $columns =>
-      [codeProduct, name, sellPrice, qty, total, id];
+  List<GeneratedColumn> get $columns => [
+        no,
+        codeProduct,
+        name,
+        capitalPrice,
+        sellPrice,
+        qty,
+        total,
+        id,
+        dateTransaction
+      ];
   @override
   String get aliasedName => _alias ?? entityName;
   @override
@@ -2328,10 +2362,14 @@ class $DetailTransactionViewView
       {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return DetailTransactionViewData(
+      no: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}no'])!,
       codeProduct: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}code_product'])!,
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      capitalPrice: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}capital_price'])!,
       sellPrice: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}sell_price'])!,
       qty: attachedDatabase.typeMapping
@@ -2340,9 +2378,15 @@ class $DetailTransactionViewView
           .read(DriftSqlType.int, data['${effectivePrefix}total'])!,
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      dateTransaction: attachedDatabase.typeMapping.read(
+          DriftSqlType.dateTime, data['${effectivePrefix}date_transaction'])!,
     );
   }
 
+  late final GeneratedColumn<String> no = GeneratedColumn<String>(
+      'no', aliasedName, false,
+      generatedAs: GeneratedAs(transactionTable.no, false),
+      type: DriftSqlType.string);
   late final GeneratedColumn<String> codeProduct = GeneratedColumn<String>(
       'code_product', aliasedName, false,
       generatedAs: GeneratedAs(productTable.codeProduct, false),
@@ -2351,6 +2395,10 @@ class $DetailTransactionViewView
       'name', aliasedName, false,
       generatedAs: GeneratedAs(productTable.name, false),
       type: DriftSqlType.string);
+  late final GeneratedColumn<int> capitalPrice = GeneratedColumn<int>(
+      'capital_price', aliasedName, false,
+      generatedAs: GeneratedAs(productTable.capitalPrice, false),
+      type: DriftSqlType.int);
   late final GeneratedColumn<int> sellPrice = GeneratedColumn<int>(
       'sell_price', aliasedName, false,
       generatedAs: GeneratedAs(productTable.sellPrice, false),
@@ -2367,6 +2415,10 @@ class $DetailTransactionViewView
       'id', aliasedName, false,
       generatedAs: GeneratedAs(transactionTable.id, false),
       type: DriftSqlType.int);
+  late final GeneratedColumn<DateTime> dateTransaction =
+      GeneratedColumn<DateTime>('date_transaction', aliasedName, false,
+          generatedAs: GeneratedAs(transactionTable.dateTransaction, false),
+          type: DriftSqlType.dateTime);
   @override
   $DetailTransactionViewView createAlias(String alias) {
     return $DetailTransactionViewView(attachedDatabase, alias);
