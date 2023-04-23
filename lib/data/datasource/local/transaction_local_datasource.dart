@@ -35,6 +35,14 @@ abstract class TransactionLocalDataSource {
     int idTransaction,
   );
 
+  Future<List<DetailTransactionViewModel>> getViewDetailTransactions(
+    List<DateTime> rangeDate,
+  );
+
+  Future<int?> getOmzetWithRange(List<DateTime> dateRange);
+
+  Future<int> getProfitWithRange(List<DateTime> dateRange);
+
   Future delete(int idTransaction);
 }
 
@@ -174,5 +182,55 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
             counterTransactionModel,
           ),
         );
+  }
+
+  @override
+  Future<List<DetailTransactionViewModel>> getViewDetailTransactions(
+    List<DateTime> rangeDate,
+  ) async {
+    final result = await (databaseApp.select(
+      databaseApp.detailTransactionView,
+    )..where(
+            (tbl) => tbl.dateTransaction.isBetweenValues(
+              rangeDate[0],
+              rangeDate[1],
+            ),
+          ))
+        .get();
+
+    return DetailTransactionViewModel.fromTableList(result);
+  }
+
+  @override
+  Future<int?> getOmzetWithRange(List<DateTime> dateRange) async {
+    final omzet = databaseApp.detailTransactionView.total.sum();
+
+    final query = (databaseApp.selectOnly(databaseApp.detailTransactionView)
+      ..where(databaseApp.detailTransactionView.dateTransaction
+          .isBetweenValues(dateRange[0], dateRange[1])))
+      ..addColumns(
+        [omzet],
+      );
+
+    return await query.map((p0) => p0.read(omzet)).getSingle();
+  }
+
+  @override
+  Future<int> getProfitWithRange(List<DateTime> dateRange) async {
+    final result = await (databaseApp.select(databaseApp.detailTransactionView)
+          ..where(
+            (tbl) => tbl.dateTransaction.isBetweenValues(
+              dateRange[0],
+              dateRange[1],
+            ),
+          ))
+        .get();
+
+    List<int> profit = [];
+
+    for (var element in result) {
+      profit.add(element.total - element.capitalPrice);
+    }
+    return profit.reduce((value, element) => value + element);
   }
 }
