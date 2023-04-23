@@ -118,12 +118,15 @@ abstract class DetailTransactionView extends View {
 
   @override
   Query as() => select([
+        transactionTable.no,
         productTable.codeProduct,
         productTable.name,
+        productTable.capitalPrice,
         productTable.sellPrice,
         detailTransactionTable.qty,
         detailTransactionTable.total,
         transactionTable.id,
+        transactionTable.dateTransaction,
       ]).from(detailTransactionTable).join([
         innerJoin(
           productTable,
