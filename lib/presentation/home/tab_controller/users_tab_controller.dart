@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:main_cashier/domain/entity/user_entity.dart';
 import 'package:main_cashier/domain/usecase/user/change_pass_user_usecase.dart';
+import 'package:main_cashier/domain/usecase/user/search_user_usecase.dart';
 import '../../../core/usecase/usecase.dart';
 import '../../../domain/entity/role_entity.dart';
 
@@ -33,6 +34,9 @@ class UsersTabController extends ChangeNotifier {
   String _errMessageDialog = "";
   String get errMessageDialog => _errMessageDialog;
 
+  bool _isSearch = false;
+  bool get isSearch => _isSearch;
+
   // Role Usecase
   final GetRole getRole;
 
@@ -42,6 +46,7 @@ class UsersTabController extends ChangeNotifier {
   final DeleteUser deleteUser;
   final UpdateUser updateUser;
   final ChangePassword changePassword;
+  final SearchUser searchUser;
 
   UsersTabController({
     required this.getRole,
@@ -50,6 +55,7 @@ class UsersTabController extends ChangeNotifier {
     required this.deleteUser,
     required this.updateUser,
     required this.changePassword,
+    required this.searchUser,
   });
 
   // Role ----------------------------------------------------------------------
@@ -124,6 +130,46 @@ class UsersTabController extends ChangeNotifier {
     });
   }
 
+  void searchDataUser(String keyword) async {
+    await searchUser.call(keyword).then((value) {
+      if (value.isNotEmpty) {
+        _listUser = value;
+        tooggleIsSearch();
+        notifyListeners();
+      }
+    });
+  }
+
   void changeRoleUserSelection(RoleEntity role) => _selectionRole = role;
   // End User ------------------------------------------------------------------
+
+  void tooggleIsSearch() => _isSearch = isSearch ? false : true;
+
+  void updateRowPage(int newRowPage) {
+    _rowPage = newRowPage;
+    _offsetRowPage = 0;
+    _activeRowPage = 1;
+    setDataUser();
+  }
+
+  void nextPage() {
+    if (isSearch) {
+      return;
+    }
+
+    _offsetRowPage = offsetRowPage + rowPage;
+    _activeRowPage += 1;
+    setDataUser();
+  }
+
+  void backPage() {
+    if (isSearch) return;
+    if (offsetRowPage <= 0) {
+      return;
+    }
+
+    _offsetRowPage = offsetRowPage - rowPage;
+    _activeRowPage -= 1;
+    setDataUser();
+  }
 }

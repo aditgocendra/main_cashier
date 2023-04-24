@@ -21,12 +21,9 @@ class UsersTab extends StatefulWidget {
 }
 
 class _UsersTabState extends State<UsersTab> {
-  // Role
-  final TextEditingController tecName = TextEditingController();
-
-  // User
   final TextEditingController tecUsername = TextEditingController();
   final TextEditingController tecPassword = TextEditingController();
+  final TextEditingController tecSearch = TextEditingController();
 
   @override
   void initState() {
@@ -58,372 +55,355 @@ class _UsersTabState extends State<UsersTab> {
               focusColor: Colors.transparent,
               highlightColor: Colors.transparent,
             ),
-            child: ExpansionTile(
-              initiallyExpanded: true,
-              title: const Text("User Data"),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Wrap(
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        alignment: WrapAlignment.spaceBetween,
-                        children: [
-                          SizedBox(
-                            width: 200,
-                            child: TextField(
-                              // controller: tecSearch,
-                              style: const TextStyle(fontSize: 14),
-                              decoration: InputDecoration(
-                                fillColor: Colors.white60,
-                                hintText: "Search",
-                                contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 16,
-                                  horizontal: 16,
-                                ),
-                                border: const OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: borderColor,
-                                  ),
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(12),
-                                  ),
-                                ),
-                                suffixIcon: InkWell(
-                                  onTap: () {
-                                    // if (ctgTabController.isSearch) {
-                                    //   ctgTabController.tooggleIsSearch();
-                                    //   ctgTabController.setCategories();
-                                    //   tecSearch.clear();
-                                    //   return;
-                                    // }
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    alignment: WrapAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        width: 200,
+                        child: TextField(
+                          // controller: tecSearch,
+                          style: const TextStyle(fontSize: 14),
+                          decoration: InputDecoration(
+                            fillColor: Colors.white60,
+                            hintText: "Search",
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 16,
+                              horizontal: 16,
+                            ),
+                            border: const OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: borderColor,
+                              ),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(12),
+                              ),
+                            ),
+                            suffixIcon: InkWell(
+                              onTap: () {
+                                if (controller.isSearch) {
+                                  controller.tooggleIsSearch();
+                                  controller.setDataUser();
+                                  tecSearch.clear();
+                                  return;
+                                }
 
-                                    // if (tecSearch.text.isEmpty) return;
+                                if (tecSearch.text.isEmpty) return;
 
-                                    // ctgTabController.searchDataCategories(
-                                    //   tecSearch.text,
-                                    // );
-                                  },
-                                  child: const Icon(
-                                    UniconsLine.search_alt,
-                                    size: 20,
-                                  ),
-                                ),
+                                controller.searchDataUser(
+                                  tecSearch.text,
+                                );
+                              },
+                              child: const Icon(
+                                UniconsLine.search_alt,
+                                size: 20,
                               ),
                             ),
                           ),
-                          Wrap(
-                            children: [
-                              const SizedBox(
-                                width: 12,
-                              ),
-                              ElevatedButton(
-                                onPressed: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return Dialog(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(16),
-                                        ),
-                                        child: DialogUserAdd(
-                                          tecUsername: tecUsername,
-                                          tecPassword: tecPassword,
-                                        ),
-                                      );
-                                    },
-                                  );
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  padding: const EdgeInsets.all(18),
-                                  backgroundColor: primaryColor,
-                                  elevation: 0,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
-                                child: const Text(
-                                  "Create User",
-                                  style: TextStyle(fontSize: 12),
-                                ),
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    SelectionArea(
-                      child: SingleChildScrollView(
-                        scrollDirection:
-                            size >= 450 ? Axis.vertical : Axis.horizontal,
-                        child: Table(
-                          border: const TableBorder(
-                            horizontalInside: BorderSide(
-                              width: 0.1,
-                            ),
-                            top: BorderSide(
-                              width: 0.1,
-                            ),
-                            bottom: BorderSide(
-                              width: 0.1,
-                            ),
-                          ),
-                          // defaultColumnWidth: FixedColumnWidth(1800 / 3),
-                          columnWidths: const <int, TableColumnWidth>{
-                            0: IntrinsicColumnWidth(),
-                            1: IntrinsicColumnWidth(),
-                            2: IntrinsicColumnWidth(),
-                            3: IntrinsicColumnWidth(),
-                          },
-                          defaultVerticalAlignment:
-                              TableCellVerticalAlignment.middle,
-                          children: <TableRow>[
-                            // Header Data Table
-                            TableComponent.headerTable(
-                              ["UID", "Username", "Role", "Action"],
-                            ),
-                            // Body Data Table
-                            ...controller.listUser.map((val) {
-                              return TableRow(
-                                children: [
-                                  TableCell(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Center(
-                                        child: Text(
-                                          val.uid.toString(),
-                                          style: const TextStyle(fontSize: 14),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  TableCell(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Center(
-                                        child: Text(
-                                          val.username,
-                                          style: const TextStyle(fontSize: 14),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  TableCell(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Center(
-                                        child: Text(
-                                          val.roleName,
-                                          style: const TextStyle(fontSize: 14),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  TableCell(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Center(
-                                        child: Wrap(
-                                          children: [
-                                            // Change Password
-                                            IconButton(
-                                              onPressed: () {
-                                                showDialog(
-                                                  context: context,
-                                                  builder: (context) {
-                                                    return Dialog(
-                                                      shape:
-                                                          RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(16),
-                                                      ),
-                                                      child:
-                                                          DialogUserChangePass(
-                                                        user: val,
-                                                        tecPassword:
-                                                            tecPassword,
-                                                      ),
-                                                    );
-                                                  },
-                                                );
-                                              },
-                                              icon: const Icon(
-                                                UniconsLine.key_skeleton_alt,
-                                              ),
-                                            ),
-
-                                            // Edit
-                                            IconButton(
-                                              onPressed: () {
-                                                showDialog(
-                                                  context: context,
-                                                  builder: (context) {
-                                                    return Dialog(
-                                                      shape:
-                                                          RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(16),
-                                                      ),
-                                                      child: DialogUserEdit(
-                                                        user: val,
-                                                        tecUsername:
-                                                            tecUsername,
-                                                        tecPassword:
-                                                            tecPassword,
-                                                      ),
-                                                    );
-                                                  },
-                                                );
-                                              },
-                                              icon:
-                                                  const Icon(UniconsLine.edit),
-                                            ),
-                                            // Delete
-                                            IconButton(
-                                              onPressed: () {
-                                                showDialog(
-                                                  context: context,
-                                                  builder: (context) {
-                                                    return DialogUtils
-                                                        .dialogConfirmation(
-                                                      title: "Delete User",
-                                                      message:
-                                                          "Are you sure delete this user ?",
-                                                      callbackConfirmation: () {
-                                                        controller.removeUser(
-                                                          val.uid,
-                                                        );
-
-                                                        navigator.pop();
-                                                      },
-                                                      callbackCancel: () {
-                                                        navigator.pop();
-                                                      },
-                                                    );
-                                                  },
-                                                );
-                                              },
-                                              icon:
-                                                  const Icon(UniconsLine.trash),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              );
-                            }).toList()
-                          ],
                         ),
                       ),
-                    ),
-                    // Footer
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Wrap(
-                        alignment: WrapAlignment.spaceBetween,
-                        crossAxisAlignment: WrapCrossAlignment.center,
+                      Wrap(
                         children: [
-                          Wrap(
-                            crossAxisAlignment: WrapCrossAlignment.center,
-                            children: [
-                              const Text(
-                                "Rows per page",
-                                style: TextStyle(
-                                  fontSize: 12,
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 8,
-                              ),
-                              SizedBox(
-                                width: 75,
-                                child: DropdownSearch<int>(
-                                  items: const [10, 25, 50],
-                                  selectedItem: 10,
-                                  onChanged: (int? value) {
-                                    // ctgTabController.updateRowPage(value!);
-                                  },
-                                  popupProps: PopupProps.menu(
-                                    fit: FlexFit.loose,
-                                    menuProps: const MenuProps(
-                                      backgroundColor: Colors.transparent,
-                                      elevation: 0,
-                                    ),
-                                    containerBuilder: (ctx, popupWidget) {
-                                      return Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          const SizedBox(
-                                            height: 12,
-                                          ),
-                                          Flexible(
-                                            child: Container(
-                                              decoration: const BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius: BorderRadius.all(
-                                                  Radius.circular(12.0),
-                                                ),
-                                              ),
-                                              child: popupWidget,
-                                            ),
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  ),
-                                  dropdownDecoratorProps:
-                                      const DropDownDecoratorProps(
-                                    dropdownSearchDecoration: InputDecoration(
-                                      contentPadding: EdgeInsets.all(8.0),
-                                      border: OutlineInputBorder(
-                                        borderSide: BorderSide.none,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
+                          const SizedBox(
+                            width: 12,
                           ),
-                          Wrap(
-                            alignment: WrapAlignment.center,
-                            crossAxisAlignment: WrapCrossAlignment.center,
-                            children: [
-                              // Back Page
-                              IconButton(
-                                onPressed: () {
-                                  // ctgTabController.backPage();
+                          ElevatedButton(
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return Dialog(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    child: DialogUserAdd(
+                                      tecUsername: tecUsername,
+                                      tecPassword: tecPassword,
+                                    ),
+                                  );
                                 },
-                                icon: const Icon(Icons.keyboard_arrow_left),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.all(18),
+                              backgroundColor: primaryColor,
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
                               ),
-                              const Text(
-                                "1",
-                                // ctgTabController.activeRowPage.toString(),
-                                style: TextStyle(
-                                  fontSize: 12.5,
-                                ),
-                              ),
-                              // Next Page
-                              IconButton(
-                                onPressed: () {
-                                  // ctgTabController.nextPage();
-                                },
-                                icon: const Icon(Icons.keyboard_arrow_right),
-                              ),
-                            ],
+                            ),
+                            child: const Text(
+                              "Create User",
+                              style: TextStyle(fontSize: 12),
+                            ),
                           )
                         ],
                       ),
+                    ],
+                  ),
+                ),
+                SelectionArea(
+                  child: SingleChildScrollView(
+                    scrollDirection:
+                        size >= 450 ? Axis.vertical : Axis.horizontal,
+                    child: Table(
+                      border: const TableBorder(
+                        horizontalInside: BorderSide(
+                          width: 0.1,
+                        ),
+                        top: BorderSide(
+                          width: 0.1,
+                        ),
+                        bottom: BorderSide(
+                          width: 0.1,
+                        ),
+                      ),
+                      // defaultColumnWidth: FixedColumnWidth(1800 / 3),
+                      columnWidths: const <int, TableColumnWidth>{
+                        0: IntrinsicColumnWidth(),
+                        1: IntrinsicColumnWidth(),
+                        2: IntrinsicColumnWidth(),
+                        3: IntrinsicColumnWidth(),
+                      },
+                      defaultVerticalAlignment:
+                          TableCellVerticalAlignment.middle,
+                      children: <TableRow>[
+                        // Header Data Table
+                        TableComponent.headerTable(
+                          ["UID", "Username", "Role", "Action"],
+                        ),
+                        // Body Data Table
+                        ...controller.listUser.map((val) {
+                          return TableRow(
+                            children: [
+                              TableCell(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Center(
+                                    child: Text(
+                                      val.uid.toString(),
+                                      style: const TextStyle(fontSize: 14),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              TableCell(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Center(
+                                    child: Text(
+                                      val.username,
+                                      style: const TextStyle(fontSize: 14),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              TableCell(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Center(
+                                    child: Text(
+                                      val.roleName,
+                                      style: const TextStyle(fontSize: 14),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              TableCell(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Center(
+                                    child: Wrap(
+                                      children: [
+                                        // Change Password
+                                        IconButton(
+                                          onPressed: () {
+                                            showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return Dialog(
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            16),
+                                                  ),
+                                                  child: DialogUserChangePass(
+                                                    user: val,
+                                                    tecPassword: tecPassword,
+                                                  ),
+                                                );
+                                              },
+                                            );
+                                          },
+                                          icon: const Icon(
+                                            UniconsLine.key_skeleton_alt,
+                                          ),
+                                        ),
+
+                                        // Edit
+                                        IconButton(
+                                          onPressed: () {
+                                            showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return Dialog(
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            16),
+                                                  ),
+                                                  child: DialogUserEdit(
+                                                    user: val,
+                                                    tecUsername: tecUsername,
+                                                    tecPassword: tecPassword,
+                                                  ),
+                                                );
+                                              },
+                                            );
+                                          },
+                                          icon: const Icon(UniconsLine.edit),
+                                        ),
+                                        // Delete
+                                        IconButton(
+                                          onPressed: () {
+                                            showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return DialogUtils
+                                                    .dialogConfirmation(
+                                                  title: "Delete User",
+                                                  message:
+                                                      "Are you sure delete this user ?",
+                                                  callbackConfirmation: () {
+                                                    controller.removeUser(
+                                                      val.uid,
+                                                    );
+
+                                                    navigator.pop();
+                                                  },
+                                                  callbackCancel: () {
+                                                    navigator.pop();
+                                                  },
+                                                );
+                                              },
+                                            );
+                                          },
+                                          icon: const Icon(UniconsLine.trash),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        }).toList()
+                      ],
                     ),
-                  ],
+                  ),
+                ),
+                // Footer
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Wrap(
+                    alignment: WrapAlignment.spaceBetween,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          const Text(
+                            "Rows per page",
+                            style: TextStyle(
+                              fontSize: 12,
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          SizedBox(
+                            width: 75,
+                            child: DropdownSearch<int>(
+                              items: const [10, 25, 50],
+                              selectedItem: 10,
+                              onChanged: (int? value) {
+                                controller.updateRowPage(value!);
+                              },
+                              popupProps: PopupProps.menu(
+                                fit: FlexFit.loose,
+                                menuProps: const MenuProps(
+                                  backgroundColor: Colors.transparent,
+                                  elevation: 0,
+                                ),
+                                containerBuilder: (ctx, popupWidget) {
+                                  return Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      const SizedBox(
+                                        height: 12,
+                                      ),
+                                      Flexible(
+                                        child: Container(
+                                          decoration: const BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(12.0),
+                                            ),
+                                          ),
+                                          child: popupWidget,
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              ),
+                              dropdownDecoratorProps:
+                                  const DropDownDecoratorProps(
+                                dropdownSearchDecoration: InputDecoration(
+                                  contentPadding: EdgeInsets.all(8.0),
+                                  border: OutlineInputBorder(
+                                    borderSide: BorderSide.none,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Wrap(
+                        alignment: WrapAlignment.center,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          // Back Page
+                          IconButton(
+                            onPressed: () {
+                              controller.backPage();
+                            },
+                            icon: const Icon(Icons.keyboard_arrow_left),
+                          ),
+                          Text(
+                            controller.activeRowPage.toString(),
+                            style: const TextStyle(
+                              fontSize: 12.5,
+                            ),
+                          ),
+                          // Next Page
+                          IconButton(
+                            onPressed: () {
+                              controller.nextPage();
+                            },
+                            icon: const Icon(Icons.keyboard_arrow_right),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
                 ),
               ],
             ),

@@ -14,6 +14,8 @@ abstract class UserRepository {
     required String pass,
   });
 
+  Future<List<UserViewEntity>> searchUser(String keyword);
+
   Future<int> deleteUser(String uid);
 
   Future<List<UserViewEntity>> getViewUser({

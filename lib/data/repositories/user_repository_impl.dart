@@ -80,4 +80,13 @@ class UserRepositoryImpl implements UserRepository {
       throw DatabaseDriftException("Change password user fail");
     }
   }
+
+  @override
+  Future<List<UserViewEntity>> searchUser(String keyword) async {
+    try {
+      return await userLocalDataSource.search(keyword);
+    } catch (e) {
+      throw DatabaseDriftException("Search data user fail");
+    }
+  }
 }
