@@ -45,3 +45,11 @@ const List<Map<String, dynamic>> listCardTop = [
     'icon': UniconsLine.money_insert,
   },
 ];
+
+const List<String> listColorApp = [
+  "Primary Color",
+  "Primary Light Color",
+  "Background Color",
+  "Canvas Color",
+  "Border Color"
+];
