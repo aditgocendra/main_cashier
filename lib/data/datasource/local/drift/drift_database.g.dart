@@ -1443,6 +1443,334 @@ class DetailTransactionTableCompanion
   }
 }
 
+class $ColorAppTableTable extends ColorAppTable
+    with TableInfo<$ColorAppTableTable, ColorAppTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ColorAppTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _primaryMeta =
+      const VerificationMeta('primary');
+  @override
+  late final GeneratedColumn<int> primary = GeneratedColumn<int>(
+      'primary', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _primaryLightMeta =
+      const VerificationMeta('primaryLight');
+  @override
+  late final GeneratedColumn<int> primaryLight = GeneratedColumn<int>(
+      'primary_light', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _backgroundMeta =
+      const VerificationMeta('background');
+  @override
+  late final GeneratedColumn<int> background = GeneratedColumn<int>(
+      'background', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _canvasMeta = const VerificationMeta('canvas');
+  @override
+  late final GeneratedColumn<int> canvas = GeneratedColumn<int>(
+      'canvas', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _borderMeta = const VerificationMeta('border');
+  @override
+  late final GeneratedColumn<int> border = GeneratedColumn<int>(
+      'border', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, primary, primaryLight, background, canvas, border];
+  @override
+  String get aliasedName => _alias ?? 'color_app_table';
+  @override
+  String get actualTableName => 'color_app_table';
+  @override
+  VerificationContext validateIntegrity(Insertable<ColorAppTableData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('primary')) {
+      context.handle(_primaryMeta,
+          primary.isAcceptableOrUnknown(data['primary']!, _primaryMeta));
+    } else if (isInserting) {
+      context.missing(_primaryMeta);
+    }
+    if (data.containsKey('primary_light')) {
+      context.handle(
+          _primaryLightMeta,
+          primaryLight.isAcceptableOrUnknown(
+              data['primary_light']!, _primaryLightMeta));
+    } else if (isInserting) {
+      context.missing(_primaryLightMeta);
+    }
+    if (data.containsKey('background')) {
+      context.handle(
+          _backgroundMeta,
+          background.isAcceptableOrUnknown(
+              data['background']!, _backgroundMeta));
+    } else if (isInserting) {
+      context.missing(_backgroundMeta);
+    }
+    if (data.containsKey('canvas')) {
+      context.handle(_canvasMeta,
+          canvas.isAcceptableOrUnknown(data['canvas']!, _canvasMeta));
+    } else if (isInserting) {
+      context.missing(_canvasMeta);
+    }
+    if (data.containsKey('border')) {
+      context.handle(_borderMeta,
+          border.isAcceptableOrUnknown(data['border']!, _borderMeta));
+    } else if (isInserting) {
+      context.missing(_borderMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ColorAppTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ColorAppTableData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      primary: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}primary'])!,
+      primaryLight: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}primary_light'])!,
+      background: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}background'])!,
+      canvas: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}canvas'])!,
+      border: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}border'])!,
+    );
+  }
+
+  @override
+  $ColorAppTableTable createAlias(String alias) {
+    return $ColorAppTableTable(attachedDatabase, alias);
+  }
+}
+
+class ColorAppTableData extends DataClass
+    implements Insertable<ColorAppTableData> {
+  final int id;
+  final int primary;
+  final int primaryLight;
+  final int background;
+  final int canvas;
+  final int border;
+  const ColorAppTableData(
+      {required this.id,
+      required this.primary,
+      required this.primaryLight,
+      required this.background,
+      required this.canvas,
+      required this.border});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['primary'] = Variable<int>(primary);
+    map['primary_light'] = Variable<int>(primaryLight);
+    map['background'] = Variable<int>(background);
+    map['canvas'] = Variable<int>(canvas);
+    map['border'] = Variable<int>(border);
+    return map;
+  }
+
+  ColorAppTableCompanion toCompanion(bool nullToAbsent) {
+    return ColorAppTableCompanion(
+      id: Value(id),
+      primary: Value(primary),
+      primaryLight: Value(primaryLight),
+      background: Value(background),
+      canvas: Value(canvas),
+      border: Value(border),
+    );
+  }
+
+  factory ColorAppTableData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ColorAppTableData(
+      id: serializer.fromJson<int>(json['id']),
+      primary: serializer.fromJson<int>(json['primary']),
+      primaryLight: serializer.fromJson<int>(json['primaryLight']),
+      background: serializer.fromJson<int>(json['background']),
+      canvas: serializer.fromJson<int>(json['canvas']),
+      border: serializer.fromJson<int>(json['border']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'primary': serializer.toJson<int>(primary),
+      'primaryLight': serializer.toJson<int>(primaryLight),
+      'background': serializer.toJson<int>(background),
+      'canvas': serializer.toJson<int>(canvas),
+      'border': serializer.toJson<int>(border),
+    };
+  }
+
+  ColorAppTableData copyWith(
+          {int? id,
+          int? primary,
+          int? primaryLight,
+          int? background,
+          int? canvas,
+          int? border}) =>
+      ColorAppTableData(
+        id: id ?? this.id,
+        primary: primary ?? this.primary,
+        primaryLight: primaryLight ?? this.primaryLight,
+        background: background ?? this.background,
+        canvas: canvas ?? this.canvas,
+        border: border ?? this.border,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('ColorAppTableData(')
+          ..write('id: $id, ')
+          ..write('primary: $primary, ')
+          ..write('primaryLight: $primaryLight, ')
+          ..write('background: $background, ')
+          ..write('canvas: $canvas, ')
+          ..write('border: $border')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, primary, primaryLight, background, canvas, border);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ColorAppTableData &&
+          other.id == this.id &&
+          other.primary == this.primary &&
+          other.primaryLight == this.primaryLight &&
+          other.background == this.background &&
+          other.canvas == this.canvas &&
+          other.border == this.border);
+}
+
+class ColorAppTableCompanion extends UpdateCompanion<ColorAppTableData> {
+  final Value<int> id;
+  final Value<int> primary;
+  final Value<int> primaryLight;
+  final Value<int> background;
+  final Value<int> canvas;
+  final Value<int> border;
+  const ColorAppTableCompanion({
+    this.id = const Value.absent(),
+    this.primary = const Value.absent(),
+    this.primaryLight = const Value.absent(),
+    this.background = const Value.absent(),
+    this.canvas = const Value.absent(),
+    this.border = const Value.absent(),
+  });
+  ColorAppTableCompanion.insert({
+    this.id = const Value.absent(),
+    required int primary,
+    required int primaryLight,
+    required int background,
+    required int canvas,
+    required int border,
+  })  : primary = Value(primary),
+        primaryLight = Value(primaryLight),
+        background = Value(background),
+        canvas = Value(canvas),
+        border = Value(border);
+  static Insertable<ColorAppTableData> custom({
+    Expression<int>? id,
+    Expression<int>? primary,
+    Expression<int>? primaryLight,
+    Expression<int>? background,
+    Expression<int>? canvas,
+    Expression<int>? border,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (primary != null) 'primary': primary,
+      if (primaryLight != null) 'primary_light': primaryLight,
+      if (background != null) 'background': background,
+      if (canvas != null) 'canvas': canvas,
+      if (border != null) 'border': border,
+    });
+  }
+
+  ColorAppTableCompanion copyWith(
+      {Value<int>? id,
+      Value<int>? primary,
+      Value<int>? primaryLight,
+      Value<int>? background,
+      Value<int>? canvas,
+      Value<int>? border}) {
+    return ColorAppTableCompanion(
+      id: id ?? this.id,
+      primary: primary ?? this.primary,
+      primaryLight: primaryLight ?? this.primaryLight,
+      background: background ?? this.background,
+      canvas: canvas ?? this.canvas,
+      border: border ?? this.border,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (primary.present) {
+      map['primary'] = Variable<int>(primary.value);
+    }
+    if (primaryLight.present) {
+      map['primary_light'] = Variable<int>(primaryLight.value);
+    }
+    if (background.present) {
+      map['background'] = Variable<int>(background.value);
+    }
+    if (canvas.present) {
+      map['canvas'] = Variable<int>(canvas.value);
+    }
+    if (border.present) {
+      map['border'] = Variable<int>(border.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ColorAppTableCompanion(')
+          ..write('id: $id, ')
+          ..write('primary: $primary, ')
+          ..write('primaryLight: $primaryLight, ')
+          ..write('background: $background, ')
+          ..write('canvas: $canvas, ')
+          ..write('border: $border')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class ProductViewData extends DataClass {
   final String codeProduct;
   final String name;
@@ -2450,6 +2778,7 @@ abstract class _$DatabaseApp extends GeneratedDatabase {
       $TransactionTableTable(this);
   late final $DetailTransactionTableTable detailTransactionTable =
       $DetailTransactionTableTable(this);
+  late final $ColorAppTableTable colorAppTable = $ColorAppTableTable(this);
   late final $ProductViewView productView = $ProductViewView(this);
   late final $RoleTableTable roleTable = $RoleTableTable(this);
   late final $UserTableTable userTable = $UserTableTable(this);
@@ -2466,6 +2795,7 @@ abstract class _$DatabaseApp extends GeneratedDatabase {
         counterTransactionTable,
         transactionTable,
         detailTransactionTable,
+        colorAppTable,
         productView,
         roleTable,
         userTable,

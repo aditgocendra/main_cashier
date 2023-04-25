@@ -5,6 +5,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 import 'package:uuid/uuid.dart';
 
+import '../../../../core/constant/color_constant.dart';
 part 'drift_database.g.dart';
 
 const _uuid = Uuid();
@@ -64,6 +65,15 @@ class DetailTransactionTable extends Table {
   IntColumn get total => integer()();
   TextColumn get codeProduct => text().references(ProductTable, #codeProduct)();
   IntColumn get idTransaction => integer().references(TransactionTable, #id)();
+}
+
+class ColorAppTable extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get primary => integer()();
+  IntColumn get primaryLight => integer()();
+  IntColumn get background => integer()();
+  IntColumn get canvas => integer()();
+  IntColumn get border => integer()();
 }
 
 abstract class ProductView extends View {
@@ -149,7 +159,8 @@ abstract class DetailTransactionView extends View {
     ProductTable,
     CounterTransactionTable,
     TransactionTable,
-    DetailTransactionTable
+    DetailTransactionTable,
+    ColorAppTable,
   ],
   views: [
     ProductView,
@@ -181,6 +192,14 @@ class DatabaseApp extends _$DatabaseApp {
               date: DateTime.now(),
             ),
           );
+
+          await into(colorAppTable).insert(ColorAppTableCompanion.insert(
+            primary: primaryColor.value,
+            primaryLight: primaryLightColor.value,
+            background: backgroundColor.value,
+            canvas: canvasColor.value,
+            border: borderColor.value,
+          ));
         }
       },
     );
