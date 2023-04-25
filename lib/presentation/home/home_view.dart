@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'tab_view/settings_tab.dart';
 import 'tab_view/transaction_tab.dart';
 import 'tab_view/users_tab.dart';
 import 'tab_view/category_tab.dart';
@@ -80,9 +81,7 @@ class _TabScreenState extends State<TabScreen>
         CategoryTab(),
         TransactionTab(),
         UsersTab(),
-        Center(
-          child: Text('6'),
-        ),
+        SettingsTab(),
       ],
     );
   }
