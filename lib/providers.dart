@@ -1,3 +1,9 @@
+import 'package:main_cashier/data/datasource/local/color_app_local_datasource.dart';
+import 'package:main_cashier/data/repositories/color_app_repository_impl.dart';
+import 'package:main_cashier/domain/repostitories/color_app_repository.dart';
+import 'package:main_cashier/domain/usecase/color_app/get_color_app_usecase.dart';
+import 'package:main_cashier/domain/usecase/color_app/update_color_app_usecase.dart';
+import 'package:main_cashier/presentation/home/tab_controller/settings_tab_controller.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -82,6 +88,10 @@ TransactionLocalDataSource _transactionLocalDataSource =
   databaseApp: _databaseApp,
 );
 
+ColorAppLocalDataSource _colorAppLocalDataSource = ColorAppLocalDataSourceImpl(
+  databaseApp: _databaseApp,
+);
+
 // Repository
 CategoryRepository _categoryRepository = CategoryRepositoryImpl(
   categoryLocalDataSource: _categoryLocalDataSource,
@@ -101,6 +111,10 @@ UserRepository _userRepository = UserRepositoryImpl(
 
 TransactionRepository _transactionRepository = TransactionRepositoryImpl(
   transactionLocalDataSource: _transactionLocalDataSource,
+);
+
+ColorAppRepository _colorAppRepository = ColorAppRepositoryImpl(
+  colorAppLocalDataSource: _colorAppLocalDataSource,
 );
 
 // Category Usecase
@@ -220,6 +234,15 @@ GetProfitWithRange _getProfitWithRange = GetProfitWithRange(
   repository: _transactionRepository,
 );
 
+// Color App Usecase
+GetColorApp _getColorApp = GetColorApp(
+  repository: _colorAppRepository,
+);
+
+UpdateColorApp _updateColorApp = UpdateColorApp(
+  repository: _colorAppRepository,
+);
+
 List<SingleChildWidget> _listProvider = [
   ChangeNotifierProvider(
     create: (context) => HomeController(),
@@ -274,6 +297,12 @@ List<SingleChildWidget> _listProvider = [
       createTransaction: _createTransaction,
       getCounterTransaction: _getCounterTransaction,
       updateCounterTransaction: _updateCounterTransaction,
+    ),
+  ),
+  ChangeNotifierProvider(
+    create: (context) => SettingsTabController(
+      getColorApp: _getColorApp,
+      updateColorApp: _updateColorApp,
     ),
   )
 ];
