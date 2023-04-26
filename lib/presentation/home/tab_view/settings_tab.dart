@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:main_cashier/core/utils/dialog_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:unicons/unicons.dart';
 
+import '../../../core/utils/dialog_utils.dart';
 import '../../../core/constant/color_constant.dart';
 import '../../../core/constant/list_constant.dart';
 import '../tab_controller/settings_tab_controller.dart';
@@ -190,7 +190,7 @@ class _SettingsTabState extends State<SettingsTab> {
           height: 24,
         ),
         Container(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: canvasColor,
             borderRadius: BorderRadius.circular(16),
@@ -198,10 +198,31 @@ class _SettingsTabState extends State<SettingsTab> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: const [
-              Text(
-                "Path Folder",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              )
+              Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text(
+                  "Path Folder",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+              ListTile(
+                title: Text(
+                  "Invoice",
+                  style: TextStyle(fontSize: 14),
+                ),
+                trailing: InkWell(
+                  child: Icon(UniconsLine.folder),
+                ),
+              ),
+              ListTile(
+                title: Text(
+                  "Report",
+                  style: TextStyle(fontSize: 14),
+                ),
+                trailing: InkWell(
+                  child: Icon(UniconsLine.folder),
+                ),
+              ),
             ],
           ),
         )
