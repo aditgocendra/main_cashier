@@ -3,10 +3,16 @@ import 'package:flutter/material.dart';
 import '../../../core/constant/color_constant.dart';
 
 class ItemTopDashboard extends StatelessWidget {
-  final Map<String, dynamic> item;
+  final String title;
+  final String desc;
+  final String value;
+  final IconData icon;
 
   const ItemTopDashboard({
-    required this.item,
+    required this.title,
+    required this.value,
+    required this.desc,
+    required this.icon,
     super.key,
   });
 
@@ -16,7 +22,7 @@ class ItemTopDashboard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          item['title'],
+          title,
           style: const TextStyle(
             fontSize: 14,
             color: Colors.black,
@@ -34,16 +40,16 @@ class ItemTopDashboard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(
-                item['icon'],
+                icon,
                 color: primaryColor,
               ),
             ),
             const SizedBox(
               width: 12,
             ),
-            const Text(
-              '80',
-              style: TextStyle(
+            Text(
+              value,
+              style: const TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
                 color: Colors.black,
@@ -54,9 +60,9 @@ class ItemTopDashboard extends StatelessWidget {
         const SizedBox(
           height: 20,
         ),
-        const Text(
-          'Last store added on 23 Dec 2022',
-          style: TextStyle(
+        Text(
+          desc,
+          style: const TextStyle(
             fontSize: 12,
             color: Colors.black54,
           ),
