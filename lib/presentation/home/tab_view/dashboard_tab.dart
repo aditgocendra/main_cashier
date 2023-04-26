@@ -1,15 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:main_cashier/core/utils/format_utils.dart';
+import 'package:main_cashier/presentation/home/tab_controller/dashboard_tab_controller.dart';
+import 'package:provider/provider.dart';
+import 'package:unicons/unicons.dart';
 
 import '../../../core/constant/color_constant.dart';
-import '../../../core/constant/list_constant.dart';
 import '../widgets/item_top_dashboard.dart';
 
-class DashboardTab extends StatelessWidget {
+class DashboardTab extends StatefulWidget {
   const DashboardTab({super.key});
 
   @override
+  State<DashboardTab> createState() => _DashboardTabState();
+}
+
+class _DashboardTabState extends State<DashboardTab> {
+  @override
+  void initState() {
+    super.initState();
+
+    final controller = context.read<DashboardTabController>();
+    controller.initData();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final controller = context.watch<DashboardTabController>();
     final sizeScreen = MediaQuery.of(context).size;
+
     double aspectRatio = sizeScreen.width / 780;
     int crossAxisGrid = 4;
 
@@ -39,22 +57,57 @@ class DashboardTab extends StatelessWidget {
               color: canvasColor,
               borderRadius: BorderRadius.circular(16),
             ),
-            child: GridView.builder(
-              primary: false,
+            // child: GridView.builder(
+            //   primary: false,
+            //   shrinkWrap: true,
+            //   padding: const EdgeInsets.all(64),
+            //   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            //     crossAxisCount: crossAxisGrid,
+            //     childAspectRatio: aspectRatio,
+            //     crossAxisSpacing: 32,
+            //     mainAxisSpacing: 32,
+            //   ),
+            //   itemCount: listCardTop.length,
+            //   itemBuilder: (context, index) {
+            //     return ItemTopDashboard(
+            //       item: listCardTop[index],
+            //     );
+            //   },
+            // ),
+            child: GridView.count(
               shrinkWrap: true,
+              primary: false,
               padding: const EdgeInsets.all(64),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: crossAxisGrid,
-                childAspectRatio: aspectRatio,
-                crossAxisSpacing: 32,
-                mainAxisSpacing: 32,
-              ),
-              itemCount: listCardTop.length,
-              itemBuilder: (context, index) {
-                return ItemTopDashboard(
-                  item: listCardTop[index],
-                );
-              },
+              crossAxisCount: crossAxisGrid,
+              childAspectRatio: aspectRatio,
+              crossAxisSpacing: 32,
+              mainAxisSpacing: 32,
+              children: [
+                ItemTopDashboard(
+                  icon: UniconsLine.archive_alt,
+                  title: "Total Product",
+                  desc: "Last added product",
+                  value: controller.totalProduct.toString(),
+                ),
+                ItemTopDashboard(
+                  icon: UniconsLine.apps,
+                  title: "Total Category",
+                  desc: "Last added category",
+                  value: controller.totalCategory.toString(),
+                ),
+                ItemTopDashboard(
+                  icon: UniconsLine.transaction,
+                  title: "Total Transaction",
+                  desc: "Last transaction",
+                  value: 40.toString(),
+                ),
+                ItemTopDashboard(
+                  icon: UniconsLine.money_insert,
+                  title: "Profit",
+                  desc: "Overall Profit",
+                  value: FormatUtility.currencyRp(40000),
+                ),
+              ],
             ),
           ),
         ],
