@@ -1,8 +1,11 @@
 import 'package:main_cashier/data/datasource/local/color_app_local_datasource.dart';
 import 'package:main_cashier/data/repositories/color_app_repository_impl.dart';
 import 'package:main_cashier/domain/repostitories/color_app_repository.dart';
+import 'package:main_cashier/domain/usecase/category/get_total_category_usecase.dart';
 import 'package:main_cashier/domain/usecase/color_app/get_color_app_usecase.dart';
 import 'package:main_cashier/domain/usecase/color_app/update_color_app_usecase.dart';
+import 'package:main_cashier/domain/usecase/product/get_total_product_usecase.dart';
+import 'package:main_cashier/presentation/home/tab_controller/dashboard_tab_controller.dart';
 import 'package:main_cashier/presentation/home/tab_controller/settings_tab_controller.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
@@ -138,6 +141,10 @@ UpdateCategory _updateCategory = UpdateCategory(
   repository: _categoryRepository,
 );
 
+GetTotalCategory _getTotalCategory = GetTotalCategory(
+  repository: _categoryRepository,
+);
+
 // Product Usecase
 GetProductView _getProductView = GetProductView(
   repository: _productRepository,
@@ -160,6 +167,10 @@ SearchProduct _searchProduct = SearchProduct(
 );
 
 SelectProduct _selectProduct = SelectProduct(
+  repository: _productRepository,
+);
+
+GetTotalProduct _getTotalProduct = GetTotalProduct(
   repository: _productRepository,
 );
 
@@ -303,6 +314,12 @@ List<SingleChildWidget> _listProvider = [
     create: (context) => SettingsTabController(
       getColorApp: _getColorApp,
       updateColorApp: _updateColorApp,
+    ),
+  ),
+  ChangeNotifierProvider(
+    create: (context) => DashboardTabController(
+      getTotalCategory: _getTotalCategory,
+      getTotalProduct: _getTotalProduct,
     ),
   )
 ];
