@@ -10,4 +10,6 @@ abstract class CategoryRepository {
   Future<bool> updateCategory(CategoryEntity ctg);
 
   Future<int> deleteCategory(CategoryEntity ctg);
+
+  Future<int?> getTotalCategory();
 }

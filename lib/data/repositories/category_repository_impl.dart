@@ -66,4 +66,13 @@ class CategoryRepositoryImpl implements CategoryRepository {
       throw DatabaseDriftException('Fail search keyword $keyword in category');
     }
   }
+
+  @override
+  Future<int?> getTotalCategory() async {
+    try {
+      return await categoryLocalDataSource.getTotal();
+    } catch (_) {
+      throw DatabaseDriftException("Fail get total category");
+    }
+  }
 }

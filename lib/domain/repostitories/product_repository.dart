@@ -17,4 +17,6 @@ abstract class ProductRepository {
   Future<ProductViewEntity> updateProduct(ProductEntity productEntity);
 
   Future<ProductEntity> selectProduct(String code);
+
+  Future<int?> getTotalProduct();
 }

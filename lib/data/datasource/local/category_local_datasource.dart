@@ -1,5 +1,4 @@
 import 'package:drift/drift.dart';
-
 import 'drift/drift_database.dart';
 import '../../models/category_model.dart';
 
@@ -13,6 +12,8 @@ abstract class CategoryLocalDataSource {
   Future<bool> update(CategoryModel categoryModel);
 
   Future<int> delete(CategoryModel categoryModel);
+
+  Future<int?> getTotal();
 }
 
 class CategoryLocalDataSourceImpl implements CategoryLocalDataSource {
@@ -68,5 +69,16 @@ class CategoryLocalDataSourceImpl implements CategoryLocalDataSource {
         .get();
 
     return CategoryModel.fromTableList(result);
+  }
+
+  @override
+  Future<int?> getTotal() async {
+    var countCategory = databaseApp.categoryTable.id.count();
+    final query = (databaseApp.selectOnly(databaseApp.categoryTable))
+      ..addColumns(
+        [countCategory],
+      );
+
+    return await query.map((p0) => p0.read(countCategory)).getSingle();
   }
 }

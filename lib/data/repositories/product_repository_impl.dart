@@ -108,4 +108,13 @@ class ProductRepositoryImpl implements ProductRepository {
       throw DatabaseDriftException("Fail select product");
     }
   }
+
+  @override
+  Future<int?> getTotalProduct() async {
+    try {
+      return await productLocalDataSource.getTotal();
+    } catch (_) {
+      throw DatabaseDriftException("Fail get total product");
+    }
+  }
 }

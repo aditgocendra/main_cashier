@@ -19,6 +19,8 @@ abstract class ProductLocalDataSource {
 
   Future<ProductModel> select(String code);
 
+  Future<int?> getTotal();
+
   Future<int> delete(String code);
 
   Future<bool> update(ProductModel productModel);
@@ -124,5 +126,14 @@ class ProductLocalDataSourceImpl implements ProductLocalDataSource {
         .getSingle();
 
     return ProductModel.fromTable(result);
+  }
+
+  @override
+  Future<int?> getTotal() async {
+    var countProduct = databaseApp.productTable.codeProduct.count();
+    final query = (databaseApp.selectOnly(databaseApp.productTable))
+      ..addColumns([countProduct]);
+
+    return await query.map((p0) => p0.read(countProduct)).getSingle();
   }
 }
