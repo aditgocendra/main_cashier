@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:main_cashier/domain/usecase/category/search_categories_usecase.dart';
+import '../../../domain/usecase/category/search_categories_usecase.dart';
+import '../../../domain/usecase/product/delete_product_category_usecase.dart';
+import '../../../domain/usecase/product/get_single_product_category_usecase.dart';
 import '../../../domain/usecase/category/update_category_usecase.dart';
 import '../../../domain/entity/category_entity.dart';
 import '../../../domain/usecase/category/delete_category_usecase.dart';
@@ -12,6 +14,8 @@ class CategoryTabController extends ChangeNotifier {
   final CreateCategory createCategory;
   final DeleteCategory deleteCategory;
   final UpdateCategory updateCategory;
+  final GetSingleProductCategory getSingleProductCategory;
+  final DeleteProductCategory deleteProductCategory;
 
   CategoryTabController({
     required this.getCategories,
@@ -19,6 +23,8 @@ class CategoryTabController extends ChangeNotifier {
     required this.createCategory,
     required this.deleteCategory,
     required this.updateCategory,
+    required this.getSingleProductCategory,
+    required this.deleteProductCategory,
   });
 
   List<CategoryEntity> _listCategory = [];
@@ -55,12 +61,30 @@ class CategoryTabController extends ChangeNotifier {
     });
   }
 
+  void checkProductInCategory({
+    required int idCategory,
+    required VoidCallback callbackProductIsReady,
+    required VoidCallback callbackProductNotReady,
+  }) async {}
+
   void removeCategory(CategoryEntity val) async {
-    await deleteCategory.call(val).then((value) {
-      _listCategory.removeAt(
-        listCategory.indexWhere((element) => element.id == val.id),
-      );
-      notifyListeners();
+    // Check product in category
+    await getSingleProductCategory.call(val.id).then((value) async {
+      // Delete product with params category
+      if (value != null) {
+        await deleteProductCategory.call(val.id);
+      }
+
+      // Delete category
+      await deleteCategory.call(val).then((value) {
+        _listCategory.removeAt(
+          listCategory.indexWhere((element) => element.id == val.id),
+        );
+
+        notifyListeners();
+      }).catchError((e) {
+        _setError(e.toString());
+      });
     }).catchError((e) {
       _setError(e.toString());
     });

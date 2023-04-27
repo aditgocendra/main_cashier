@@ -42,7 +42,7 @@ class _CategoryTabState extends State<CategoryTab> {
   @override
   Widget build(BuildContext context) {
     final navigator = Navigator.of(context);
-    final ctgTabController = context.watch<CategoryTabController>();
+    final controller = context.watch<CategoryTabController>();
     final size = MediaQuery.of(context).size.width;
 
     return ListView(
@@ -84,21 +84,21 @@ class _CategoryTabState extends State<CategoryTab> {
                           ),
                           suffixIcon: InkWell(
                             onTap: () {
-                              if (ctgTabController.isSearch) {
-                                ctgTabController.tooggleIsSearch();
-                                ctgTabController.setCategories();
+                              if (controller.isSearch) {
+                                controller.tooggleIsSearch();
+                                controller.setCategories();
                                 tecSearch.clear();
                                 return;
                               }
 
                               if (tecSearch.text.isEmpty) return;
 
-                              ctgTabController.searchDataCategories(
+                              controller.searchDataCategories(
                                 tecSearch.text,
                               );
                             },
                             child: Icon(
-                              ctgTabController.isSearch
+                              controller.isSearch
                                   ? UniconsLine.times
                                   : UniconsLine.search_alt,
                               size: 20,
@@ -174,7 +174,7 @@ class _CategoryTabState extends State<CategoryTab> {
                         ["No", "Title", "Action"],
                       ),
                       // Body Data Table
-                      ...ctgTabController.listCategory
+                      ...controller.listCategory
                           .asMap()
                           .map((index, val) => MapEntry(
                               index,
@@ -224,7 +224,7 @@ class _CategoryTabState extends State<CategoryTab> {
                                                       child: DialogCategoryEdit(
                                                         ctg: val,
                                                         ctgTabController:
-                                                            ctgTabController,
+                                                            controller,
                                                         tecTitle: tecTitle,
                                                       ),
                                                     );
@@ -244,15 +244,12 @@ class _CategoryTabState extends State<CategoryTab> {
                                                         .dialogConfirmation(
                                                       title: "Delete Category",
                                                       message:
-                                                          "Are you sure delete this category ?",
+                                                          "Are you sure delete this category ?, If there are products in this category, they will be deleted automatically",
                                                       callbackConfirmation: () {
-                                                        ctgTabController
+                                                        controller
                                                             .removeCategory(
-                                                                val);
-
-                                                        if (ctgTabController
-                                                            .errorDialog
-                                                            .isNotEmpty) {}
+                                                          val,
+                                                        );
                                                         navigator.pop();
                                                       },
                                                       callbackCancel: () {
@@ -262,8 +259,9 @@ class _CategoryTabState extends State<CategoryTab> {
                                                   },
                                                 );
                                               },
-                                              icon:
-                                                  const Icon(UniconsLine.trash),
+                                              icon: const Icon(
+                                                UniconsLine.trash,
+                                              ),
                                             )
                                           ],
                                         ),
@@ -303,7 +301,7 @@ class _CategoryTabState extends State<CategoryTab> {
                             items: const [10, 25, 50],
                             selectedItem: 10,
                             onChanged: (int? value) {
-                              ctgTabController.updateRowPage(value!);
+                              controller.updateRowPage(value!);
                             },
                             popupProps: PopupProps.menu(
                               fit: FlexFit.loose,
@@ -354,12 +352,12 @@ class _CategoryTabState extends State<CategoryTab> {
                         // Back Page
                         IconButton(
                           onPressed: () {
-                            ctgTabController.backPage();
+                            controller.backPage();
                           },
                           icon: const Icon(Icons.keyboard_arrow_left),
                         ),
                         Text(
-                          ctgTabController.activeRowPage.toString(),
+                          controller.activeRowPage.toString(),
                           style: const TextStyle(
                             fontSize: 12.5,
                           ),
@@ -367,7 +365,7 @@ class _CategoryTabState extends State<CategoryTab> {
                         // Next Page
                         IconButton(
                           onPressed: () {
-                            ctgTabController.nextPage();
+                            controller.nextPage();
                           },
                           icon: const Icon(Icons.keyboard_arrow_right),
                         ),
