@@ -28,6 +28,7 @@ class DialogUtils {
             Text(
               message,
               style: const TextStyle(fontSize: 14),
+              textAlign: TextAlign.center,
             ),
             const SizedBox(
               height: 32,
