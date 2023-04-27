@@ -4,6 +4,8 @@ import 'package:main_cashier/domain/repostitories/color_app_repository.dart';
 import 'package:main_cashier/domain/usecase/category/get_total_category_usecase.dart';
 import 'package:main_cashier/domain/usecase/color_app/get_color_app_usecase.dart';
 import 'package:main_cashier/domain/usecase/color_app/update_color_app_usecase.dart';
+import 'package:main_cashier/domain/usecase/product/delete_product_category_usecase.dart';
+import 'package:main_cashier/domain/usecase/product/get_single_product_category_usecase.dart';
 import 'package:main_cashier/domain/usecase/product/get_total_product_usecase.dart';
 import 'package:main_cashier/presentation/home/tab_controller/dashboard_tab_controller.dart';
 import 'package:main_cashier/presentation/home/tab_controller/settings_tab_controller.dart';
@@ -174,6 +176,14 @@ GetTotalProduct _getTotalProduct = GetTotalProduct(
   repository: _productRepository,
 );
 
+GetSingleProductCategory _getSingleProductCategory = GetSingleProductCategory(
+  repository: _productRepository,
+);
+
+DeleteProductCategory _deleteProductCategory = DeleteProductCategory(
+  repository: _productRepository,
+);
+
 // Role Usecase
 GetRole _getRole = GetRole(
   repository: _roleRepository,
@@ -265,6 +275,8 @@ List<SingleChildWidget> _listProvider = [
       createCategory: _createCategory,
       deleteCategory: _deleteCategory,
       updateCategory: _updateCategory,
+      getSingleProductCategory: _getSingleProductCategory,
+      deleteProductCategory: _deleteProductCategory,
     ),
   ),
   ChangeNotifierProvider(

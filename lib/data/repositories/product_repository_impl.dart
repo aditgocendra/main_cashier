@@ -117,4 +117,22 @@ class ProductRepositoryImpl implements ProductRepository {
       throw DatabaseDriftException("Fail get total product");
     }
   }
+
+  @override
+  Future<ProductEntity?> getSingleProductCategory(int idCategory) async {
+    try {
+      return await productLocalDataSource.getSingleProductCategory(idCategory);
+    } catch (_) {
+      throw DatabaseDriftException("Fail get single product with category");
+    }
+  }
+
+  @override
+  Future<int> deleteProductInCategory(int idCategory) async {
+    try {
+      return await productLocalDataSource.deleteProductInCategory(idCategory);
+    } catch (_) {
+      throw DatabaseDriftException("Fail delete product");
+    }
+  }
 }

@@ -10,9 +10,13 @@ abstract class ProductRepository {
     required bool orderMode,
   });
 
+  Future<ProductEntity?> getSingleProductCategory(int idCategory);
+
   Future<List<ProductViewEntity>> searchProduct(String keyword);
 
   Future<int> deleteProduct(String code);
+
+  Future<int> deleteProductInCategory(int idCategory);
 
   Future<ProductViewEntity> updateProduct(ProductEntity productEntity);
 

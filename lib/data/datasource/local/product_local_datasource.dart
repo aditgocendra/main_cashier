@@ -11,6 +11,8 @@ abstract class ProductLocalDataSource {
     required bool orderMode,
   });
 
+  Future<ProductModel?> getSingleProductCategory(int idCategory);
+
   Future<bool> codeProductIsExist(String code);
 
   Future<int> create(ProductModel productModel);
@@ -22,6 +24,8 @@ abstract class ProductLocalDataSource {
   Future<int?> getTotal();
 
   Future<int> delete(String code);
+
+  Future<int> deleteProductInCategory(int idCategory);
 
   Future<bool> update(ProductModel productModel);
 
@@ -135,5 +139,21 @@ class ProductLocalDataSourceImpl implements ProductLocalDataSource {
       ..addColumns([countProduct]);
 
     return await query.map((p0) => p0.read(countProduct)).getSingle();
+  }
+
+  @override
+  Future<ProductModel?> getSingleProductCategory(int idCategory) async {
+    final r = await (databaseApp.select(databaseApp.productTable)
+          ..where((tbl) => tbl.categoryId.equals(idCategory)))
+        .getSingleOrNull();
+
+    return r == null ? null : ProductModel.fromTable(r);
+  }
+
+  @override
+  Future<int> deleteProductInCategory(int idCategory) async {
+    return await (databaseApp.delete(databaseApp.productTable)
+          ..where((tbl) => tbl.categoryId.equals(idCategory)))
+        .go();
   }
 }
