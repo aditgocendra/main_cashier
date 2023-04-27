@@ -20,7 +20,7 @@ class UserTable extends Table {
   TextColumn get username => text().unique()();
   TextColumn get password => text().withLength(min: 8)();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
-  IntColumn get roleId => integer().references(RoleTable, #id)();
+  IntColumn get roleId => integer().nullable().references(RoleTable, #id)();
 }
 
 class CategoryTable extends Table {
@@ -39,7 +39,7 @@ class ProductTable extends Table {
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
   DateTimeColumn get updatedAt => dateTime().nullable()();
   IntColumn get categoryId =>
-      integer().references(CategoryTable, #id)(); // ForeignKey
+      integer().nullable().references(CategoryTable, #id)(); // ForeignKey
 
   @override
   Set<Column> get primaryKey => {codeProduct};
@@ -63,8 +63,10 @@ class DetailTransactionTable extends Table {
   IntColumn get id => integer().autoIncrement()();
   IntColumn get qty => integer()();
   IntColumn get total => integer()();
-  TextColumn get codeProduct => text().references(ProductTable, #codeProduct)();
-  IntColumn get idTransaction => integer().references(TransactionTable, #id)();
+  TextColumn get codeProduct =>
+      text().nullable().references(ProductTable, #codeProduct)();
+  IntColumn get idTransaction =>
+      integer().nullable().references(TransactionTable, #id)();
 }
 
 class ColorAppTable extends Table {

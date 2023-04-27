@@ -40,7 +40,7 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
           UserTableCompanion.insert(
             username: userModel.username,
             password: userModel.password,
-            roleId: userModel.roleId,
+            roleId: Value(userModel.roleId),
           ),
         );
   }

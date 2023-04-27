@@ -5,7 +5,7 @@ class ProductEntity {
   int sellPrice;
   int stock;
   int sold;
-  int idCategory;
+  int? idCategory;
   DateTime createdAt;
 
   ProductEntity({

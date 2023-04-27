@@ -277,9 +277,9 @@ class $ProductTableTable extends ProductTable
       const VerificationMeta('categoryId');
   @override
   late final GeneratedColumn<int> categoryId = GeneratedColumn<int>(
-      'category_id', aliasedName, false,
+      'category_id', aliasedName, true,
       type: DriftSqlType.int,
-      requiredDuringInsert: true,
+      requiredDuringInsert: false,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('REFERENCES category_table (id)'));
   @override
@@ -354,8 +354,6 @@ class $ProductTableTable extends ProductTable
           _categoryIdMeta,
           categoryId.isAcceptableOrUnknown(
               data['category_id']!, _categoryIdMeta));
-    } else if (isInserting) {
-      context.missing(_categoryIdMeta);
     }
     return context;
   }
@@ -383,7 +381,7 @@ class $ProductTableTable extends ProductTable
       updatedAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at']),
       categoryId: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}category_id'])!,
+          .read(DriftSqlType.int, data['${effectivePrefix}category_id']),
     );
   }
 
@@ -403,7 +401,7 @@ class ProductTableData extends DataClass
   final int sold;
   final DateTime createdAt;
   final DateTime? updatedAt;
-  final int categoryId;
+  final int? categoryId;
   const ProductTableData(
       {required this.codeProduct,
       required this.name,
@@ -413,7 +411,7 @@ class ProductTableData extends DataClass
       required this.sold,
       required this.createdAt,
       this.updatedAt,
-      required this.categoryId});
+      this.categoryId});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -427,7 +425,9 @@ class ProductTableData extends DataClass
     if (!nullToAbsent || updatedAt != null) {
       map['updated_at'] = Variable<DateTime>(updatedAt);
     }
-    map['category_id'] = Variable<int>(categoryId);
+    if (!nullToAbsent || categoryId != null) {
+      map['category_id'] = Variable<int>(categoryId);
+    }
     return map;
   }
 
@@ -443,7 +443,9 @@ class ProductTableData extends DataClass
       updatedAt: updatedAt == null && nullToAbsent
           ? const Value.absent()
           : Value(updatedAt),
-      categoryId: Value(categoryId),
+      categoryId: categoryId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(categoryId),
     );
   }
 
@@ -459,7 +461,7 @@ class ProductTableData extends DataClass
       sold: serializer.fromJson<int>(json['sold']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
-      categoryId: serializer.fromJson<int>(json['categoryId']),
+      categoryId: serializer.fromJson<int?>(json['categoryId']),
     );
   }
   @override
@@ -474,7 +476,7 @@ class ProductTableData extends DataClass
       'sold': serializer.toJson<int>(sold),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime?>(updatedAt),
-      'categoryId': serializer.toJson<int>(categoryId),
+      'categoryId': serializer.toJson<int?>(categoryId),
     };
   }
 
@@ -487,7 +489,7 @@ class ProductTableData extends DataClass
           int? sold,
           DateTime? createdAt,
           Value<DateTime?> updatedAt = const Value.absent(),
-          int? categoryId}) =>
+          Value<int?> categoryId = const Value.absent()}) =>
       ProductTableData(
         codeProduct: codeProduct ?? this.codeProduct,
         name: name ?? this.name,
@@ -497,7 +499,7 @@ class ProductTableData extends DataClass
         sold: sold ?? this.sold,
         createdAt: createdAt ?? this.createdAt,
         updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
-        categoryId: categoryId ?? this.categoryId,
+        categoryId: categoryId.present ? categoryId.value : this.categoryId,
       );
   @override
   String toString() {
@@ -542,7 +544,7 @@ class ProductTableCompanion extends UpdateCompanion<ProductTableData> {
   final Value<int> sold;
   final Value<DateTime> createdAt;
   final Value<DateTime?> updatedAt;
-  final Value<int> categoryId;
+  final Value<int?> categoryId;
   final Value<int> rowid;
   const ProductTableCompanion({
     this.codeProduct = const Value.absent(),
@@ -565,14 +567,13 @@ class ProductTableCompanion extends UpdateCompanion<ProductTableData> {
     this.sold = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
-    required int categoryId,
+    this.categoryId = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : codeProduct = Value(codeProduct),
         name = Value(name),
         capitalPrice = Value(capitalPrice),
         sellPrice = Value(sellPrice),
-        stock = Value(stock),
-        categoryId = Value(categoryId);
+        stock = Value(stock);
   static Insertable<ProductTableData> custom({
     Expression<String>? codeProduct,
     Expression<String>? name,
@@ -608,7 +609,7 @@ class ProductTableCompanion extends UpdateCompanion<ProductTableData> {
       Value<int>? sold,
       Value<DateTime>? createdAt,
       Value<DateTime?>? updatedAt,
-      Value<int>? categoryId,
+      Value<int?>? categoryId,
       Value<int>? rowid}) {
     return ProductTableCompanion(
       codeProduct: codeProduct ?? this.codeProduct,
@@ -1172,18 +1173,18 @@ class $DetailTransactionTableTable extends DetailTransactionTable
       const VerificationMeta('codeProduct');
   @override
   late final GeneratedColumn<String> codeProduct = GeneratedColumn<String>(
-      'code_product', aliasedName, false,
+      'code_product', aliasedName, true,
       type: DriftSqlType.string,
-      requiredDuringInsert: true,
+      requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'REFERENCES product_table (code_product)'));
   static const VerificationMeta _idTransactionMeta =
       const VerificationMeta('idTransaction');
   @override
   late final GeneratedColumn<int> idTransaction = GeneratedColumn<int>(
-      'id_transaction', aliasedName, false,
+      'id_transaction', aliasedName, true,
       type: DriftSqlType.int,
-      requiredDuringInsert: true,
+      requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'REFERENCES transaction_table (id)'));
   @override
@@ -1219,16 +1220,12 @@ class $DetailTransactionTableTable extends DetailTransactionTable
           _codeProductMeta,
           codeProduct.isAcceptableOrUnknown(
               data['code_product']!, _codeProductMeta));
-    } else if (isInserting) {
-      context.missing(_codeProductMeta);
     }
     if (data.containsKey('id_transaction')) {
       context.handle(
           _idTransactionMeta,
           idTransaction.isAcceptableOrUnknown(
               data['id_transaction']!, _idTransactionMeta));
-    } else if (isInserting) {
-      context.missing(_idTransactionMeta);
     }
     return context;
   }
@@ -1247,9 +1244,9 @@ class $DetailTransactionTableTable extends DetailTransactionTable
       total: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}total'])!,
       codeProduct: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}code_product'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}code_product']),
       idTransaction: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id_transaction'])!,
+          .read(DriftSqlType.int, data['${effectivePrefix}id_transaction']),
     );
   }
 
@@ -1264,22 +1261,26 @@ class DetailTransactionTableData extends DataClass
   final int id;
   final int qty;
   final int total;
-  final String codeProduct;
-  final int idTransaction;
+  final String? codeProduct;
+  final int? idTransaction;
   const DetailTransactionTableData(
       {required this.id,
       required this.qty,
       required this.total,
-      required this.codeProduct,
-      required this.idTransaction});
+      this.codeProduct,
+      this.idTransaction});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['qty'] = Variable<int>(qty);
     map['total'] = Variable<int>(total);
-    map['code_product'] = Variable<String>(codeProduct);
-    map['id_transaction'] = Variable<int>(idTransaction);
+    if (!nullToAbsent || codeProduct != null) {
+      map['code_product'] = Variable<String>(codeProduct);
+    }
+    if (!nullToAbsent || idTransaction != null) {
+      map['id_transaction'] = Variable<int>(idTransaction);
+    }
     return map;
   }
 
@@ -1288,8 +1289,12 @@ class DetailTransactionTableData extends DataClass
       id: Value(id),
       qty: Value(qty),
       total: Value(total),
-      codeProduct: Value(codeProduct),
-      idTransaction: Value(idTransaction),
+      codeProduct: codeProduct == null && nullToAbsent
+          ? const Value.absent()
+          : Value(codeProduct),
+      idTransaction: idTransaction == null && nullToAbsent
+          ? const Value.absent()
+          : Value(idTransaction),
     );
   }
 
@@ -1300,8 +1305,8 @@ class DetailTransactionTableData extends DataClass
       id: serializer.fromJson<int>(json['id']),
       qty: serializer.fromJson<int>(json['qty']),
       total: serializer.fromJson<int>(json['total']),
-      codeProduct: serializer.fromJson<String>(json['codeProduct']),
-      idTransaction: serializer.fromJson<int>(json['idTransaction']),
+      codeProduct: serializer.fromJson<String?>(json['codeProduct']),
+      idTransaction: serializer.fromJson<int?>(json['idTransaction']),
     );
   }
   @override
@@ -1311,8 +1316,8 @@ class DetailTransactionTableData extends DataClass
       'id': serializer.toJson<int>(id),
       'qty': serializer.toJson<int>(qty),
       'total': serializer.toJson<int>(total),
-      'codeProduct': serializer.toJson<String>(codeProduct),
-      'idTransaction': serializer.toJson<int>(idTransaction),
+      'codeProduct': serializer.toJson<String?>(codeProduct),
+      'idTransaction': serializer.toJson<int?>(idTransaction),
     };
   }
 
@@ -1320,14 +1325,15 @@ class DetailTransactionTableData extends DataClass
           {int? id,
           int? qty,
           int? total,
-          String? codeProduct,
-          int? idTransaction}) =>
+          Value<String?> codeProduct = const Value.absent(),
+          Value<int?> idTransaction = const Value.absent()}) =>
       DetailTransactionTableData(
         id: id ?? this.id,
         qty: qty ?? this.qty,
         total: total ?? this.total,
-        codeProduct: codeProduct ?? this.codeProduct,
-        idTransaction: idTransaction ?? this.idTransaction,
+        codeProduct: codeProduct.present ? codeProduct.value : this.codeProduct,
+        idTransaction:
+            idTransaction.present ? idTransaction.value : this.idTransaction,
       );
   @override
   String toString() {
@@ -1359,8 +1365,8 @@ class DetailTransactionTableCompanion
   final Value<int> id;
   final Value<int> qty;
   final Value<int> total;
-  final Value<String> codeProduct;
-  final Value<int> idTransaction;
+  final Value<String?> codeProduct;
+  final Value<int?> idTransaction;
   const DetailTransactionTableCompanion({
     this.id = const Value.absent(),
     this.qty = const Value.absent(),
@@ -1372,12 +1378,10 @@ class DetailTransactionTableCompanion
     this.id = const Value.absent(),
     required int qty,
     required int total,
-    required String codeProduct,
-    required int idTransaction,
+    this.codeProduct = const Value.absent(),
+    this.idTransaction = const Value.absent(),
   })  : qty = Value(qty),
-        total = Value(total),
-        codeProduct = Value(codeProduct),
-        idTransaction = Value(idTransaction);
+        total = Value(total);
   static Insertable<DetailTransactionTableData> custom({
     Expression<int>? id,
     Expression<int>? qty,
@@ -1398,8 +1402,8 @@ class DetailTransactionTableCompanion
       {Value<int>? id,
       Value<int>? qty,
       Value<int>? total,
-      Value<String>? codeProduct,
-      Value<int>? idTransaction}) {
+      Value<String?>? codeProduct,
+      Value<int?>? idTransaction}) {
     return DetailTransactionTableCompanion(
       id: id ?? this.id,
       qty: qty ?? this.qty,
@@ -2161,9 +2165,9 @@ class $UserTableTable extends UserTable
   static const VerificationMeta _roleIdMeta = const VerificationMeta('roleId');
   @override
   late final GeneratedColumn<int> roleId = GeneratedColumn<int>(
-      'role_id', aliasedName, false,
+      'role_id', aliasedName, true,
       type: DriftSqlType.int,
-      requiredDuringInsert: true,
+      requiredDuringInsert: false,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('REFERENCES role_table (id)'));
   @override
@@ -2200,8 +2204,6 @@ class $UserTableTable extends UserTable
     if (data.containsKey('role_id')) {
       context.handle(_roleIdMeta,
           roleId.isAcceptableOrUnknown(data['role_id']!, _roleIdMeta));
-    } else if (isInserting) {
-      context.missing(_roleIdMeta);
     }
     return context;
   }
@@ -2221,7 +2223,7 @@ class $UserTableTable extends UserTable
       createdAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
       roleId: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}role_id'])!,
+          .read(DriftSqlType.int, data['${effectivePrefix}role_id']),
     );
   }
 
@@ -2236,13 +2238,13 @@ class UserTableData extends DataClass implements Insertable<UserTableData> {
   final String username;
   final String password;
   final DateTime createdAt;
-  final int roleId;
+  final int? roleId;
   const UserTableData(
       {required this.id,
       required this.username,
       required this.password,
       required this.createdAt,
-      required this.roleId});
+      this.roleId});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -2250,7 +2252,9 @@ class UserTableData extends DataClass implements Insertable<UserTableData> {
     map['username'] = Variable<String>(username);
     map['password'] = Variable<String>(password);
     map['created_at'] = Variable<DateTime>(createdAt);
-    map['role_id'] = Variable<int>(roleId);
+    if (!nullToAbsent || roleId != null) {
+      map['role_id'] = Variable<int>(roleId);
+    }
     return map;
   }
 
@@ -2260,7 +2264,8 @@ class UserTableData extends DataClass implements Insertable<UserTableData> {
       username: Value(username),
       password: Value(password),
       createdAt: Value(createdAt),
-      roleId: Value(roleId),
+      roleId:
+          roleId == null && nullToAbsent ? const Value.absent() : Value(roleId),
     );
   }
 
@@ -2272,7 +2277,7 @@ class UserTableData extends DataClass implements Insertable<UserTableData> {
       username: serializer.fromJson<String>(json['username']),
       password: serializer.fromJson<String>(json['password']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      roleId: serializer.fromJson<int>(json['roleId']),
+      roleId: serializer.fromJson<int?>(json['roleId']),
     );
   }
   @override
@@ -2283,7 +2288,7 @@ class UserTableData extends DataClass implements Insertable<UserTableData> {
       'username': serializer.toJson<String>(username),
       'password': serializer.toJson<String>(password),
       'createdAt': serializer.toJson<DateTime>(createdAt),
-      'roleId': serializer.toJson<int>(roleId),
+      'roleId': serializer.toJson<int?>(roleId),
     };
   }
 
@@ -2292,13 +2297,13 @@ class UserTableData extends DataClass implements Insertable<UserTableData> {
           String? username,
           String? password,
           DateTime? createdAt,
-          int? roleId}) =>
+          Value<int?> roleId = const Value.absent()}) =>
       UserTableData(
         id: id ?? this.id,
         username: username ?? this.username,
         password: password ?? this.password,
         createdAt: createdAt ?? this.createdAt,
-        roleId: roleId ?? this.roleId,
+        roleId: roleId.present ? roleId.value : this.roleId,
       );
   @override
   String toString() {
@@ -2330,7 +2335,7 @@ class UserTableCompanion extends UpdateCompanion<UserTableData> {
   final Value<String> username;
   final Value<String> password;
   final Value<DateTime> createdAt;
-  final Value<int> roleId;
+  final Value<int?> roleId;
   final Value<int> rowid;
   const UserTableCompanion({
     this.id = const Value.absent(),
@@ -2345,11 +2350,10 @@ class UserTableCompanion extends UpdateCompanion<UserTableData> {
     required String username,
     required String password,
     this.createdAt = const Value.absent(),
-    required int roleId,
+    this.roleId = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : username = Value(username),
-        password = Value(password),
-        roleId = Value(roleId);
+        password = Value(password);
   static Insertable<UserTableData> custom({
     Expression<String>? id,
     Expression<String>? username,
@@ -2373,7 +2377,7 @@ class UserTableCompanion extends UpdateCompanion<UserTableData> {
       Value<String>? username,
       Value<String>? password,
       Value<DateTime>? createdAt,
-      Value<int>? roleId,
+      Value<int?>? roleId,
       Value<int>? rowid}) {
     return UserTableCompanion(
       id: id ?? this.id,

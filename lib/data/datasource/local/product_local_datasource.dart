@@ -45,7 +45,7 @@ class ProductLocalDataSourceImpl implements ProductLocalDataSource {
           capitalPrice: productModel.capitalPrice,
           sellPrice: productModel.sellPrice,
           stock: productModel.stock,
-          categoryId: productModel.idCategory,
+          categoryId: Value(productModel.idCategory),
         ));
   }
 

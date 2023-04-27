@@ -76,8 +76,8 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
         listProductInsert.add(DetailTransactionTableCompanion.insert(
           qty: element.qty,
           total: element.total,
-          codeProduct: element.idProduct,
-          idTransaction: result.id,
+          codeProduct: Value(element.idProduct),
+          idTransaction: Value(result.id),
         ));
       }
 
