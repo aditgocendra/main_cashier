@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart';
+import '../../../domain/entity/product_transaction_entity.dart';
 import '../../../domain/usecase/transaction/delete_transaction_usecase.dart';
 import '../../../domain/usecase/transaction/get_omzet_transaction_with_range_usecase.dart';
 import '../../../domain/usecase/transaction/get_profit_transaction_with_range_usecase.dart';
 import '../../../domain/usecase/transaction/get_report_transactions_usecase.dart';
 import '../../../domain/usecase/transaction/search_transaction_usecase.dart';
-import '../../../domain/entity/detail_transaction_entity.dart';
 import '../../../domain/entity/transaction_entity.dart';
 import '../../../domain/usecase/transaction/get_detail_transaction_usecase.dart';
 import '../../../domain/usecase/transaction/get_all_transaction_usecase.dart';
@@ -13,9 +13,9 @@ class TransactionTabController extends ChangeNotifier {
   List<TransactionEntity> _listTransaction = [];
   List<TransactionEntity> get listTransaction => _listTransaction;
 
-  List<DetailTransactionViewEntity> _listDetailTransaction = [];
-  List<DetailTransactionViewEntity> get listDetailTransaction =>
-      _listDetailTransaction;
+  List<ProductTransactionViewEntity> _listProductTransaction = [];
+  List<ProductTransactionViewEntity> get listProductTransaction =>
+      _listProductTransaction;
 
   List<DateTime> _rangeDatePicker = [
     DateTime.now(),
@@ -56,7 +56,7 @@ class TransactionTabController extends ChangeNotifier {
     required this.getProfitWithRange,
   });
 
-  Future<List<DetailTransactionViewEntity>> getReportTransaction() async {
+  Future<List<ProductTransactionViewEntity>> getReportTransaction() async {
     return await getReportTransactions.call([
       rangeDatePicker[0],
       rangeDatePicker[1],
@@ -81,7 +81,7 @@ class TransactionTabController extends ChangeNotifier {
     required VoidCallback callbackFail,
   }) async {
     await getDetailTransaction.call(idTransaction).then((value) {
-      _listDetailTransaction = value;
+      _listProductTransaction = value;
       notifyListeners();
       callbackSuccess.call();
     }).catchError((e) {

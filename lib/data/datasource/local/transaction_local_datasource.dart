@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:main_cashier/data/models/counter_transaction_model.dart';
-import 'package:main_cashier/data/models/detail_transaction_model.dart';
+
+import 'package:main_cashier/data/models/product_transaction_model.dart';
 
 import 'drift/drift_database.dart';
 import '../../models/transaction_model.dart';
@@ -9,7 +10,7 @@ abstract class TransactionLocalDataSource {
   Future create({
     required String no,
     required int totalPay,
-    required List<DetailTransactionModel> list,
+    required List<ProductTransactionModel> list,
   });
 
   Future<List<TransactionModel>> getAll({
@@ -31,11 +32,11 @@ abstract class TransactionLocalDataSource {
     CounterTransactionModel counterTransactionModel,
   );
 
-  Future<List<DetailTransactionViewModel>> getDetailTransaction(
+  Future<List<ProductTransactionViewModel>> getDetailTransaction(
     int idTransaction,
   );
 
-  Future<List<DetailTransactionViewModel>> getViewDetailTransactions(
+  Future<List<ProductTransactionViewModel>> getViewDetailTransactions(
     List<DateTime> rangeDate,
   );
 
@@ -57,9 +58,9 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
   Future create({
     required String no,
     required int totalPay,
-    required List<DetailTransactionModel> list,
+    required List<ProductTransactionModel> list,
   }) async {
-    final List<DetailTransactionTableCompanion> listProductInsert = [];
+    final List<ProductTransactionTableCompanion> listProductInsert = [];
 
     return await databaseApp.transaction(() async {
       // Create transaction
@@ -73,17 +74,19 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
 
       // Create detail transaction
       for (var element in list) {
-        listProductInsert.add(DetailTransactionTableCompanion.insert(
+        listProductInsert.add(ProductTransactionTableCompanion.insert(
+          name: element.name,
+          capitalPrice: element.capitalPrice,
+          sellPrice: element.sellPrice,
           qty: element.qty,
           total: element.total,
-          codeProduct: Value(element.idProduct),
           idTransaction: Value(result.id),
         ));
       }
 
       // Insert all data product checkout
       await databaseApp.batch((batch) {
-        batch.insertAll(databaseApp.detailTransactionTable, listProductInsert);
+        batch.insertAll(databaseApp.productTransactionTable, listProductInsert);
       });
 
       // Increment total transaction in CounterTransactionTable
@@ -94,7 +97,7 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
       // Update table sold & stock product
       for (var element in list) {
         await databaseApp.customStatement(
-          "UPDATE 'product_table' SET stock = stock - ${element.qty}, sold = sold + ${element.qty} WHERE code_product = '${element.idProduct}'",
+          "UPDATE 'product_table' SET stock = stock - ${element.qty}, sold = sold + ${element.qty} WHERE name = '${element.name}'",
         );
       }
     });
@@ -104,7 +107,7 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
   Future delete(int idTransaction) async {
     return databaseApp.transaction(() async {
       // Delete detail transaction
-      await (databaseApp.delete(databaseApp.detailTransactionTable)
+      await (databaseApp.delete(databaseApp.productTransactionTable)
             ..where((tbl) => tbl.idTransaction.equals(idTransaction)))
           .go();
 
@@ -125,17 +128,6 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
         .get();
 
     return TransactionModel.fromTableList(result);
-  }
-
-  @override
-  Future<List<DetailTransactionViewModel>> getDetailTransaction(
-    int idTransaction,
-  ) async {
-    final result = await (databaseApp.select(databaseApp.detailTransactionView)
-          ..where((tbl) => tbl.id.equals(idTransaction)))
-        .get();
-
-    return DetailTransactionViewModel.fromTableList(result);
   }
 
   @override
@@ -185,11 +177,11 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
   }
 
   @override
-  Future<List<DetailTransactionViewModel>> getViewDetailTransactions(
+  Future<List<ProductTransactionViewModel>> getViewDetailTransactions(
     List<DateTime> rangeDate,
   ) async {
     final result = await (databaseApp.select(
-      databaseApp.detailTransactionView,
+      databaseApp.productTransactionView,
     )..where(
             (tbl) => tbl.dateTransaction.isBetweenValues(
               rangeDate[0],
@@ -198,15 +190,15 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
           ))
         .get();
 
-    return DetailTransactionViewModel.fromTableList(result);
+    return ProductTransactionViewModel.fromTableList(result);
   }
 
   @override
   Future<int?> getOmzetWithRange(List<DateTime> dateRange) async {
-    final omzet = databaseApp.detailTransactionView.total.sum();
+    final omzet = databaseApp.productTransactionView.total.sum();
 
-    final query = (databaseApp.selectOnly(databaseApp.detailTransactionView)
-      ..where(databaseApp.detailTransactionView.dateTransaction
+    final query = (databaseApp.selectOnly(databaseApp.productTransactionView)
+      ..where(databaseApp.productTransactionView.dateTransaction
           .isBetweenValues(dateRange[0], dateRange[1])))
       ..addColumns(
         [omzet],
@@ -217,7 +209,7 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
 
   @override
   Future<int> getProfitWithRange(List<DateTime> dateRange) async {
-    final result = await (databaseApp.select(databaseApp.detailTransactionView)
+    final result = await (databaseApp.select(databaseApp.productTransactionView)
           ..where(
             (tbl) => tbl.dateTransaction.isBetweenValues(
               dateRange[0],
@@ -232,5 +224,16 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
       profit.add(element.total - element.capitalPrice);
     }
     return profit.reduce((value, element) => value + element);
+  }
+
+  @override
+  Future<List<ProductTransactionViewModel>> getDetailTransaction(
+    int idTransaction,
+  ) async {
+    final result = await (databaseApp.select(databaseApp.productTransactionView)
+          ..where((tbl) => tbl.id.equals(idTransaction)))
+        .get();
+
+    return ProductTransactionViewModel.fromTableList(result);
   }
 }

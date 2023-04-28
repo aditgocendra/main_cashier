@@ -1,5 +1,5 @@
 import 'package:main_cashier/core/usecase/usecase.dart';
-import 'package:main_cashier/domain/entity/detail_transaction_entity.dart';
+import 'package:main_cashier/domain/entity/product_transaction_entity.dart';
 import 'package:main_cashier/domain/repostitories/transaction_repository.dart';
 
 class CreateTransaction implements Usecase<dynamic, ParamCreateTransaction> {
@@ -22,7 +22,7 @@ class CreateTransaction implements Usecase<dynamic, ParamCreateTransaction> {
 class ParamCreateTransaction {
   String no;
   int totalPay;
-  List<DetailTransactionEntity> list;
+  List<ProductTransactionEntity> list;
 
   ParamCreateTransaction({
     required this.no,

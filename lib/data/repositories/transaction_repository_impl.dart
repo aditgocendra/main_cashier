@@ -1,12 +1,13 @@
+import 'package:main_cashier/data/models/product_transaction_model.dart';
+import 'package:main_cashier/domain/entity/product_transaction_entity.dart';
+
 import '../../core/error/exception.dart';
 
 import '../../domain/entity/counter_transaction_entity.dart';
 import '../../domain/entity/transaction_entity.dart';
 import '../../domain/repostitories/transaction_repository.dart';
-import '../../domain/entity/detail_transaction_entity.dart';
 
 import '../models/counter_transaction_model.dart';
-import '../models/detail_transaction_model.dart';
 
 import '../datasource/local/transaction_local_datasource.dart';
 
@@ -21,16 +22,19 @@ class TransactionRepositoryImpl implements TransactionRepository {
   Future createTransaction({
     required String no,
     required int totalPay,
-    required List<DetailTransactionEntity> list,
+    required List<ProductTransactionEntity> list,
   }) async {
-    final List<DetailTransactionModel> listModel = [];
+    final List<ProductTransactionModel> listModel = [];
 
     for (var element in list) {
-      listModel.add(DetailTransactionModel(
+      listModel.add(ProductTransactionModel(
         id: element.id,
         qty: element.qty,
         total: element.total,
-        idProduct: element.idProduct,
+        capitalPrice: element.capitalPrice,
+        sellPrice: element.sellPrice,
+        name: element.name,
+        idTransaction: 0,
       ));
     }
 
@@ -70,14 +74,14 @@ class TransactionRepositoryImpl implements TransactionRepository {
   }
 
   @override
-  Future<List<DetailTransactionViewEntity>> getDetailTransaction(
+  Future<List<ProductTransactionViewEntity>> getDetailTransaction(
     int idTransaction,
   ) async {
     try {
       return await transactionLocalDataSource.getDetailTransaction(
         idTransaction,
       );
-    } catch (_) {
+    } catch (e) {
       throw DatabaseDriftException("Fail get detail transaction");
     }
   }
@@ -129,7 +133,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
   }
 
   @override
-  Future<List<DetailTransactionViewEntity>> getReportTransactions(
+  Future<List<ProductTransactionViewEntity>> getReportTransactions(
     List<DateTime> rangeDate,
   ) async {
     try {

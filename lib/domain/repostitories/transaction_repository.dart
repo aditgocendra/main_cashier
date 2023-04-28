@@ -1,12 +1,12 @@
-import 'package:main_cashier/domain/entity/counter_transaction_entity.dart';
-import 'package:main_cashier/domain/entity/detail_transaction_entity.dart';
-import 'package:main_cashier/domain/entity/transaction_entity.dart';
+import '../entity/counter_transaction_entity.dart';
+import '../entity/transaction_entity.dart';
+import '../entity/product_transaction_entity.dart';
 
 abstract class TransactionRepository {
   Future createTransaction({
     required String no,
     required int totalPay,
-    required List<DetailTransactionEntity> list,
+    required List<ProductTransactionEntity> list,
   });
 
   Future<List<TransactionEntity>> getAllTransaction({
@@ -14,7 +14,7 @@ abstract class TransactionRepository {
     required int offset,
   });
 
-  Future<List<DetailTransactionViewEntity>> getDetailTransaction(
+  Future<List<ProductTransactionViewEntity>> getDetailTransaction(
     int idTransaction,
   );
 
@@ -22,7 +22,7 @@ abstract class TransactionRepository {
     List<DateTime> rangeDate,
   );
 
-  Future<List<DetailTransactionViewEntity>> getReportTransactions(
+  Future<List<ProductTransactionViewEntity>> getReportTransactions(
     List<DateTime> rangeDate,
   );
 

@@ -232,35 +232,34 @@ class _TransactionTabState extends State<TransactionTab> {
                                       IconButton(
                                         onPressed: () {
                                           controller.setDetailTransaction(
-                                              idTransaction: val.id,
-                                              callbackFail: () => showDialog(
-                                                    context: context,
-                                                    builder: (context) {
-                                                      return DialogUtils
-                                                          .dialogInformation(
-                                                        title:
-                                                            "Detail Transaction",
-                                                        message: controller
-                                                            .errDialogMessage,
-                                                        callbackConfirmation:
-                                                            () =>
-                                                                navigator.pop(),
-                                                      );
-                                                    },
-                                                  ),
-                                              callbackSuccess: () {
-                                                showDialog(
-                                                  context: context,
-                                                  builder: (context) {
-                                                    return Dialog(
-                                                      child:
-                                                          DialogDetailTransaction(
-                                                        transactionEntity: val,
-                                                      ),
-                                                    );
-                                                  },
+                                            idTransaction: val.id,
+                                            callbackFail: () => showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return DialogUtils
+                                                    .dialogInformation(
+                                                  title: "Detail Transaction",
+                                                  message:
+                                                      "Fail get detail transaction",
+                                                  callbackConfirmation: () =>
+                                                      navigator.pop(),
                                                 );
-                                              });
+                                              },
+                                            ),
+                                            callbackSuccess: () {
+                                              showDialog(
+                                                context: context,
+                                                builder: (context) {
+                                                  return Dialog(
+                                                    child:
+                                                        DialogDetailTransaction(
+                                                      transactionEntity: val,
+                                                    ),
+                                                  );
+                                                },
+                                              );
+                                            },
+                                          );
                                         },
                                         icon: const Icon(UniconsLine.eye),
                                       ),
@@ -474,14 +473,12 @@ class DialogDetailTransaction extends StatelessWidget {
               1: IntrinsicColumnWidth(),
               2: IntrinsicColumnWidth(),
               3: IntrinsicColumnWidth(),
-              4: IntrinsicColumnWidth(),
             },
             defaultVerticalAlignment: TableCellVerticalAlignment.middle,
             children: [
               // Header Data Table
               TableComponent.headerTable(
                 [
-                  "Code Product",
                   "Name",
                   "Price",
                   "Qty",
@@ -489,20 +486,9 @@ class DialogDetailTransaction extends StatelessWidget {
                 ],
               ),
               // Body Data Table
-              ...controller.listDetailTransaction.map((val) {
+              ...controller.listProductTransaction.map((val) {
                 return TableRow(
                   children: [
-                    TableCell(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Center(
-                          child: Text(
-                            val.code,
-                            style: const TextStyle(fontSize: 14),
-                          ),
-                        ),
-                      ),
-                    ),
                     TableCell(
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -576,11 +562,6 @@ class DialogDetailTransaction extends StatelessWidget {
                       padding: EdgeInsets.all(8.0),
                     ),
                   ),
-                  const TableCell(
-                    child: Padding(
-                      padding: EdgeInsets.all(8.0),
-                    ),
-                  ),
                   TableCell(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -605,7 +586,7 @@ class DialogDetailTransaction extends StatelessWidget {
           onPressed: () {
             PdfUtility.generateInvoicePdf(
               transactionEntity: transactionEntity,
-              detailTransaction: controller.listDetailTransaction,
+              productTansactions: controller.listProductTransaction,
             );
             navigator.pop();
           },

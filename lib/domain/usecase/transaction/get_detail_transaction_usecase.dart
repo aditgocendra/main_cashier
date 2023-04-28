@@ -1,9 +1,9 @@
-import 'package:main_cashier/core/usecase/usecase.dart';
-import 'package:main_cashier/domain/entity/detail_transaction_entity.dart';
-import 'package:main_cashier/domain/repostitories/transaction_repository.dart';
+import '../../../core/usecase/usecase.dart';
+import '../../entity/product_transaction_entity.dart';
+import '../../repostitories/transaction_repository.dart';
 
 class GetDetailTransaction
-    implements Usecase<List<DetailTransactionViewEntity>, int> {
+    implements Usecase<List<ProductTransactionViewEntity>, int> {
   final TransactionRepository repository;
 
   GetDetailTransaction({
@@ -11,7 +11,7 @@ class GetDetailTransaction
   });
 
   @override
-  Future<List<DetailTransactionViewEntity>> call(int idTransaction) async {
+  Future<List<ProductTransactionViewEntity>> call(int idTransaction) async {
     return await repository.getDetailTransaction(idTransaction);
   }
 }

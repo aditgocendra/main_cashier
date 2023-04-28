@@ -1144,12 +1144,12 @@ class TransactionTableCompanion extends UpdateCompanion<TransactionTableData> {
   }
 }
 
-class $DetailTransactionTableTable extends DetailTransactionTable
-    with TableInfo<$DetailTransactionTableTable, DetailTransactionTableData> {
+class $ProductTransactionTableTable extends ProductTransactionTable
+    with TableInfo<$ProductTransactionTableTable, ProductTransactionTableData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $DetailTransactionTableTable(this.attachedDatabase, [this._alias]);
+  $ProductTransactionTableTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -1159,6 +1159,23 @@ class $DetailTransactionTableTable extends DetailTransactionTable
       requiredDuringInsert: false,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _capitalPriceMeta =
+      const VerificationMeta('capitalPrice');
+  @override
+  late final GeneratedColumn<int> capitalPrice = GeneratedColumn<int>(
+      'capital_price', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _sellPriceMeta =
+      const VerificationMeta('sellPrice');
+  @override
+  late final GeneratedColumn<int> sellPrice = GeneratedColumn<int>(
+      'sell_price', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
   static const VerificationMeta _qtyMeta = const VerificationMeta('qty');
   @override
   late final GeneratedColumn<int> qty = GeneratedColumn<int>(
@@ -1169,15 +1186,6 @@ class $DetailTransactionTableTable extends DetailTransactionTable
   late final GeneratedColumn<int> total = GeneratedColumn<int>(
       'total', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _codeProductMeta =
-      const VerificationMeta('codeProduct');
-  @override
-  late final GeneratedColumn<String> codeProduct = GeneratedColumn<String>(
-      'code_product', aliasedName, true,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES product_table (code_product)'));
   static const VerificationMeta _idTransactionMeta =
       const VerificationMeta('idTransaction');
   @override
@@ -1189,19 +1197,39 @@ class $DetailTransactionTableTable extends DetailTransactionTable
           'REFERENCES transaction_table (id)'));
   @override
   List<GeneratedColumn> get $columns =>
-      [id, qty, total, codeProduct, idTransaction];
+      [id, name, capitalPrice, sellPrice, qty, total, idTransaction];
   @override
-  String get aliasedName => _alias ?? 'detail_transaction_table';
+  String get aliasedName => _alias ?? 'product_transaction_table';
   @override
-  String get actualTableName => 'detail_transaction_table';
+  String get actualTableName => 'product_transaction_table';
   @override
   VerificationContext validateIntegrity(
-      Insertable<DetailTransactionTableData> instance,
+      Insertable<ProductTransactionTableData> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('capital_price')) {
+      context.handle(
+          _capitalPriceMeta,
+          capitalPrice.isAcceptableOrUnknown(
+              data['capital_price']!, _capitalPriceMeta));
+    } else if (isInserting) {
+      context.missing(_capitalPriceMeta);
+    }
+    if (data.containsKey('sell_price')) {
+      context.handle(_sellPriceMeta,
+          sellPrice.isAcceptableOrUnknown(data['sell_price']!, _sellPriceMeta));
+    } else if (isInserting) {
+      context.missing(_sellPriceMeta);
     }
     if (data.containsKey('qty')) {
       context.handle(
@@ -1215,12 +1243,6 @@ class $DetailTransactionTableTable extends DetailTransactionTable
     } else if (isInserting) {
       context.missing(_totalMeta);
     }
-    if (data.containsKey('code_product')) {
-      context.handle(
-          _codeProductMeta,
-          codeProduct.isAcceptableOrUnknown(
-              data['code_product']!, _codeProductMeta));
-    }
     if (data.containsKey('id_transaction')) {
       context.handle(
           _idTransactionMeta,
@@ -1233,79 +1255,89 @@ class $DetailTransactionTableTable extends DetailTransactionTable
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  DetailTransactionTableData map(Map<String, dynamic> data,
+  ProductTransactionTableData map(Map<String, dynamic> data,
       {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return DetailTransactionTableData(
+    return ProductTransactionTableData(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      capitalPrice: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}capital_price'])!,
+      sellPrice: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}sell_price'])!,
       qty: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}qty'])!,
       total: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}total'])!,
-      codeProduct: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}code_product']),
       idTransaction: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id_transaction']),
     );
   }
 
   @override
-  $DetailTransactionTableTable createAlias(String alias) {
-    return $DetailTransactionTableTable(attachedDatabase, alias);
+  $ProductTransactionTableTable createAlias(String alias) {
+    return $ProductTransactionTableTable(attachedDatabase, alias);
   }
 }
 
-class DetailTransactionTableData extends DataClass
-    implements Insertable<DetailTransactionTableData> {
+class ProductTransactionTableData extends DataClass
+    implements Insertable<ProductTransactionTableData> {
   final int id;
+  final String name;
+  final int capitalPrice;
+  final int sellPrice;
   final int qty;
   final int total;
-  final String? codeProduct;
   final int? idTransaction;
-  const DetailTransactionTableData(
+  const ProductTransactionTableData(
       {required this.id,
+      required this.name,
+      required this.capitalPrice,
+      required this.sellPrice,
       required this.qty,
       required this.total,
-      this.codeProduct,
       this.idTransaction});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
+    map['name'] = Variable<String>(name);
+    map['capital_price'] = Variable<int>(capitalPrice);
+    map['sell_price'] = Variable<int>(sellPrice);
     map['qty'] = Variable<int>(qty);
     map['total'] = Variable<int>(total);
-    if (!nullToAbsent || codeProduct != null) {
-      map['code_product'] = Variable<String>(codeProduct);
-    }
     if (!nullToAbsent || idTransaction != null) {
       map['id_transaction'] = Variable<int>(idTransaction);
     }
     return map;
   }
 
-  DetailTransactionTableCompanion toCompanion(bool nullToAbsent) {
-    return DetailTransactionTableCompanion(
+  ProductTransactionTableCompanion toCompanion(bool nullToAbsent) {
+    return ProductTransactionTableCompanion(
       id: Value(id),
+      name: Value(name),
+      capitalPrice: Value(capitalPrice),
+      sellPrice: Value(sellPrice),
       qty: Value(qty),
       total: Value(total),
-      codeProduct: codeProduct == null && nullToAbsent
-          ? const Value.absent()
-          : Value(codeProduct),
       idTransaction: idTransaction == null && nullToAbsent
           ? const Value.absent()
           : Value(idTransaction),
     );
   }
 
-  factory DetailTransactionTableData.fromJson(Map<String, dynamic> json,
+  factory ProductTransactionTableData.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return DetailTransactionTableData(
+    return ProductTransactionTableData(
       id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      capitalPrice: serializer.fromJson<int>(json['capitalPrice']),
+      sellPrice: serializer.fromJson<int>(json['sellPrice']),
       qty: serializer.fromJson<int>(json['qty']),
       total: serializer.fromJson<int>(json['total']),
-      codeProduct: serializer.fromJson<String?>(json['codeProduct']),
       idTransaction: serializer.fromJson<int?>(json['idTransaction']),
     );
   }
@@ -1314,101 +1346,129 @@ class DetailTransactionTableData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+      'capitalPrice': serializer.toJson<int>(capitalPrice),
+      'sellPrice': serializer.toJson<int>(sellPrice),
       'qty': serializer.toJson<int>(qty),
       'total': serializer.toJson<int>(total),
-      'codeProduct': serializer.toJson<String?>(codeProduct),
       'idTransaction': serializer.toJson<int?>(idTransaction),
     };
   }
 
-  DetailTransactionTableData copyWith(
+  ProductTransactionTableData copyWith(
           {int? id,
+          String? name,
+          int? capitalPrice,
+          int? sellPrice,
           int? qty,
           int? total,
-          Value<String?> codeProduct = const Value.absent(),
           Value<int?> idTransaction = const Value.absent()}) =>
-      DetailTransactionTableData(
+      ProductTransactionTableData(
         id: id ?? this.id,
+        name: name ?? this.name,
+        capitalPrice: capitalPrice ?? this.capitalPrice,
+        sellPrice: sellPrice ?? this.sellPrice,
         qty: qty ?? this.qty,
         total: total ?? this.total,
-        codeProduct: codeProduct.present ? codeProduct.value : this.codeProduct,
         idTransaction:
             idTransaction.present ? idTransaction.value : this.idTransaction,
       );
   @override
   String toString() {
-    return (StringBuffer('DetailTransactionTableData(')
+    return (StringBuffer('ProductTransactionTableData(')
           ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('capitalPrice: $capitalPrice, ')
+          ..write('sellPrice: $sellPrice, ')
           ..write('qty: $qty, ')
           ..write('total: $total, ')
-          ..write('codeProduct: $codeProduct, ')
           ..write('idTransaction: $idTransaction')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, qty, total, codeProduct, idTransaction);
+  int get hashCode =>
+      Object.hash(id, name, capitalPrice, sellPrice, qty, total, idTransaction);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is DetailTransactionTableData &&
+      (other is ProductTransactionTableData &&
           other.id == this.id &&
+          other.name == this.name &&
+          other.capitalPrice == this.capitalPrice &&
+          other.sellPrice == this.sellPrice &&
           other.qty == this.qty &&
           other.total == this.total &&
-          other.codeProduct == this.codeProduct &&
           other.idTransaction == this.idTransaction);
 }
 
-class DetailTransactionTableCompanion
-    extends UpdateCompanion<DetailTransactionTableData> {
+class ProductTransactionTableCompanion
+    extends UpdateCompanion<ProductTransactionTableData> {
   final Value<int> id;
+  final Value<String> name;
+  final Value<int> capitalPrice;
+  final Value<int> sellPrice;
   final Value<int> qty;
   final Value<int> total;
-  final Value<String?> codeProduct;
   final Value<int?> idTransaction;
-  const DetailTransactionTableCompanion({
+  const ProductTransactionTableCompanion({
     this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.capitalPrice = const Value.absent(),
+    this.sellPrice = const Value.absent(),
     this.qty = const Value.absent(),
     this.total = const Value.absent(),
-    this.codeProduct = const Value.absent(),
     this.idTransaction = const Value.absent(),
   });
-  DetailTransactionTableCompanion.insert({
+  ProductTransactionTableCompanion.insert({
     this.id = const Value.absent(),
+    required String name,
+    required int capitalPrice,
+    required int sellPrice,
     required int qty,
     required int total,
-    this.codeProduct = const Value.absent(),
     this.idTransaction = const Value.absent(),
-  })  : qty = Value(qty),
+  })  : name = Value(name),
+        capitalPrice = Value(capitalPrice),
+        sellPrice = Value(sellPrice),
+        qty = Value(qty),
         total = Value(total);
-  static Insertable<DetailTransactionTableData> custom({
+  static Insertable<ProductTransactionTableData> custom({
     Expression<int>? id,
+    Expression<String>? name,
+    Expression<int>? capitalPrice,
+    Expression<int>? sellPrice,
     Expression<int>? qty,
     Expression<int>? total,
-    Expression<String>? codeProduct,
     Expression<int>? idTransaction,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (capitalPrice != null) 'capital_price': capitalPrice,
+      if (sellPrice != null) 'sell_price': sellPrice,
       if (qty != null) 'qty': qty,
       if (total != null) 'total': total,
-      if (codeProduct != null) 'code_product': codeProduct,
       if (idTransaction != null) 'id_transaction': idTransaction,
     });
   }
 
-  DetailTransactionTableCompanion copyWith(
+  ProductTransactionTableCompanion copyWith(
       {Value<int>? id,
+      Value<String>? name,
+      Value<int>? capitalPrice,
+      Value<int>? sellPrice,
       Value<int>? qty,
       Value<int>? total,
-      Value<String?>? codeProduct,
       Value<int?>? idTransaction}) {
-    return DetailTransactionTableCompanion(
+    return ProductTransactionTableCompanion(
       id: id ?? this.id,
+      name: name ?? this.name,
+      capitalPrice: capitalPrice ?? this.capitalPrice,
+      sellPrice: sellPrice ?? this.sellPrice,
       qty: qty ?? this.qty,
       total: total ?? this.total,
-      codeProduct: codeProduct ?? this.codeProduct,
       idTransaction: idTransaction ?? this.idTransaction,
     );
   }
@@ -1419,14 +1479,20 @@ class DetailTransactionTableCompanion
     if (id.present) {
       map['id'] = Variable<int>(id.value);
     }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (capitalPrice.present) {
+      map['capital_price'] = Variable<int>(capitalPrice.value);
+    }
+    if (sellPrice.present) {
+      map['sell_price'] = Variable<int>(sellPrice.value);
+    }
     if (qty.present) {
       map['qty'] = Variable<int>(qty.value);
     }
     if (total.present) {
       map['total'] = Variable<int>(total.value);
-    }
-    if (codeProduct.present) {
-      map['code_product'] = Variable<String>(codeProduct.value);
     }
     if (idTransaction.present) {
       map['id_transaction'] = Variable<int>(idTransaction.value);
@@ -1436,11 +1502,13 @@ class DetailTransactionTableCompanion
 
   @override
   String toString() {
-    return (StringBuffer('DetailTransactionTableCompanion(')
+    return (StringBuffer('ProductTransactionTableCompanion(')
           ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('capitalPrice: $capitalPrice, ')
+          ..write('sellPrice: $sellPrice, ')
           ..write('qty: $qty, ')
           ..write('total: $total, ')
-          ..write('codeProduct: $codeProduct, ')
           ..write('idTransaction: $idTransaction')
           ..write(')'))
         .toString();
@@ -2550,9 +2618,8 @@ class $UserViewView extends ViewInfo<$UserViewView, UserViewData>
   Set<String> get readTables => const {'role_table', 'user_table'};
 }
 
-class DetailTransactionViewData extends DataClass {
+class ProductTransactionViewData extends DataClass {
   final String no;
-  final String codeProduct;
   final String name;
   final int capitalPrice;
   final int sellPrice;
@@ -2560,9 +2627,8 @@ class DetailTransactionViewData extends DataClass {
   final int total;
   final int id;
   final DateTime dateTransaction;
-  const DetailTransactionViewData(
+  const ProductTransactionViewData(
       {required this.no,
-      required this.codeProduct,
       required this.name,
       required this.capitalPrice,
       required this.sellPrice,
@@ -2570,12 +2636,11 @@ class DetailTransactionViewData extends DataClass {
       required this.total,
       required this.id,
       required this.dateTransaction});
-  factory DetailTransactionViewData.fromJson(Map<String, dynamic> json,
+  factory ProductTransactionViewData.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return DetailTransactionViewData(
+    return ProductTransactionViewData(
       no: serializer.fromJson<String>(json['no']),
-      codeProduct: serializer.fromJson<String>(json['codeProduct']),
       name: serializer.fromJson<String>(json['name']),
       capitalPrice: serializer.fromJson<int>(json['capitalPrice']),
       sellPrice: serializer.fromJson<int>(json['sellPrice']),
@@ -2590,7 +2655,6 @@ class DetailTransactionViewData extends DataClass {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'no': serializer.toJson<String>(no),
-      'codeProduct': serializer.toJson<String>(codeProduct),
       'name': serializer.toJson<String>(name),
       'capitalPrice': serializer.toJson<int>(capitalPrice),
       'sellPrice': serializer.toJson<int>(sellPrice),
@@ -2601,9 +2665,8 @@ class DetailTransactionViewData extends DataClass {
     };
   }
 
-  DetailTransactionViewData copyWith(
+  ProductTransactionViewData copyWith(
           {String? no,
-          String? codeProduct,
           String? name,
           int? capitalPrice,
           int? sellPrice,
@@ -2611,9 +2674,8 @@ class DetailTransactionViewData extends DataClass {
           int? total,
           int? id,
           DateTime? dateTransaction}) =>
-      DetailTransactionViewData(
+      ProductTransactionViewData(
         no: no ?? this.no,
-        codeProduct: codeProduct ?? this.codeProduct,
         name: name ?? this.name,
         capitalPrice: capitalPrice ?? this.capitalPrice,
         sellPrice: sellPrice ?? this.sellPrice,
@@ -2624,9 +2686,8 @@ class DetailTransactionViewData extends DataClass {
       );
   @override
   String toString() {
-    return (StringBuffer('DetailTransactionViewData(')
+    return (StringBuffer('ProductTransactionViewData(')
           ..write('no: $no, ')
-          ..write('codeProduct: $codeProduct, ')
           ..write('name: $name, ')
           ..write('capitalPrice: $capitalPrice, ')
           ..write('sellPrice: $sellPrice, ')
@@ -2639,14 +2700,13 @@ class DetailTransactionViewData extends DataClass {
   }
 
   @override
-  int get hashCode => Object.hash(no, codeProduct, name, capitalPrice,
-      sellPrice, qty, total, id, dateTransaction);
+  int get hashCode => Object.hash(
+      no, name, capitalPrice, sellPrice, qty, total, id, dateTransaction);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is DetailTransactionViewData &&
+      (other is ProductTransactionViewData &&
           other.no == this.no &&
-          other.codeProduct == this.codeProduct &&
           other.name == this.name &&
           other.capitalPrice == this.capitalPrice &&
           other.sellPrice == this.sellPrice &&
@@ -2656,48 +2716,37 @@ class DetailTransactionViewData extends DataClass {
           other.dateTransaction == this.dateTransaction);
 }
 
-class $DetailTransactionViewView
-    extends ViewInfo<$DetailTransactionViewView, DetailTransactionViewData>
+class $ProductTransactionViewView
+    extends ViewInfo<$ProductTransactionViewView, ProductTransactionViewData>
     implements HasResultSet {
   final String? _alias;
   @override
   final _$DatabaseApp attachedDatabase;
-  $DetailTransactionViewView(this.attachedDatabase, [this._alias]);
+  $ProductTransactionViewView(this.attachedDatabase, [this._alias]);
   $ProductTableTable get productTable =>
       attachedDatabase.productTable.createAlias('t0');
   $TransactionTableTable get transactionTable =>
       attachedDatabase.transactionTable.createAlias('t1');
-  $DetailTransactionTableTable get detailTransactionTable =>
-      attachedDatabase.detailTransactionTable.createAlias('t2');
+  $ProductTransactionTableTable get productTransactionTable =>
+      attachedDatabase.productTransactionTable.createAlias('t2');
   @override
-  List<GeneratedColumn> get $columns => [
-        no,
-        codeProduct,
-        name,
-        capitalPrice,
-        sellPrice,
-        qty,
-        total,
-        id,
-        dateTransaction
-      ];
+  List<GeneratedColumn> get $columns =>
+      [no, name, capitalPrice, sellPrice, qty, total, id, dateTransaction];
   @override
   String get aliasedName => _alias ?? entityName;
   @override
-  String get entityName => 'detail_transaction_view';
+  String get entityName => 'product_transaction_view';
   @override
   String? get createViewStmt => null;
   @override
-  $DetailTransactionViewView get asDslTable => this;
+  $ProductTransactionViewView get asDslTable => this;
   @override
-  DetailTransactionViewData map(Map<String, dynamic> data,
+  ProductTransactionViewData map(Map<String, dynamic> data,
       {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return DetailTransactionViewData(
+    return ProductTransactionViewData(
       no: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}no'])!,
-      codeProduct: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}code_product'])!,
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       capitalPrice: attachedDatabase.typeMapping
@@ -2719,29 +2768,25 @@ class $DetailTransactionViewView
       'no', aliasedName, false,
       generatedAs: GeneratedAs(transactionTable.no, false),
       type: DriftSqlType.string);
-  late final GeneratedColumn<String> codeProduct = GeneratedColumn<String>(
-      'code_product', aliasedName, false,
-      generatedAs: GeneratedAs(productTable.codeProduct, false),
-      type: DriftSqlType.string);
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
       'name', aliasedName, false,
-      generatedAs: GeneratedAs(productTable.name, false),
+      generatedAs: GeneratedAs(productTransactionTable.name, false),
       type: DriftSqlType.string);
   late final GeneratedColumn<int> capitalPrice = GeneratedColumn<int>(
       'capital_price', aliasedName, false,
-      generatedAs: GeneratedAs(productTable.capitalPrice, false),
+      generatedAs: GeneratedAs(productTransactionTable.capitalPrice, false),
       type: DriftSqlType.int);
   late final GeneratedColumn<int> sellPrice = GeneratedColumn<int>(
       'sell_price', aliasedName, false,
-      generatedAs: GeneratedAs(productTable.sellPrice, false),
+      generatedAs: GeneratedAs(productTransactionTable.sellPrice, false),
       type: DriftSqlType.int);
   late final GeneratedColumn<int> qty = GeneratedColumn<int>(
       'qty', aliasedName, false,
-      generatedAs: GeneratedAs(detailTransactionTable.qty, false),
+      generatedAs: GeneratedAs(productTransactionTable.qty, false),
       type: DriftSqlType.int);
   late final GeneratedColumn<int> total = GeneratedColumn<int>(
       'total', aliasedName, false,
-      generatedAs: GeneratedAs(detailTransactionTable.total, false),
+      generatedAs: GeneratedAs(productTransactionTable.total, false),
       type: DriftSqlType.int);
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
       'id', aliasedName, false,
@@ -2752,24 +2797,22 @@ class $DetailTransactionViewView
           generatedAs: GeneratedAs(transactionTable.dateTransaction, false),
           type: DriftSqlType.dateTime);
   @override
-  $DetailTransactionViewView createAlias(String alias) {
-    return $DetailTransactionViewView(attachedDatabase, alias);
+  $ProductTransactionViewView createAlias(String alias) {
+    return $ProductTransactionViewView(attachedDatabase, alias);
   }
 
   @override
-  Query? get query => (attachedDatabase.selectOnly(detailTransactionTable)
+  Query? get query => (attachedDatabase.selectOnly(productTransactionTable)
             ..addColumns($columns))
           .join([
         innerJoin(
-            productTable,
-            productTable.codeProduct
-                .equalsExp(detailTransactionTable.codeProduct)),
-        innerJoin(transactionTable,
-            transactionTable.id.equalsExp(detailTransactionTable.idTransaction))
+            transactionTable,
+            transactionTable.id
+                .equalsExp(productTransactionTable.idTransaction))
       ]);
   @override
   Set<String> get readTables =>
-      const {'product_table', 'transaction_table', 'detail_transaction_table'};
+      const {'product_table', 'transaction_table', 'product_transaction_table'};
 }
 
 abstract class _$DatabaseApp extends GeneratedDatabase {
@@ -2780,15 +2823,15 @@ abstract class _$DatabaseApp extends GeneratedDatabase {
       $CounterTransactionTableTable(this);
   late final $TransactionTableTable transactionTable =
       $TransactionTableTable(this);
-  late final $DetailTransactionTableTable detailTransactionTable =
-      $DetailTransactionTableTable(this);
+  late final $ProductTransactionTableTable productTransactionTable =
+      $ProductTransactionTableTable(this);
   late final $ColorAppTableTable colorAppTable = $ColorAppTableTable(this);
   late final $ProductViewView productView = $ProductViewView(this);
   late final $RoleTableTable roleTable = $RoleTableTable(this);
   late final $UserTableTable userTable = $UserTableTable(this);
   late final $UserViewView userView = $UserViewView(this);
-  late final $DetailTransactionViewView detailTransactionView =
-      $DetailTransactionViewView(this);
+  late final $ProductTransactionViewView productTransactionView =
+      $ProductTransactionViewView(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -2798,12 +2841,12 @@ abstract class _$DatabaseApp extends GeneratedDatabase {
         productTable,
         counterTransactionTable,
         transactionTable,
-        detailTransactionTable,
+        productTransactionTable,
         colorAppTable,
         productView,
         roleTable,
         userTable,
         userView,
-        detailTransactionView
+        productTransactionView
       ];
 }

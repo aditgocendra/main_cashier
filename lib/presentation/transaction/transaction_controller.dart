@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:main_cashier/domain/entity/product_transaction_entity.dart';
 
 import '../../core/usecase/usecase.dart';
 
@@ -7,7 +8,6 @@ import '../../domain/usecase/transaction/get_counter_transaction_usecase.dart';
 import '../../domain/usecase/product/select_product_usecase.dart';
 import '../../domain/usecase/transaction/create_transaction_usecase.dart';
 import '../../domain/entity/product_entity.dart';
-import '../../domain/entity/detail_transaction_entity.dart';
 
 class TransactionController extends ChangeNotifier {
   List<ProductEntity> _listProduct = [];
@@ -129,18 +129,21 @@ class TransactionController extends ChangeNotifier {
   }
 
   void addTransaction() async {
-    List<DetailTransactionEntity> list = [];
+    List<ProductTransactionEntity> list = [];
 
     if (listProduct.isEmpty) {
       return;
     }
 
     for (var i = 0; i < listProduct.length; i++) {
-      list.add(DetailTransactionEntity(
+      list.add(ProductTransactionEntity(
         id: 0,
         qty: int.parse(listTecQty[i].text),
         total: listTotalQty[i],
-        idProduct: listProduct[i].code,
+        name: listProduct[i].name,
+        capitalPrice: listProduct[i].capitalPrice,
+        sellPrice: listProduct[i].sellPrice,
+        idTransaction: 0,
       ));
     }
 

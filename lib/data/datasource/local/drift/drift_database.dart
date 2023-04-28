@@ -59,12 +59,13 @@ class TransactionTable extends Table {
       dateTime().withDefault(currentDateAndTime)();
 }
 
-class DetailTransactionTable extends Table {
+class ProductTransactionTable extends Table {
   IntColumn get id => integer().autoIncrement()();
+  TextColumn get name => text()();
+  IntColumn get capitalPrice => integer()();
+  IntColumn get sellPrice => integer()();
   IntColumn get qty => integer()();
   IntColumn get total => integer()();
-  TextColumn get codeProduct =>
-      text().nullable().references(ProductTable, #codeProduct)();
   IntColumn get idTransaction =>
       integer().nullable().references(TransactionTable, #id)();
 }
@@ -123,33 +124,26 @@ abstract class UserView extends View {
       );
 }
 
-abstract class DetailTransactionView extends View {
+abstract class ProductTransactionView extends View {
   ProductTable get productTable;
   TransactionTable get transactionTable;
-  DetailTransactionTable get detailTransactionTable;
+  ProductTransactionTable get productTransactionTable;
 
   @override
   Query as() => select([
         transactionTable.no,
-        productTable.codeProduct,
-        productTable.name,
-        productTable.capitalPrice,
-        productTable.sellPrice,
-        detailTransactionTable.qty,
-        detailTransactionTable.total,
+        productTransactionTable.name,
+        productTransactionTable.capitalPrice,
+        productTransactionTable.sellPrice,
+        productTransactionTable.qty,
+        productTransactionTable.total,
         transactionTable.id,
         transactionTable.dateTransaction,
-      ]).from(detailTransactionTable).join([
-        innerJoin(
-          productTable,
-          productTable.codeProduct.equalsExp(
-            detailTransactionTable.codeProduct,
-          ),
-        ),
+      ]).from(productTransactionTable).join([
         innerJoin(
           transactionTable,
           transactionTable.id.equalsExp(
-            detailTransactionTable.idTransaction,
+            productTransactionTable.idTransaction,
           ),
         )
       ]);
@@ -161,13 +155,13 @@ abstract class DetailTransactionView extends View {
     ProductTable,
     CounterTransactionTable,
     TransactionTable,
-    DetailTransactionTable,
+    ProductTransactionTable,
     ColorAppTable,
   ],
   views: [
     ProductView,
     UserView,
-    DetailTransactionView,
+    ProductTransactionView,
   ],
 )
 class DatabaseApp extends _$DatabaseApp {

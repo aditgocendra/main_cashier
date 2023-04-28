@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:main_cashier/core/utils/format_utils.dart';
-import 'package:main_cashier/domain/entity/detail_transaction_entity.dart';
+import 'package:main_cashier/domain/entity/product_transaction_entity.dart';
 import 'package:main_cashier/domain/entity/transaction_entity.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
@@ -12,7 +12,7 @@ import 'package:path/path.dart' as path;
 class PdfUtility {
   static Future generateInvoicePdf({
     required TransactionEntity transactionEntity,
-    required List<DetailTransactionViewEntity> detailTransaction,
+    required List<ProductTransactionViewEntity> productTansactions,
   }) async {
     final doc = pw.Document();
 
@@ -42,7 +42,7 @@ class PdfUtility {
                 transactionEntity.numInvoice,
               ),
               pw.SizedBox(height: 10),
-              _contentTableTransaction(context, detailTransaction),
+              _contentTableTransaction(context, productTansactions),
               pw.SizedBox(height: 10),
               _contentFooterTransaction(
                 context,
@@ -61,7 +61,7 @@ class PdfUtility {
 
   static Future generateReportTransaction({
     required List<DateTime> rangeDate,
-    required List<DetailTransactionViewEntity> reportTransaction,
+    required List<ProductTransactionViewEntity> reportTransaction,
     required int omzet,
     required int profit,
   }) async {
@@ -175,7 +175,7 @@ class PdfUtility {
 
   static pw.Widget _contentTableTransaction(
     pw.Context context,
-    List<DetailTransactionViewEntity> listTransaction,
+    List<ProductTransactionViewEntity> productTransactions,
   ) {
     const tableHeaders = [
       'Product Name',
@@ -225,10 +225,10 @@ class PdfUtility {
         (col) => tableHeaders[col],
       ),
       data: List<List<String>>.generate(
-        listTransaction.length,
+        productTransactions.length,
         (row) => List<String>.generate(
           tableHeaders.length,
-          (col) => listTransaction[row].getIndexInvoice(col),
+          (col) => productTransactions[row].getIndexInvoice(col),
         ),
       ),
     );
@@ -252,8 +252,8 @@ class PdfUtility {
     );
   }
 
-  static pw.Widget _contentTableReportTransaction(
-      pw.Context context, List<DetailTransactionViewEntity> reportTransaction) {
+  static pw.Widget _contentTableReportTransaction(pw.Context context,
+      List<ProductTransactionViewEntity> reportTransaction) {
     const tableHeaders = [
       'No',
       'Product Name',
