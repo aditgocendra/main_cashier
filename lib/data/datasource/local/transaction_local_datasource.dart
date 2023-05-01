@@ -221,7 +221,7 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
     List<int> profit = [];
 
     for (var element in result) {
-      profit.add(element.total - element.capitalPrice);
+      profit.add(element.total - (element.capitalPrice * element.qty));
     }
     return profit.reduce((value, element) => value + element);
   }
