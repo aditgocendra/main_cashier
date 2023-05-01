@@ -582,6 +582,9 @@ class DialogDetailTransaction extends StatelessWidget {
             ],
           ),
         ),
+        const SizedBox(
+          height: 16,
+        ),
         ElevatedButton(
           onPressed: () {
             PdfUtility.generateInvoicePdf(
