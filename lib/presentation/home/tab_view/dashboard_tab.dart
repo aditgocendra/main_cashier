@@ -57,23 +57,6 @@ class _DashboardTabState extends State<DashboardTab> {
               color: canvasColor,
               borderRadius: BorderRadius.circular(16),
             ),
-            // child: GridView.builder(
-            //   primary: false,
-            //   shrinkWrap: true,
-            //   padding: const EdgeInsets.all(64),
-            //   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            //     crossAxisCount: crossAxisGrid,
-            //     childAspectRatio: aspectRatio,
-            //     crossAxisSpacing: 32,
-            //     mainAxisSpacing: 32,
-            //   ),
-            //   itemCount: listCardTop.length,
-            //   itemBuilder: (context, index) {
-            //     return ItemTopDashboard(
-            //       item: listCardTop[index],
-            //     );
-            //   },
-            // ),
             child: GridView.count(
               shrinkWrap: true,
               primary: false,
@@ -99,13 +82,13 @@ class _DashboardTabState extends State<DashboardTab> {
                   icon: UniconsLine.transaction,
                   title: "Total Transaction",
                   desc: "Last transaction",
-                  value: 40.toString(),
+                  value: controller.totalTransaction.toString(),
                 ),
                 ItemTopDashboard(
                   icon: UniconsLine.money_insert,
                   title: "Profit",
-                  desc: "Overall Profit",
-                  value: FormatUtility.currencyRp(40000),
+                  desc: "Profit this month",
+                  value: FormatUtility.currencyRp(controller.profitMonth),
                 ),
               ],
             ),
