@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:unicons/unicons.dart';
 
-import '../../core/utils/dialog_utils.dart';
 import '../../core/utils/format_utils.dart';
 import '../../core/components/table_components.dart';
 import '../../core/constant/color_constant.dart';
@@ -40,7 +38,10 @@ class TransactionView extends StatelessWidget {
                     alignment: WrapAlignment.spaceBetween,
                     children: [
                       InkWell(
-                        onTap: () => context.go("/"),
+                        onTap: () {
+                          controller.reset();
+                          navigator.pop();
+                        },
                         child: const Text(
                           "Home",
                           style: TextStyle(
@@ -69,33 +70,25 @@ class TransactionView extends StatelessWidget {
                                 Radius.circular(12),
                               ),
                             ),
+                            errorText: controller.errSelectProduct,
                             suffixIcon: InkWell(
                               onTap: () {
+                                controller.clearError();
                                 final String code = tecProductAdd.text;
 
                                 if (code.isEmpty) return;
 
                                 controller.selectProductData(
-                                  code: tecProductAdd.text,
-                                  callbackFail: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return DialogUtils.dialogInformation(
-                                          title: "Fail Add Product",
-                                          message: controller.errSelectProduct,
-                                          callbackConfirmation: () =>
-                                              navigator.pop(),
-                                        );
-                                      },
-                                    );
-                                  },
+                                  tecProductAdd.text,
                                 );
 
                                 tecProductAdd.clear();
                               },
-                              child: const Icon(
+                              child: Icon(
                                 UniconsLine.plus_circle,
+                                color: controller.errSelectProduct != null
+                                    ? Colors.red
+                                    : primaryColor,
                                 size: 20,
                               ),
                             ),
@@ -184,8 +177,9 @@ class TransactionView extends StatelessWidget {
                                             FormatUtility.currencyRp(
                                               val.sellPrice,
                                             ),
-                                            style:
-                                                const TextStyle(fontSize: 14),
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -251,6 +245,7 @@ class TransactionView extends StatelessWidget {
                     ),
                   ),
                 ),
+
                 // Footer
                 Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -274,7 +269,12 @@ class TransactionView extends StatelessWidget {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          controller.addTransaction();
+                          controller.addTransaction(
+                            () {
+                              controller.reset();
+                              navigator.pop();
+                            },
+                          );
                         },
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.all(18),
