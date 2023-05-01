@@ -7,6 +7,7 @@ import 'package:main_cashier/domain/usecase/color_app/update_color_app_usecase.d
 import 'package:main_cashier/domain/usecase/product/delete_product_category_usecase.dart';
 import 'package:main_cashier/domain/usecase/product/get_single_product_category_usecase.dart';
 import 'package:main_cashier/domain/usecase/product/get_total_product_usecase.dart';
+import 'package:main_cashier/domain/usecase/transaction/get_total_transaction_usecase.dart';
 import 'package:main_cashier/presentation/home/tab_controller/dashboard_tab_controller.dart';
 import 'package:main_cashier/presentation/home/tab_controller/settings_tab_controller.dart';
 import 'package:provider/provider.dart';
@@ -255,6 +256,10 @@ GetProfitWithRange _getProfitWithRange = GetProfitWithRange(
   repository: _transactionRepository,
 );
 
+GetTotalTransaction _getTotalTransaction = GetTotalTransaction(
+  repository: _transactionRepository,
+);
+
 // Color App Usecase
 GetColorApp _getColorApp = GetColorApp(
   repository: _colorAppRepository,
@@ -332,6 +337,8 @@ List<SingleChildWidget> _listProvider = [
     create: (context) => DashboardTabController(
       getTotalCategory: _getTotalCategory,
       getTotalProduct: _getTotalProduct,
+      getTotalTransaction: _getTotalTransaction,
+      getProfitWithRange: _getProfitWithRange,
     ),
   )
 ];

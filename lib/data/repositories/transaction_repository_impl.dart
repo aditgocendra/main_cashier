@@ -162,4 +162,13 @@ class TransactionRepositoryImpl implements TransactionRepository {
       throw DatabaseDriftException("Fail get profit");
     }
   }
+
+  @override
+  Future<int?> getTotalTransaction() async {
+    try {
+      return await transactionLocalDataSource.getTotal();
+    } catch (_) {
+      throw DatabaseDriftException("Fail get total transaction");
+    }
+  }
 }

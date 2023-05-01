@@ -44,6 +44,8 @@ abstract class TransactionLocalDataSource {
 
   Future<int> getProfitWithRange(List<DateTime> dateRange);
 
+  Future<int?> getTotal();
+
   Future delete(int idTransaction);
 }
 
@@ -235,5 +237,16 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
         .get();
 
     return ProductTransactionViewModel.fromTableList(result);
+  }
+
+  @override
+  Future<int?> getTotal() async {
+    var countTransaction = databaseApp.transactionTable.id.count();
+    final query = (databaseApp.selectOnly(databaseApp.transactionTable))
+      ..addColumns(
+        [countTransaction],
+      );
+
+    return await query.map((p0) => p0.read(countTransaction)).getSingle();
   }
 }

@@ -30,6 +30,8 @@ abstract class TransactionRepository {
 
   Future<int> getProfitWithRange(List<DateTime> rangeDate);
 
+  Future<int?> getTotalTransaction();
+
   Future<List<TransactionEntity>> searchTransaction(String keyword);
 
   Future deleteTransaction(int id);
