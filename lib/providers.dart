@@ -1,9 +1,15 @@
 import 'package:main_cashier/data/datasource/local/color_app_local_datasource.dart';
+import 'package:main_cashier/data/datasource/local/path_file_local_datasource.dart';
 import 'package:main_cashier/data/repositories/color_app_repository_impl.dart';
+import 'package:main_cashier/data/repositories/path_file_repository_impl.dart';
 import 'package:main_cashier/domain/repostitories/color_app_repository.dart';
+import 'package:main_cashier/domain/repostitories/path_file_repository.dart';
 import 'package:main_cashier/domain/usecase/category/get_total_category_usecase.dart';
 import 'package:main_cashier/domain/usecase/color_app/get_color_app_usecase.dart';
 import 'package:main_cashier/domain/usecase/color_app/update_color_app_usecase.dart';
+import 'package:main_cashier/domain/usecase/path_file/get_path_file_usecase.dart';
+import 'package:main_cashier/domain/usecase/path_file/get_path_files_usecase.dart';
+import 'package:main_cashier/domain/usecase/path_file/update_path_file_usecase.dart';
 import 'package:main_cashier/domain/usecase/product/delete_product_category_usecase.dart';
 import 'package:main_cashier/domain/usecase/product/get_single_product_category_usecase.dart';
 import 'package:main_cashier/domain/usecase/product/get_total_product_usecase.dart';
@@ -98,6 +104,10 @@ ColorAppLocalDataSource _colorAppLocalDataSource = ColorAppLocalDataSourceImpl(
   databaseApp: _databaseApp,
 );
 
+PathFileLocalDataSource _pathFileLocalDataSource = PathFileLocalDataSourceImpl(
+  databaseApp: _databaseApp,
+);
+
 // Repository
 CategoryRepository _categoryRepository = CategoryRepositoryImpl(
   categoryLocalDataSource: _categoryLocalDataSource,
@@ -121,6 +131,10 @@ TransactionRepository _transactionRepository = TransactionRepositoryImpl(
 
 ColorAppRepository _colorAppRepository = ColorAppRepositoryImpl(
   colorAppLocalDataSource: _colorAppLocalDataSource,
+);
+
+PathFileRepository _pathFileRepository = PathFileRepositoryImpl(
+  pathFileLocalDataSource: _pathFileLocalDataSource,
 );
 
 // Category Usecase
@@ -269,6 +283,20 @@ UpdateColorApp _updateColorApp = UpdateColorApp(
   repository: _colorAppRepository,
 );
 
+// Path File Usecase
+
+GetPathFiles _getPathFiles = GetPathFiles(
+  repository: _pathFileRepository,
+);
+
+GetPathFile _getPathFile = GetPathFile(
+  repository: _pathFileRepository,
+);
+
+UpdatePathFile _updatePathFile = UpdatePathFile(
+  repository: _pathFileRepository,
+);
+
 List<SingleChildWidget> _listProvider = [
   ChangeNotifierProvider(
     create: (context) => HomeController(),
@@ -331,6 +359,8 @@ List<SingleChildWidget> _listProvider = [
     create: (context) => SettingsTabController(
       getColorApp: _getColorApp,
       updateColorApp: _updateColorApp,
+      getPathFile: _getPathFile,
+      updatePathFile: _updatePathFile,
     ),
   ),
   ChangeNotifierProvider(
