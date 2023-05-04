@@ -20,7 +20,9 @@ class _SettingsTabState extends State<SettingsTab> {
   void initState() {
     super.initState();
     final controller = context.read<SettingsTabController>();
-    controller.setColorApp();
+
+    controller.initColorApp();
+    controller.initPathFolder();
   }
 
   @override
@@ -197,8 +199,8 @@ class _SettingsTabState extends State<SettingsTab> {
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: const [
-              Padding(
+            children: [
+              const Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Text(
                   "Path Folder",
@@ -206,27 +208,188 @@ class _SettingsTabState extends State<SettingsTab> {
                 ),
               ),
               ListTile(
-                title: Text(
+                title: const Text(
                   "Invoice",
                   style: TextStyle(fontSize: 14),
                 ),
+                subtitle: Text(
+                  controller.defaultPathInvoice,
+                  style: const TextStyle(
+                    fontSize: 12,
+                  ),
+                ),
                 trailing: InkWell(
-                  child: Icon(UniconsLine.folder),
+                  onTap: () {
+                    controller.changeTypePath(true);
+                    controller.setFolder(
+                      controller.defaultPathInvoice,
+                    );
+
+                    showDialog(
+                      context: context,
+                      builder: (context) => const Dialog(
+                        child: DialogSelectFolder(),
+                      ),
+                    );
+                  },
+                  child: const Icon(UniconsLine.folder),
                 ),
               ),
               ListTile(
-                title: Text(
+                title: const Text(
                   "Report",
                   style: TextStyle(fontSize: 14),
                 ),
+                subtitle: Text(
+                  controller.defaultPathReport,
+                  style: const TextStyle(
+                    fontSize: 12,
+                  ),
+                ),
                 trailing: InkWell(
-                  child: Icon(UniconsLine.folder),
+                  onTap: () {
+                    controller.changeTypePath(false);
+                    controller.setFolder(
+                      controller.defaultPathReport,
+                    );
+
+                    showDialog(
+                      context: context,
+                      builder: (context) => const Dialog(
+                        child: DialogSelectFolder(),
+                      ),
+                    );
+                  },
+                  child: const Icon(UniconsLine.folder),
                 ),
               ),
             ],
           ),
         )
       ],
+    );
+  }
+}
+
+class DialogSelectFolder extends StatelessWidget {
+  const DialogSelectFolder({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = context.watch<SettingsTabController>();
+    final navigator = Navigator.of(context);
+
+    return DialogUtils.layoutCustomDialog(
+      dialogHeaderText: "Pick Folder",
+      childern: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            border: Border.all(color: borderColor, width: 1),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Row(
+            children: [
+              InkWell(
+                onTap: () =>
+                    controller.backFolder(controller.pathActiveInvoice),
+                child: const Icon(UniconsLine.arrow_left),
+              ),
+              const SizedBox(
+                width: 4,
+              ),
+              Text(
+                controller.typePath
+                    ? controller.pathActiveInvoice
+                    : controller.pathActiveReport,
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(
+          height: 8,
+        ),
+        if (controller.listDir.isEmpty)
+          TextButton(
+            onPressed: () => controller.backFolder(
+              controller.pathActiveInvoice,
+            ),
+            child: const Text(
+              "..",
+              textAlign: TextAlign.start,
+            ),
+          ),
+        ...controller.listDir
+            .asMap()
+            .map(
+              (i, value) => MapEntry(
+                i,
+                InkWell(
+                  onTap: () => controller.setIndexActiveFolder(i),
+                  onDoubleTap: () {
+                    controller.openFolder(
+                      i,
+                    );
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(4.0),
+                    decoration: BoxDecoration(
+                      color: controller.indexActiveFolder != null &&
+                              controller.indexActiveFolder == i
+                          ? backgroundColor
+                          : Colors.transparent,
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          UniconsLine.folder,
+                          size: 24,
+                        ),
+                        const SizedBox(
+                          width: 12,
+                        ),
+                        Text(value),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            )
+            .values
+            .toList(),
+        const SizedBox(
+          height: 8,
+        ),
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            border: Border.all(color: borderColor, width: 1),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Text(
+            "Folder : ${controller.indexActiveFolder == null ? "" : controller.listDir[controller.indexActiveFolder!]}",
+          ),
+        ),
+        const SizedBox(
+          height: 16,
+        ),
+        ElevatedButton(
+          onPressed: () {
+            controller.selectFolderInvoice();
+            navigator.pop();
+          },
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.all(18),
+            backgroundColor: primaryColor,
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+          child: const Text("Select Folder"),
+        )
+      ],
+      callbackClose: () => navigator.pop(),
     );
   }
 }
