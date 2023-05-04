@@ -79,6 +79,14 @@ class ColorAppTable extends Table {
   IntColumn get border => integer()();
 }
 
+class PathFileTable extends Table {
+  TextColumn get folder => text().unique()();
+  TextColumn get path => text()();
+
+  @override
+  Set<Column> get primaryKey => {folder};
+}
+
 abstract class ProductView extends View {
   CategoryTable get categoryTable;
   ProductTable get productTable;
@@ -157,6 +165,7 @@ abstract class ProductTransactionView extends View {
     TransactionTable,
     ProductTransactionTable,
     ColorAppTable,
+    PathFileTable,
   ],
   views: [
     ProductView,
@@ -195,6 +204,18 @@ class DatabaseApp extends _$DatabaseApp {
             background: backgroundColor.value,
             canvas: canvasColor.value,
             border: borderColor.value,
+          ));
+
+          final pathFolder = await getApplicationDocumentsDirectory();
+
+          await into(pathFileTable).insert(PathFileTableCompanion.insert(
+            folder: "invoice",
+            path: pathFolder.path,
+          ));
+
+          await into(pathFileTable).insert(PathFileTableCompanion.insert(
+            folder: "report",
+            path: pathFolder.path,
           ));
         }
       },

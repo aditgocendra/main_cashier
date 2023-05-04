@@ -1843,6 +1843,192 @@ class ColorAppTableCompanion extends UpdateCompanion<ColorAppTableData> {
   }
 }
 
+class $PathFileTableTable extends PathFileTable
+    with TableInfo<$PathFileTableTable, PathFileTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PathFileTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _folderMeta = const VerificationMeta('folder');
+  @override
+  late final GeneratedColumn<String> folder = GeneratedColumn<String>(
+      'folder', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
+  static const VerificationMeta _pathMeta = const VerificationMeta('path');
+  @override
+  late final GeneratedColumn<String> path = GeneratedColumn<String>(
+      'path', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [folder, path];
+  @override
+  String get aliasedName => _alias ?? 'path_file_table';
+  @override
+  String get actualTableName => 'path_file_table';
+  @override
+  VerificationContext validateIntegrity(Insertable<PathFileTableData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('folder')) {
+      context.handle(_folderMeta,
+          folder.isAcceptableOrUnknown(data['folder']!, _folderMeta));
+    } else if (isInserting) {
+      context.missing(_folderMeta);
+    }
+    if (data.containsKey('path')) {
+      context.handle(
+          _pathMeta, path.isAcceptableOrUnknown(data['path']!, _pathMeta));
+    } else if (isInserting) {
+      context.missing(_pathMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {folder};
+  @override
+  PathFileTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PathFileTableData(
+      folder: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}folder'])!,
+      path: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}path'])!,
+    );
+  }
+
+  @override
+  $PathFileTableTable createAlias(String alias) {
+    return $PathFileTableTable(attachedDatabase, alias);
+  }
+}
+
+class PathFileTableData extends DataClass
+    implements Insertable<PathFileTableData> {
+  final String folder;
+  final String path;
+  const PathFileTableData({required this.folder, required this.path});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['folder'] = Variable<String>(folder);
+    map['path'] = Variable<String>(path);
+    return map;
+  }
+
+  PathFileTableCompanion toCompanion(bool nullToAbsent) {
+    return PathFileTableCompanion(
+      folder: Value(folder),
+      path: Value(path),
+    );
+  }
+
+  factory PathFileTableData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PathFileTableData(
+      folder: serializer.fromJson<String>(json['folder']),
+      path: serializer.fromJson<String>(json['path']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'folder': serializer.toJson<String>(folder),
+      'path': serializer.toJson<String>(path),
+    };
+  }
+
+  PathFileTableData copyWith({String? folder, String? path}) =>
+      PathFileTableData(
+        folder: folder ?? this.folder,
+        path: path ?? this.path,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('PathFileTableData(')
+          ..write('folder: $folder, ')
+          ..write('path: $path')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(folder, path);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PathFileTableData &&
+          other.folder == this.folder &&
+          other.path == this.path);
+}
+
+class PathFileTableCompanion extends UpdateCompanion<PathFileTableData> {
+  final Value<String> folder;
+  final Value<String> path;
+  final Value<int> rowid;
+  const PathFileTableCompanion({
+    this.folder = const Value.absent(),
+    this.path = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  PathFileTableCompanion.insert({
+    required String folder,
+    required String path,
+    this.rowid = const Value.absent(),
+  })  : folder = Value(folder),
+        path = Value(path);
+  static Insertable<PathFileTableData> custom({
+    Expression<String>? folder,
+    Expression<String>? path,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (folder != null) 'folder': folder,
+      if (path != null) 'path': path,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  PathFileTableCompanion copyWith(
+      {Value<String>? folder, Value<String>? path, Value<int>? rowid}) {
+    return PathFileTableCompanion(
+      folder: folder ?? this.folder,
+      path: path ?? this.path,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (folder.present) {
+      map['folder'] = Variable<String>(folder.value);
+    }
+    if (path.present) {
+      map['path'] = Variable<String>(path.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PathFileTableCompanion(')
+          ..write('folder: $folder, ')
+          ..write('path: $path, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class ProductViewData extends DataClass {
   final String codeProduct;
   final String name;
@@ -2826,6 +3012,7 @@ abstract class _$DatabaseApp extends GeneratedDatabase {
   late final $ProductTransactionTableTable productTransactionTable =
       $ProductTransactionTableTable(this);
   late final $ColorAppTableTable colorAppTable = $ColorAppTableTable(this);
+  late final $PathFileTableTable pathFileTable = $PathFileTableTable(this);
   late final $ProductViewView productView = $ProductViewView(this);
   late final $RoleTableTable roleTable = $RoleTableTable(this);
   late final $UserTableTable userTable = $UserTableTable(this);
@@ -2843,6 +3030,7 @@ abstract class _$DatabaseApp extends GeneratedDatabase {
         transactionTable,
         productTransactionTable,
         colorAppTable,
+        pathFileTable,
         productView,
         roleTable,
         userTable,
