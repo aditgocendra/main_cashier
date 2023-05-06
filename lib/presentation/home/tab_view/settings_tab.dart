@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:provider/provider.dart';
@@ -163,42 +165,6 @@ class _SettingsTabState extends State<SettingsTab> {
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: const [
-              Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Text(
-                  "Backup",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-              ListTile(
-                title: Text(
-                  "Export",
-                  style: TextStyle(fontSize: 14),
-                ),
-                trailing: InkWell(child: Icon(UniconsLine.export)),
-              ),
-              ListTile(
-                title: Text(
-                  "Import",
-                  style: TextStyle(fontSize: 14),
-                ),
-                trailing: InkWell(child: Icon(UniconsLine.import)),
-              )
-            ],
-          ),
-        ),
-        const SizedBox(
-          height: 24,
-        ),
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: canvasColor,
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const Padding(
                 padding: EdgeInsets.all(16.0),
@@ -220,7 +186,7 @@ class _SettingsTabState extends State<SettingsTab> {
                 ),
                 trailing: InkWell(
                   onTap: () {
-                    controller.changeTypePath(true);
+                    controller.changeTypePath(0);
                     controller.setFolder(
                       controller.defaultPathInvoice,
                     );
@@ -228,7 +194,7 @@ class _SettingsTabState extends State<SettingsTab> {
                     showDialog(
                       context: context,
                       builder: (context) => const Dialog(
-                        child: DialogSelectFolder(),
+                        child: DialogOpenFolder(),
                       ),
                     );
                   },
@@ -248,7 +214,7 @@ class _SettingsTabState extends State<SettingsTab> {
                 ),
                 trailing: InkWell(
                   onTap: () {
-                    controller.changeTypePath(false);
+                    controller.changeTypePath(1);
                     controller.setFolder(
                       controller.defaultPathReport,
                     );
@@ -256,7 +222,7 @@ class _SettingsTabState extends State<SettingsTab> {
                     showDialog(
                       context: context,
                       builder: (context) => const Dialog(
-                        child: DialogSelectFolder(),
+                        child: DialogOpenFolder(),
                       ),
                     );
                   },
@@ -265,14 +231,84 @@ class _SettingsTabState extends State<SettingsTab> {
               ),
             ],
           ),
-        )
+        ),
+        const SizedBox(
+          height: 24,
+        ),
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: canvasColor,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text(
+                  "Backup",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+              ListTile(
+                title: const Text(
+                  "Export",
+                  style: TextStyle(fontSize: 14),
+                ),
+                trailing: InkWell(
+                  onTap: () {
+                    controller.exportData(
+                      () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => DialogUtils.dialogInformation(
+                            title: "Export Database",
+                            message: "Database export success",
+                            callbackConfirmation: () => navigator.pop(),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  child: const Icon(UniconsLine.export),
+                ),
+              ),
+              ListTile(
+                title: const Text(
+                  "Import",
+                  style: TextStyle(fontSize: 14),
+                ),
+                trailing: InkWell(
+                  onTap: () {
+                    controller.changeTypePath(2);
+                    controller.setFolder(
+                      controller.pathActiveImport,
+                    );
+
+                    showDialog(
+                      context: context,
+                      builder: (context) => const Dialog(
+                        child: DialogOpenFolder(),
+                      ),
+                    );
+                  },
+                  child: const Icon(UniconsLine.import),
+                ),
+              )
+            ],
+          ),
+        ),
+        const SizedBox(
+          height: 24,
+        ),
       ],
     );
   }
 }
 
-class DialogSelectFolder extends StatelessWidget {
-  const DialogSelectFolder({super.key});
+class DialogOpenFolder extends StatelessWidget {
+  const DialogOpenFolder({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -280,7 +316,7 @@ class DialogSelectFolder extends StatelessWidget {
     final navigator = Navigator.of(context);
 
     return DialogUtils.layoutCustomDialog(
-      dialogHeaderText: "Pick Folder",
+      dialogHeaderText: controller.typePath == 2 ? "Pick File" : "Pick Folder",
       childern: [
         Container(
           padding: const EdgeInsets.all(8),
@@ -291,17 +327,22 @@ class DialogSelectFolder extends StatelessWidget {
           child: Row(
             children: [
               InkWell(
-                onTap: () =>
-                    controller.backFolder(controller.pathActiveInvoice),
+                onTap: () => controller.backFolder(
+                  controller.typePath == 0
+                      ? controller.pathActiveInvoice
+                      : controller.pathActiveReport,
+                ),
                 child: const Icon(UniconsLine.arrow_left),
               ),
               const SizedBox(
                 width: 4,
               ),
               Text(
-                controller.typePath
+                (controller.typePath == 0)
                     ? controller.pathActiveInvoice
-                    : controller.pathActiveReport,
+                    : (controller.typePath == 1)
+                        ? controller.pathActiveReport
+                        : controller.pathActiveImport,
               ),
             ],
           ),
@@ -309,7 +350,7 @@ class DialogSelectFolder extends StatelessWidget {
         const SizedBox(
           height: 8,
         ),
-        if (controller.listDir.isEmpty)
+        if (controller.listFileSystem.isEmpty)
           TextButton(
             onPressed: () => controller.backFolder(
               controller.pathActiveInvoice,
@@ -319,40 +360,12 @@ class DialogSelectFolder extends StatelessWidget {
               textAlign: TextAlign.start,
             ),
           ),
-        ...controller.listDir
+        ...controller.listFileSystem
             .asMap()
             .map(
               (i, value) => MapEntry(
                 i,
-                InkWell(
-                  onTap: () => controller.setIndexActiveFolder(i),
-                  onDoubleTap: () {
-                    controller.openFolder(
-                      i,
-                    );
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(4.0),
-                    decoration: BoxDecoration(
-                      color: controller.indexActiveFolder != null &&
-                              controller.indexActiveFolder == i
-                          ? backgroundColor
-                          : Colors.transparent,
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          UniconsLine.folder,
-                          size: 24,
-                        ),
-                        const SizedBox(
-                          width: 12,
-                        ),
-                        Text(value),
-                      ],
-                    ),
-                  ),
-                ),
+                WidgetList(fileSystem: value, index: i),
               ),
             )
             .values
@@ -367,7 +380,7 @@ class DialogSelectFolder extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
           ),
           child: Text(
-            "Folder : ${controller.indexActiveFolder == null ? "" : controller.listDir[controller.indexActiveFolder!]}",
+            "${controller.typePath == 2 ? "File" : "Folder"} : ${controller.indexActive == null ? "" : controller.splitPathLast(controller.listFileSystem[controller.indexActive!].path)}",
           ),
         ),
         const SizedBox(
@@ -375,7 +388,12 @@ class DialogSelectFolder extends StatelessWidget {
         ),
         ElevatedButton(
           onPressed: () {
-            controller.selectFolderInvoice();
+            if (controller.typePath == 2) {
+              controller.importData();
+            } else {
+              controller.selectFolder();
+            }
+
             navigator.pop();
           },
           style: ElevatedButton.styleFrom(
@@ -386,10 +404,58 @@ class DialogSelectFolder extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
             ),
           ),
-          child: const Text("Select Folder"),
+          child: Text(
+            controller.typePath == 2 ? "Select File" : "Select Folder",
+          ),
         )
       ],
       callbackClose: () => navigator.pop(),
+    );
+  }
+}
+
+class WidgetList extends StatelessWidget {
+  final int index;
+  final FileSystemEntity fileSystem;
+  const WidgetList({required this.fileSystem, required this.index, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = context.watch<SettingsTabController>();
+    return InkWell(
+      onTap: () {
+        controller.setIndexActive(index);
+      },
+      onDoubleTap: () {
+        if (fileSystem.statSync().type is Directory) {
+          controller.openFolder(
+            index,
+          );
+        }
+      },
+      child: Container(
+        padding: const EdgeInsets.all(4.0),
+        decoration: BoxDecoration(
+          color:
+              controller.indexActive != null && controller.indexActive == index
+                  ? backgroundColor
+                  : Colors.transparent,
+        ),
+        child: Row(
+          children: [
+            Icon(
+              fileSystem.statSync().type is Directory
+                  ? UniconsLine.folder
+                  : UniconsLine.file,
+              size: 24,
+            ),
+            const SizedBox(
+              width: 12,
+            ),
+            Text(controller.splitPathLast(fileSystem.path)),
+          ],
+        ),
+      ),
     );
   }
 }

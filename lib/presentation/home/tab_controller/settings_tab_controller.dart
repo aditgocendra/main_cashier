@@ -1,9 +1,13 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart';
 
+import '../../../providers.dart';
 import '../../../core/constant/color_constant.dart';
 import '../../../core/usecase/usecase.dart';
+import '../../../domain/repostitories/backup_repository.dart';
 import '../../../domain/entity/path_file_entity.dart';
 import '../../../domain/entity/color_app_entity.dart';
 import '../../../domain/usecase/color_app/get_color_app_usecase.dart';
@@ -21,29 +25,37 @@ class SettingsTabController extends ChangeNotifier {
   String _pathActiveReport = "";
   String get pathActiveReport => _pathActiveReport;
 
-  List<String> _listDir = [];
-  List<String> get listDir => _listDir;
+  String _pathActiveImport = "";
+  String get pathActiveImport => _pathActiveImport;
 
-  int? _indexActiveFolder = null;
-  int? get indexActiveFolder => _indexActiveFolder;
+  List<FileSystemEntity> _listFileSystem = [];
+  List<FileSystemEntity> get listFileSystem => _listFileSystem;
+
+  int? _indexActive;
+  int? get indexActive => _indexActive;
 
   ColorAppEntity? _colorApp;
   ColorAppEntity? get colorApp => _colorApp;
 
-  bool _typePath = false;
-  bool get typePath => _typePath;
+  // 0 = Invoice
+  // 1 = Report
+  // 2 = Import
+  int _typePath = 0;
+  int get typePath => _typePath;
 
   // Usecase
   final GetColorApp getColorApp;
   final UpdateColorApp updateColorApp;
   final GetPathFile getPathFile;
   final UpdatePathFile updatePathFile;
+  final BackupRepository backupRepository;
 
   SettingsTabController({
     required this.getColorApp,
     required this.updateColorApp,
     required this.getPathFile,
     required this.updatePathFile,
+    required this.backupRepository,
   });
 
   void initColorApp() async {
@@ -103,107 +115,177 @@ class SettingsTabController extends ChangeNotifier {
     await getPathFile.call("report").then((value) async {
       defaultPathReport = value.path;
     }).catchError((e) => print);
+
+    final dir = await getApplicationDocumentsDirectory();
+    _pathActiveImport = dir.path;
   }
 
-  void setIndexActiveFolder(int index) {
-    _indexActiveFolder = index;
+  void setIndexActive(int index) {
+    _indexActive = index;
     notifyListeners();
   }
 
   // typePath == true ? invoice : report
-  void changeTypePath(bool newType) => _typePath = newType;
+  void changeTypePath(int newType) => _typePath = newType;
 
   void setFolder(
     String pathActive,
   ) async {
-    listDir.clear();
-    _listDir = _getPathFolder(pathActive);
+    _indexActive = null;
+    _listFileSystem.clear();
+    _listFileSystem = _getFileSystems(pathActive);
 
-    typePath ? _pathActiveInvoice = pathActive : _pathActiveReport = pathActive;
+    switch (typePath) {
+      case 1:
+        _pathActiveReport = pathActive;
+        break;
+      case 2:
+        _pathActiveImport = pathActive;
+        break;
+      default:
+        _pathActiveInvoice = pathActive;
+        break;
+    }
 
     notifyListeners();
   }
 
   void openFolder(int index) {
-    _indexActiveFolder = null;
+    _indexActive = null;
 
     final newActivePath = path.join(
-      typePath ? pathActiveInvoice : pathActiveReport,
-      listDir[index],
+      (typePath == 0)
+          ? pathActiveInvoice
+          : (typePath == 1)
+              ? pathActiveReport
+              : pathActiveReport,
+      splitPathLast(listFileSystem[index].path),
     );
 
-    listDir.clear();
-
-    typePath
+    (typePath == 0)
         ? _pathActiveInvoice = newActivePath
-        : _pathActiveReport = newActivePath;
-    _listDir = _getPathFolder(newActivePath);
+        : (typePath == 1)
+            ? _pathActiveReport = newActivePath
+            : _pathActiveImport = newActivePath;
+
+    _listFileSystem = _getFileSystems(newActivePath);
 
     notifyListeners();
   }
 
   void backFolder(String pathActive) {
-    _indexActiveFolder = null;
+    _indexActive = null;
     final r = path.split(pathActive);
 
     if (r.length <= 1) return;
 
     r.removeLast();
 
-    listDir.clear();
-    _pathActiveInvoice = path.joinAll(r);
+    final pathJoin = path.joinAll(r);
+    _pathActiveInvoice = pathJoin;
 
-    typePath
-        ? _pathActiveInvoice = path.joinAll(r)
-        : _pathActiveReport = path.joinAll(r);
+    (typePath == 0)
+        ? _pathActiveInvoice = pathJoin
+        : (typePath == 1)
+            ? _pathActiveReport = pathJoin
+            : _pathActiveImport = pathJoin;
 
-    _listDir = _getPathFolder(path.joinAll(r));
+    _listFileSystem = _getFileSystems(pathJoin);
 
     notifyListeners();
   }
 
-  List<String> _getPathFolder(String pathDir) {
-    List<String> list = [];
+  List<FileSystemEntity> _getFileSystems(String pathDir) {
+    List<FileSystemEntity> list = [];
+
     final dirs = Directory(pathDir).listSync().where(
-          (element) => element is Directory && element.statSync().mode != 16749,
+          (element) => element.statSync().mode != 16749,
         );
 
     for (var element in dirs) {
-      try {
-        Directory(element.path).listSync();
-        list.add(path.split(element.path).last);
-      } catch (_) {
-        continue;
+      if (element is Directory) {
+        try {
+          Directory(element.path).listSync();
+          list.add(element);
+        } catch (_) {
+          continue;
+        }
+      }
+
+      if (path.extension(element.path) == ".db") {
+        list.add(element);
       }
     }
-
     return list;
   }
 
-  void selectFolderInvoice() async {
-    if (typePath) {
-      if (indexActiveFolder == null || pathActiveInvoice.isEmpty) return;
+  String splitPathLast(String e) {
+    return path.split(e).last;
+  }
+
+  void selectFolder() async {
+    if (typePath == 0) {
+      if (indexActive == null || pathActiveInvoice.isEmpty) return;
     } else {
-      if (indexActiveFolder == null || pathActiveReport.isEmpty) return;
+      if (indexActive == null || pathActiveReport.isEmpty) return;
     }
 
     final newPath = path.join(
-      typePath ? pathActiveInvoice : pathActiveReport,
-      listDir[indexActiveFolder!],
+      typePath == 0 ? pathActiveInvoice : pathActiveReport,
+      listFileSystem[indexActive!].path,
     );
 
+    if (Directory(newPath).statSync().type is! Directory) return;
+
     final params = PathFileEntity(
-      folder: typePath ? "invoice" : "report",
+      folder: typePath == 0 ? "invoice" : "report",
       path: newPath,
     );
 
     await updatePathFile.call(params).then((value) {
       if (!value) return;
-      typePath ? defaultPathInvoice = newPath : defaultPathReport = newPath;
-      _indexActiveFolder = null;
+
+      typePath == 0
+          ? defaultPathInvoice = newPath
+          : defaultPathReport = newPath;
+      _indexActive = null;
+
       notifyListeners();
     }).catchError((e) {
       print(e.toString());
     });
+  }
+
+  void exportData(VoidCallback callback) async {
+    final dbFolder = await getApplicationDocumentsDirectory();
+    final file = File(path.join(dbFolder.path, 'backup.db'));
+
+    await file.parent.create(recursive: true);
+
+    if (file.existsSync()) file.deleteSync();
+
+    await exportDatabase.call(file).then((value) {
+      callback.call();
+    });
+  }
+
+  void importData() async {
+    final dbFolder = await getApplicationSupportDirectory();
+
+    final fileBackup = File(path.join(
+      pathActiveImport,
+      splitPathLast(listFileSystem[indexActive!].path),
+    ));
+
+    final file = File(path.join(dbFolder.path, 'app.db'));
+
+    Uint8List bytes = fileBackup.readAsBytesSync();
+
+    ByteData blob = ByteData.view(bytes.buffer);
+    final buffer = blob.buffer;
+
+    await file.writeAsBytes(
+      buffer.asUint8List(blob.offsetInBytes, blob.lengthInBytes),
+    );
   }
 }
