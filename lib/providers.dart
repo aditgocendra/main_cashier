@@ -1,21 +1,3 @@
-import 'package:main_cashier/data/datasource/local/color_app_local_datasource.dart';
-import 'package:main_cashier/data/datasource/local/path_file_local_datasource.dart';
-import 'package:main_cashier/data/repositories/color_app_repository_impl.dart';
-import 'package:main_cashier/data/repositories/path_file_repository_impl.dart';
-import 'package:main_cashier/domain/repostitories/color_app_repository.dart';
-import 'package:main_cashier/domain/repostitories/path_file_repository.dart';
-import 'package:main_cashier/domain/usecase/category/get_total_category_usecase.dart';
-import 'package:main_cashier/domain/usecase/color_app/get_color_app_usecase.dart';
-import 'package:main_cashier/domain/usecase/color_app/update_color_app_usecase.dart';
-import 'package:main_cashier/domain/usecase/path_file/get_path_file_usecase.dart';
-import 'package:main_cashier/domain/usecase/path_file/get_path_files_usecase.dart';
-import 'package:main_cashier/domain/usecase/path_file/update_path_file_usecase.dart';
-import 'package:main_cashier/domain/usecase/product/delete_product_category_usecase.dart';
-import 'package:main_cashier/domain/usecase/product/get_single_product_category_usecase.dart';
-import 'package:main_cashier/domain/usecase/product/get_total_product_usecase.dart';
-import 'package:main_cashier/domain/usecase/transaction/get_total_transaction_usecase.dart';
-import 'package:main_cashier/presentation/home/tab_controller/dashboard_tab_controller.dart';
-import 'package:main_cashier/presentation/home/tab_controller/settings_tab_controller.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -30,7 +12,26 @@ import 'data/datasource/local/drift/drift_database.dart';
 import 'data/repositories/category_repository_impl.dart';
 import 'data/datasource/local/role_local_datasource.dart';
 import 'data/repositories/role_repository_impl.dart';
+import 'data/datasource/local/backup_local_datasource.dart';
+import 'data/datasource/local/color_app_local_datasource.dart';
+import 'data/datasource/local/path_file_local_datasource.dart';
+import 'data/repositories/backup_repository_impl.dart';
+import 'data/repositories/color_app_repository_impl.dart';
+import 'data/repositories/path_file_repository_impl.dart';
 
+import 'domain/repostitories/backup_repository.dart';
+import 'domain/repostitories/color_app_repository.dart';
+import 'domain/repostitories/path_file_repository.dart';
+import 'domain/usecase/backup/export_database_usecase.dart';
+import 'domain/usecase/category/get_total_category_usecase.dart';
+import 'domain/usecase/color_app/get_color_app_usecase.dart';
+import 'domain/usecase/color_app/update_color_app_usecase.dart';
+import 'domain/usecase/path_file/get_path_file_usecase.dart';
+import 'domain/usecase/path_file/update_path_file_usecase.dart';
+import 'domain/usecase/product/delete_product_category_usecase.dart';
+import 'domain/usecase/product/get_single_product_category_usecase.dart';
+import 'domain/usecase/product/get_total_product_usecase.dart';
+import 'domain/usecase/transaction/get_total_transaction_usecase.dart';
 import 'domain/repostitories/product_repository.dart';
 import 'domain/usecase/product/create_product_usecase.dart';
 import 'domain/usecase/product/delete_product_usecase.dart';
@@ -65,6 +66,8 @@ import 'domain/usecase/user/search_user_usecase.dart';
 import 'domain/usecase/user/update_user_usecase.dart';
 import 'domain/usecase/role/get_role_usecase.dart';
 
+import 'presentation/home/tab_controller/dashboard_tab_controller.dart';
+import 'presentation/home/tab_controller/settings_tab_controller.dart';
 import 'presentation/home/home_controller.dart';
 import 'presentation/home/tab_controller/category_tab_controller.dart';
 import 'presentation/home/tab_controller/inventory_tab_controller.dart';
@@ -108,6 +111,10 @@ PathFileLocalDataSource _pathFileLocalDataSource = PathFileLocalDataSourceImpl(
   databaseApp: _databaseApp,
 );
 
+BackupLocalDataSource _backupLocalDataSource = BackupLocalDataSourceImpl(
+  databaseApp: _databaseApp,
+);
+
 // Repository
 CategoryRepository _categoryRepository = CategoryRepositoryImpl(
   categoryLocalDataSource: _categoryLocalDataSource,
@@ -135,6 +142,10 @@ ColorAppRepository _colorAppRepository = ColorAppRepositoryImpl(
 
 PathFileRepository _pathFileRepository = PathFileRepositoryImpl(
   pathFileLocalDataSource: _pathFileLocalDataSource,
+);
+
+BackupRepository _backupRepository = BackupRepositoryImpl(
+  backupLocalDataSource: _backupLocalDataSource,
 );
 
 // Category Usecase
@@ -283,18 +294,17 @@ UpdateColorApp _updateColorApp = UpdateColorApp(
   repository: _colorAppRepository,
 );
 
-// Path File Usecase
-
-GetPathFiles _getPathFiles = GetPathFiles(
-  repository: _pathFileRepository,
-);
-
 GetPathFile _getPathFile = GetPathFile(
   repository: _pathFileRepository,
 );
 
 UpdatePathFile _updatePathFile = UpdatePathFile(
   repository: _pathFileRepository,
+);
+
+// Backup Database Usecase
+ExportDatabase exportDatabase = ExportDatabase(
+  repository: _backupRepository,
 );
 
 List<SingleChildWidget> _listProvider = [
@@ -361,6 +371,7 @@ List<SingleChildWidget> _listProvider = [
       updateColorApp: _updateColorApp,
       getPathFile: _getPathFile,
       updatePathFile: _updatePathFile,
+      backupRepository: _backupRepository,
     ),
   ),
   ChangeNotifierProvider(
