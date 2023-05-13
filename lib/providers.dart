@@ -1,3 +1,12 @@
+import 'package:main_cashier/data/datasource/local/login_info_local_datasource.dart';
+import 'package:main_cashier/data/repositories/login_info_repository_impl.dart';
+import 'package:main_cashier/domain/repostitories/login_info_repository.dart';
+import 'package:main_cashier/domain/usecase/login_info/create_login_info_usecase.dart';
+import 'package:main_cashier/domain/usecase/login_info/delete_login_info_usecase.dart';
+import 'package:main_cashier/domain/usecase/login_info/get_login_info_usecase.dart';
+import 'package:main_cashier/domain/usecase/user/get_total_user_usecase.dart';
+import 'package:main_cashier/domain/usecase/user/get_user_with_username_usecase.dart';
+import 'package:main_cashier/auth_state.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -115,6 +124,11 @@ BackupLocalDataSource _backupLocalDataSource = BackupLocalDataSourceImpl(
   databaseApp: _databaseApp,
 );
 
+LoginInfoDataLocalSource _loginInfoDataLocalSource =
+    LoginInfoLocalDataSourceImpl(
+  databaseApp: _databaseApp,
+);
+
 // Repository
 CategoryRepository _categoryRepository = CategoryRepositoryImpl(
   categoryLocalDataSource: _categoryLocalDataSource,
@@ -146,6 +160,10 @@ PathFileRepository _pathFileRepository = PathFileRepositoryImpl(
 
 BackupRepository _backupRepository = BackupRepositoryImpl(
   backupLocalDataSource: _backupLocalDataSource,
+);
+
+LoginInfoRepository _loginInfoRepository = LoginInfoRepositoryImpl(
+  loginInfoDataLocalSource: _loginInfoDataLocalSource,
 );
 
 // Category Usecase
@@ -240,6 +258,12 @@ SearchUser _searchUser = SearchUser(
   repository: _userRepository,
 );
 
+GetUserWithUsername _getUserWithUsername = GetUserWithUsername(
+  repository: _userRepository,
+);
+
+GetTotalUser _getTotalUser = GetTotalUser(repository: _userRepository);
+
 // Transaction Usecase
 CreateTransaction _createTransaction = CreateTransaction(
   repository: _transactionRepository,
@@ -303,13 +327,34 @@ UpdatePathFile _updatePathFile = UpdatePathFile(
 );
 
 // Backup Database Usecase
-ExportDatabase exportDatabase = ExportDatabase(
+ExportDatabase _exportDatabase = ExportDatabase(
   repository: _backupRepository,
+);
+
+// Login Info Usecase
+GetLoginInfo _getLoginInfo = GetLoginInfo(
+  repository: _loginInfoRepository,
+);
+
+CreateLoginInfo _createLoginInfo = CreateLoginInfo(
+  repository: _loginInfoRepository,
+);
+
+DeleteLoginInfo _deleteLoginInfo = DeleteLoginInfo(
+  repository: _loginInfoRepository,
+);
+
+// ----------------------------------------------
+AuthState initialState = AuthState(
+  getLoginInfo: _getLoginInfo,
 );
 
 List<SingleChildWidget> _listProvider = [
   ChangeNotifierProvider(
-    create: (context) => HomeController(),
+    create: (context) => HomeController(
+      getTotalUser: _getTotalUser,
+      deleteLoginInfo: _deleteLoginInfo,
+    ),
   ),
   ChangeNotifierProvider(
     create: (context) => CategoryTabController(
@@ -323,7 +368,10 @@ List<SingleChildWidget> _listProvider = [
     ),
   ),
   ChangeNotifierProvider(
-    create: (context) => SignInController(),
+    create: (context) => SignInController(
+      getUserWithUsername: _getUserWithUsername,
+      createLoginInfo: _createLoginInfo,
+    ),
   ),
   ChangeNotifierProvider(
     create: (context) => InventoryTabController(
@@ -371,7 +419,7 @@ List<SingleChildWidget> _listProvider = [
       updateColorApp: _updateColorApp,
       getPathFile: _getPathFile,
       updatePathFile: _updatePathFile,
-      backupRepository: _backupRepository,
+      exportDatabase: _exportDatabase,
     ),
   ),
   ChangeNotifierProvider(
@@ -381,5 +429,9 @@ List<SingleChildWidget> _listProvider = [
       getTotalTransaction: _getTotalTransaction,
       getProfitWithRange: _getProfitWithRange,
     ),
-  )
+  ),
+  ChangeNotifierProvider<AuthState>(
+    lazy: false,
+    create: (context) => initialState,
+  ),
 ];
