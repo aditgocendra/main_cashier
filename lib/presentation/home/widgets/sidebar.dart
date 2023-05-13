@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:main_cashier/auth_state.dart';
 import 'package:main_cashier/core/constant/color_constant.dart';
 import 'package:main_cashier/presentation/home/home_controller.dart';
+import 'package:provider/provider.dart';
+import 'package:unicons/unicons.dart';
 
 import '../../../core/constant/list_constant.dart';
 import 'menu_sidebar.dart';
@@ -15,6 +19,7 @@ class Sidebar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authState = context.read<AuthState>();
     final sizeScreenWidh = MediaQuery.of(context).size.width;
 
     if (sizeScreenWidh > 1024) {
@@ -40,22 +45,32 @@ class Sidebar extends StatelessWidget {
               //     width: 80,
               //   ),
               // ),
-              Column(
-                children: listTabMenu
-                    .asMap()
-                    .map(
-                      (index, value) => MapEntry(
-                        index,
-                        MenuSidebar(
-                          menu: value,
-                          indexTab: index,
-                          homeController: homeController,
-                        ),
+              ...listTabMenu
+                  .asMap()
+                  .map(
+                    (index, value) => MapEntry(
+                      index,
+                      MenuSidebar(
+                        menu: value,
+                        indexTab: index,
+                        homeController: homeController,
                       ),
-                    )
-                    .values
-                    .toList(),
+                    ),
+                  )
+                  .values
+                  .toList(),
+              const SizedBox(
+                height: 24,
               ),
+              IconButton(
+                onPressed: () {
+                  homeController.signOut(() {
+                    authState.setUserLoggedIn();
+                    context.go("/sign_in");
+                  });
+                },
+                icon: const Icon(UniconsLine.exit),
+              )
             ],
           ),
         ),
