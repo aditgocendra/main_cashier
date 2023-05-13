@@ -19,6 +19,21 @@ class UserModel extends UserEntity {
       roleId: user.roleId,
     );
   }
+
+  factory UserModel.fromTable(UserTableData data) {
+    return UserModel(
+      uid: data.id,
+      username: data.username,
+      password: data.password,
+      createdAt: data.createdAt,
+      roleId: data.roleId!,
+    );
+  }
+
+  static List<UserModel> fromTableList(List<UserTableData> data) {
+    if (data.isEmpty) return [];
+    return data.map((val) => UserModel.fromTable(val)).toList();
+  }
 }
 
 class UserViewModel extends UserViewEntity {
