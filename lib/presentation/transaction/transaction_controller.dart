@@ -9,13 +9,13 @@ import '../../domain/usecase/transaction/create_transaction_usecase.dart';
 import '../../domain/entity/product_entity.dart';
 
 class TransactionController extends ChangeNotifier {
-  List<ProductEntity> _listProduct = [];
+  final List<ProductEntity> _listProduct = [];
   List<ProductEntity> get listProduct => _listProduct;
 
-  List<TextEditingController> _listTecQty = [];
+  final List<TextEditingController> _listTecQty = [];
   List<TextEditingController> get listTecQty => _listTecQty;
 
-  List<int> _listTotalQty = [];
+  final List<int> _listTotalQty = [];
   List<int> get listTotalQty => _listTotalQty;
 
   int _totalPay = 0;

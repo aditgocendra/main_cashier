@@ -18,7 +18,7 @@ class DecorationUtils {
           color: borderColor,
         ),
         borderRadius: BorderRadius.all(
-          Radius.circular(12),
+          Radius.circular(8),
         ),
       ),
     );
@@ -52,10 +52,10 @@ class DecorationUtils {
       elevation: 0.5,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
-          Radius.circular(10),
+          Radius.circular(8),
         ),
       ),
-      minimumSize: const Size.fromHeight(50),
+      minimumSize: const Size.fromHeight(60),
     );
   }
 }
