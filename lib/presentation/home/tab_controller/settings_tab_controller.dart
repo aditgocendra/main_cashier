@@ -1,13 +1,12 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:main_cashier/domain/usecase/backup/export_database_usecase.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
-import '../../../providers.dart';
 import '../../../core/constant/color_constant.dart';
 import '../../../core/usecase/usecase.dart';
-import '../../../domain/repostitories/backup_repository.dart';
 import '../../../domain/entity/path_file_entity.dart';
 import '../../../domain/entity/color_app_entity.dart';
 import '../../../domain/usecase/color_app/get_color_app_usecase.dart';
@@ -48,30 +47,26 @@ class SettingsTabController extends ChangeNotifier {
   final UpdateColorApp updateColorApp;
   final GetPathFile getPathFile;
   final UpdatePathFile updatePathFile;
-  final BackupRepository backupRepository;
+  final ExportDatabase exportDatabase;
 
   SettingsTabController({
     required this.getColorApp,
     required this.updateColorApp,
     required this.getPathFile,
     required this.updatePathFile,
-    required this.backupRepository,
+    required this.exportDatabase,
   });
 
   void initColorApp() async {
     await getColorApp.call(NoParans()).then((value) {
       _colorApp = value;
       notifyListeners();
-    }).catchError((e) {
-      print(e.toString());
     });
   }
 
   void changeColorDataApp() async {
     await updateColorApp.call(colorApp!).then((value) {
       if (!value) return;
-    }).catchError((e) {
-      print(e.toString());
     });
   }
 
@@ -110,11 +105,11 @@ class SettingsTabController extends ChangeNotifier {
   void initPathFolder() async {
     await getPathFile.call("invoice").then((value) async {
       defaultPathInvoice = value.path;
-    }).catchError((e) => print);
+    });
 
     await getPathFile.call("report").then((value) async {
       defaultPathReport = value.path;
-    }).catchError((e) => print);
+    });
 
     final dir = await getApplicationDocumentsDirectory();
     _pathActiveImport = dir.path;
@@ -251,8 +246,6 @@ class SettingsTabController extends ChangeNotifier {
       _indexActive = null;
 
       notifyListeners();
-    }).catchError((e) {
-      print(e.toString());
     });
   }
 
