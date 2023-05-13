@@ -1,31 +1,15 @@
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:main_cashier/presentation/sign_in/sign_in_view.dart';
+class Routes {
+  // Name
+  static const home = "home";
+  static const splash = "splash";
+  static const signIn = "sign_in";
+  static const signUp = "sign_up";
+  static const transaction = "transaction";
 
-import '../../presentation/home/home_view.dart';
-import '../../presentation/transaction/transaction_view.dart';
-
-final GoRouter router = GoRouter(
-  routes: <RouteBase>[
-    GoRoute(
-      path: '/',
-      builder: (BuildContext context, GoRouterState state) {
-        return const HomeView();
-      },
-      routes: <RouteBase>[
-        GoRoute(
-          path: 'transaction',
-          builder: (BuildContext context, GoRouterState state) {
-            return TransactionView();
-          },
-        ),
-      ],
-    ),
-    GoRoute(
-      path: '/sign_in',
-      builder: (context, state) {
-        return const SignInView();
-      },
-    )
-  ],
-);
+  // Path
+  static const homePath = "/";
+  static const splashPath = "/splash";
+  static const signInPath = "/sign_in";
+  static const signUpPath = "/sign_up";
+  static const transactionPath = "/transaction";
+}
