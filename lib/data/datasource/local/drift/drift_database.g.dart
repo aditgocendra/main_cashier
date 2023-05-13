@@ -2029,181 +2029,6 @@ class PathFileTableCompanion extends UpdateCompanion<PathFileTableData> {
   }
 }
 
-class ProductViewData extends DataClass {
-  final String codeProduct;
-  final String name;
-  final int capitalPrice;
-  final int sellPrice;
-  final int stock;
-  final int sold;
-  final String title;
-  const ProductViewData(
-      {required this.codeProduct,
-      required this.name,
-      required this.capitalPrice,
-      required this.sellPrice,
-      required this.stock,
-      required this.sold,
-      required this.title});
-  factory ProductViewData.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return ProductViewData(
-      codeProduct: serializer.fromJson<String>(json['codeProduct']),
-      name: serializer.fromJson<String>(json['name']),
-      capitalPrice: serializer.fromJson<int>(json['capitalPrice']),
-      sellPrice: serializer.fromJson<int>(json['sellPrice']),
-      stock: serializer.fromJson<int>(json['stock']),
-      sold: serializer.fromJson<int>(json['sold']),
-      title: serializer.fromJson<String>(json['title']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'codeProduct': serializer.toJson<String>(codeProduct),
-      'name': serializer.toJson<String>(name),
-      'capitalPrice': serializer.toJson<int>(capitalPrice),
-      'sellPrice': serializer.toJson<int>(sellPrice),
-      'stock': serializer.toJson<int>(stock),
-      'sold': serializer.toJson<int>(sold),
-      'title': serializer.toJson<String>(title),
-    };
-  }
-
-  ProductViewData copyWith(
-          {String? codeProduct,
-          String? name,
-          int? capitalPrice,
-          int? sellPrice,
-          int? stock,
-          int? sold,
-          String? title}) =>
-      ProductViewData(
-        codeProduct: codeProduct ?? this.codeProduct,
-        name: name ?? this.name,
-        capitalPrice: capitalPrice ?? this.capitalPrice,
-        sellPrice: sellPrice ?? this.sellPrice,
-        stock: stock ?? this.stock,
-        sold: sold ?? this.sold,
-        title: title ?? this.title,
-      );
-  @override
-  String toString() {
-    return (StringBuffer('ProductViewData(')
-          ..write('codeProduct: $codeProduct, ')
-          ..write('name: $name, ')
-          ..write('capitalPrice: $capitalPrice, ')
-          ..write('sellPrice: $sellPrice, ')
-          ..write('stock: $stock, ')
-          ..write('sold: $sold, ')
-          ..write('title: $title')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(
-      codeProduct, name, capitalPrice, sellPrice, stock, sold, title);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is ProductViewData &&
-          other.codeProduct == this.codeProduct &&
-          other.name == this.name &&
-          other.capitalPrice == this.capitalPrice &&
-          other.sellPrice == this.sellPrice &&
-          other.stock == this.stock &&
-          other.sold == this.sold &&
-          other.title == this.title);
-}
-
-class $ProductViewView extends ViewInfo<$ProductViewView, ProductViewData>
-    implements HasResultSet {
-  final String? _alias;
-  @override
-  final _$DatabaseApp attachedDatabase;
-  $ProductViewView(this.attachedDatabase, [this._alias]);
-  $CategoryTableTable get categoryTable =>
-      attachedDatabase.categoryTable.createAlias('t0');
-  $ProductTableTable get productTable =>
-      attachedDatabase.productTable.createAlias('t1');
-  @override
-  List<GeneratedColumn> get $columns =>
-      [codeProduct, name, capitalPrice, sellPrice, stock, sold, title];
-  @override
-  String get aliasedName => _alias ?? entityName;
-  @override
-  String get entityName => 'product_view';
-  @override
-  String? get createViewStmt => null;
-  @override
-  $ProductViewView get asDslTable => this;
-  @override
-  ProductViewData map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return ProductViewData(
-      codeProduct: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}code_product'])!,
-      name: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
-      capitalPrice: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}capital_price'])!,
-      sellPrice: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}sell_price'])!,
-      stock: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}stock'])!,
-      sold: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}sold'])!,
-      title: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}title'])!,
-    );
-  }
-
-  late final GeneratedColumn<String> codeProduct = GeneratedColumn<String>(
-      'code_product', aliasedName, false,
-      generatedAs: GeneratedAs(productTable.codeProduct, false),
-      type: DriftSqlType.string);
-  late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, false,
-      generatedAs: GeneratedAs(productTable.name, false),
-      type: DriftSqlType.string);
-  late final GeneratedColumn<int> capitalPrice = GeneratedColumn<int>(
-      'capital_price', aliasedName, false,
-      generatedAs: GeneratedAs(productTable.capitalPrice, false),
-      type: DriftSqlType.int);
-  late final GeneratedColumn<int> sellPrice = GeneratedColumn<int>(
-      'sell_price', aliasedName, false,
-      generatedAs: GeneratedAs(productTable.sellPrice, false),
-      type: DriftSqlType.int);
-  late final GeneratedColumn<int> stock = GeneratedColumn<int>(
-      'stock', aliasedName, false,
-      generatedAs: GeneratedAs(productTable.stock, false),
-      type: DriftSqlType.int);
-  late final GeneratedColumn<int> sold = GeneratedColumn<int>(
-      'sold', aliasedName, false,
-      generatedAs: GeneratedAs(productTable.sold, false),
-      type: DriftSqlType.int);
-  late final GeneratedColumn<String> title = GeneratedColumn<String>(
-      'title', aliasedName, false,
-      generatedAs: GeneratedAs(categoryTable.title, false),
-      type: DriftSqlType.string);
-  @override
-  $ProductViewView createAlias(String alias) {
-    return $ProductViewView(attachedDatabase, alias);
-  }
-
-  @override
-  Query? get query =>
-      (attachedDatabase.selectOnly(categoryTable)..addColumns($columns)).join([
-        innerJoin(
-            productTable, productTable.categoryId.equalsExp(categoryTable.id))
-      ]);
-  @override
-  Set<String> get readTables => const {'category_table', 'product_table'};
-}
-
 class $RoleTableTable extends RoleTable
     with TableInfo<$RoleTableTable, RoleTableData> {
   @override
@@ -2681,6 +2506,336 @@ class UserTableCompanion extends UpdateCompanion<UserTableData> {
   }
 }
 
+class $LoginInfoTableTable extends LoginInfoTable
+    with TableInfo<$LoginInfoTableTable, LoginInfoTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $LoginInfoTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idUserMeta = const VerificationMeta('idUser');
+  @override
+  late final GeneratedColumn<String> idUser = GeneratedColumn<String>(
+      'id_user', aliasedName, true,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES user_table (id)'));
+  @override
+  List<GeneratedColumn> get $columns => [idUser];
+  @override
+  String get aliasedName => _alias ?? 'login_info_table';
+  @override
+  String get actualTableName => 'login_info_table';
+  @override
+  VerificationContext validateIntegrity(Insertable<LoginInfoTableData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id_user')) {
+      context.handle(_idUserMeta,
+          idUser.isAcceptableOrUnknown(data['id_user']!, _idUserMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => const {};
+  @override
+  LoginInfoTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LoginInfoTableData(
+      idUser: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id_user']),
+    );
+  }
+
+  @override
+  $LoginInfoTableTable createAlias(String alias) {
+    return $LoginInfoTableTable(attachedDatabase, alias);
+  }
+}
+
+class LoginInfoTableData extends DataClass
+    implements Insertable<LoginInfoTableData> {
+  final String? idUser;
+  const LoginInfoTableData({this.idUser});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (!nullToAbsent || idUser != null) {
+      map['id_user'] = Variable<String>(idUser);
+    }
+    return map;
+  }
+
+  LoginInfoTableCompanion toCompanion(bool nullToAbsent) {
+    return LoginInfoTableCompanion(
+      idUser:
+          idUser == null && nullToAbsent ? const Value.absent() : Value(idUser),
+    );
+  }
+
+  factory LoginInfoTableData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return LoginInfoTableData(
+      idUser: serializer.fromJson<String?>(json['idUser']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'idUser': serializer.toJson<String?>(idUser),
+    };
+  }
+
+  LoginInfoTableData copyWith({Value<String?> idUser = const Value.absent()}) =>
+      LoginInfoTableData(
+        idUser: idUser.present ? idUser.value : this.idUser,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('LoginInfoTableData(')
+          ..write('idUser: $idUser')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => idUser.hashCode;
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is LoginInfoTableData && other.idUser == this.idUser);
+}
+
+class LoginInfoTableCompanion extends UpdateCompanion<LoginInfoTableData> {
+  final Value<String?> idUser;
+  final Value<int> rowid;
+  const LoginInfoTableCompanion({
+    this.idUser = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  LoginInfoTableCompanion.insert({
+    this.idUser = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  static Insertable<LoginInfoTableData> custom({
+    Expression<String>? idUser,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (idUser != null) 'id_user': idUser,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  LoginInfoTableCompanion copyWith(
+      {Value<String?>? idUser, Value<int>? rowid}) {
+    return LoginInfoTableCompanion(
+      idUser: idUser ?? this.idUser,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (idUser.present) {
+      map['id_user'] = Variable<String>(idUser.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LoginInfoTableCompanion(')
+          ..write('idUser: $idUser, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class ProductViewData extends DataClass {
+  final String codeProduct;
+  final String name;
+  final int capitalPrice;
+  final int sellPrice;
+  final int stock;
+  final int sold;
+  final String title;
+  const ProductViewData(
+      {required this.codeProduct,
+      required this.name,
+      required this.capitalPrice,
+      required this.sellPrice,
+      required this.stock,
+      required this.sold,
+      required this.title});
+  factory ProductViewData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ProductViewData(
+      codeProduct: serializer.fromJson<String>(json['codeProduct']),
+      name: serializer.fromJson<String>(json['name']),
+      capitalPrice: serializer.fromJson<int>(json['capitalPrice']),
+      sellPrice: serializer.fromJson<int>(json['sellPrice']),
+      stock: serializer.fromJson<int>(json['stock']),
+      sold: serializer.fromJson<int>(json['sold']),
+      title: serializer.fromJson<String>(json['title']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'codeProduct': serializer.toJson<String>(codeProduct),
+      'name': serializer.toJson<String>(name),
+      'capitalPrice': serializer.toJson<int>(capitalPrice),
+      'sellPrice': serializer.toJson<int>(sellPrice),
+      'stock': serializer.toJson<int>(stock),
+      'sold': serializer.toJson<int>(sold),
+      'title': serializer.toJson<String>(title),
+    };
+  }
+
+  ProductViewData copyWith(
+          {String? codeProduct,
+          String? name,
+          int? capitalPrice,
+          int? sellPrice,
+          int? stock,
+          int? sold,
+          String? title}) =>
+      ProductViewData(
+        codeProduct: codeProduct ?? this.codeProduct,
+        name: name ?? this.name,
+        capitalPrice: capitalPrice ?? this.capitalPrice,
+        sellPrice: sellPrice ?? this.sellPrice,
+        stock: stock ?? this.stock,
+        sold: sold ?? this.sold,
+        title: title ?? this.title,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('ProductViewData(')
+          ..write('codeProduct: $codeProduct, ')
+          ..write('name: $name, ')
+          ..write('capitalPrice: $capitalPrice, ')
+          ..write('sellPrice: $sellPrice, ')
+          ..write('stock: $stock, ')
+          ..write('sold: $sold, ')
+          ..write('title: $title')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      codeProduct, name, capitalPrice, sellPrice, stock, sold, title);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ProductViewData &&
+          other.codeProduct == this.codeProduct &&
+          other.name == this.name &&
+          other.capitalPrice == this.capitalPrice &&
+          other.sellPrice == this.sellPrice &&
+          other.stock == this.stock &&
+          other.sold == this.sold &&
+          other.title == this.title);
+}
+
+class $ProductViewView extends ViewInfo<$ProductViewView, ProductViewData>
+    implements HasResultSet {
+  final String? _alias;
+  @override
+  final _$DatabaseApp attachedDatabase;
+  $ProductViewView(this.attachedDatabase, [this._alias]);
+  $CategoryTableTable get categoryTable =>
+      attachedDatabase.categoryTable.createAlias('t0');
+  $ProductTableTable get productTable =>
+      attachedDatabase.productTable.createAlias('t1');
+  @override
+  List<GeneratedColumn> get $columns =>
+      [codeProduct, name, capitalPrice, sellPrice, stock, sold, title];
+  @override
+  String get aliasedName => _alias ?? entityName;
+  @override
+  String get entityName => 'product_view';
+  @override
+  String? get createViewStmt => null;
+  @override
+  $ProductViewView get asDslTable => this;
+  @override
+  ProductViewData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ProductViewData(
+      codeProduct: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}code_product'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      capitalPrice: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}capital_price'])!,
+      sellPrice: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}sell_price'])!,
+      stock: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}stock'])!,
+      sold: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}sold'])!,
+      title: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}title'])!,
+    );
+  }
+
+  late final GeneratedColumn<String> codeProduct = GeneratedColumn<String>(
+      'code_product', aliasedName, false,
+      generatedAs: GeneratedAs(productTable.codeProduct, false),
+      type: DriftSqlType.string);
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      generatedAs: GeneratedAs(productTable.name, false),
+      type: DriftSqlType.string);
+  late final GeneratedColumn<int> capitalPrice = GeneratedColumn<int>(
+      'capital_price', aliasedName, false,
+      generatedAs: GeneratedAs(productTable.capitalPrice, false),
+      type: DriftSqlType.int);
+  late final GeneratedColumn<int> sellPrice = GeneratedColumn<int>(
+      'sell_price', aliasedName, false,
+      generatedAs: GeneratedAs(productTable.sellPrice, false),
+      type: DriftSqlType.int);
+  late final GeneratedColumn<int> stock = GeneratedColumn<int>(
+      'stock', aliasedName, false,
+      generatedAs: GeneratedAs(productTable.stock, false),
+      type: DriftSqlType.int);
+  late final GeneratedColumn<int> sold = GeneratedColumn<int>(
+      'sold', aliasedName, false,
+      generatedAs: GeneratedAs(productTable.sold, false),
+      type: DriftSqlType.int);
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+      'title', aliasedName, false,
+      generatedAs: GeneratedAs(categoryTable.title, false),
+      type: DriftSqlType.string);
+  @override
+  $ProductViewView createAlias(String alias) {
+    return $ProductViewView(attachedDatabase, alias);
+  }
+
+  @override
+  Query? get query =>
+      (attachedDatabase.selectOnly(categoryTable)..addColumns($columns)).join([
+        innerJoin(
+            productTable, productTable.categoryId.equalsExp(categoryTable.id))
+      ]);
+  @override
+  Set<String> get readTables => const {'category_table', 'product_table'};
+}
+
 class UserViewData extends DataClass {
   final String id;
   final String username;
@@ -3013,9 +3168,10 @@ abstract class _$DatabaseApp extends GeneratedDatabase {
       $ProductTransactionTableTable(this);
   late final $ColorAppTableTable colorAppTable = $ColorAppTableTable(this);
   late final $PathFileTableTable pathFileTable = $PathFileTableTable(this);
-  late final $ProductViewView productView = $ProductViewView(this);
   late final $RoleTableTable roleTable = $RoleTableTable(this);
   late final $UserTableTable userTable = $UserTableTable(this);
+  late final $LoginInfoTableTable loginInfoTable = $LoginInfoTableTable(this);
+  late final $ProductViewView productView = $ProductViewView(this);
   late final $UserViewView userView = $UserViewView(this);
   late final $ProductTransactionViewView productTransactionView =
       $ProductTransactionViewView(this);
@@ -3031,9 +3187,10 @@ abstract class _$DatabaseApp extends GeneratedDatabase {
         productTransactionTable,
         colorAppTable,
         pathFileTable,
-        productView,
         roleTable,
         userTable,
+        loginInfoTable,
+        productView,
         userView,
         productTransactionView
       ];

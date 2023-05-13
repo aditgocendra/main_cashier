@@ -87,6 +87,10 @@ class PathFileTable extends Table {
   Set<Column> get primaryKey => {folder};
 }
 
+class LoginInfoTable extends Table {
+  TextColumn get idUser => text().nullable().references(UserTable, #id)();
+}
+
 abstract class ProductView extends View {
   CategoryTable get categoryTable;
   ProductTable get productTable;
@@ -166,6 +170,7 @@ abstract class ProductTransactionView extends View {
     ProductTransactionTable,
     ColorAppTable,
     PathFileTable,
+    LoginInfoTable,
   ],
   views: [
     ProductView,
@@ -189,6 +194,15 @@ class DatabaseApp extends _$DatabaseApp {
               RoleTableCompanion.insert(name: "Admin"),
               RoleTableCompanion.insert(name: "Cashier"),
             ]);
+
+            batch.insert(
+              userTable,
+              UserTableCompanion.insert(
+                username: "administrator",
+                password: "administrator",
+                roleId: const Value(1),
+              ),
+            );
           });
 
           await into(counterTransactionTable).insert(
