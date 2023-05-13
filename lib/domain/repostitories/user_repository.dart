@@ -22,4 +22,8 @@ abstract class UserRepository {
     required int limit,
     required int offset,
   });
+
+  Future<int?> getTotalUser();
+
+  Future<UserEntity> getUserWithUsername(String username);
 }

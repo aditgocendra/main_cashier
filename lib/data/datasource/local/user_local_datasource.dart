@@ -22,6 +22,10 @@ abstract class UserLocalDataSource {
     required String newPassword,
   });
 
+  Future<int?> getTotal();
+
+  Future<UserModel> getUserWithUsername(String username);
+
   Future<List<UserViewModel>> search(String keyword);
 
   Future<int> delete(String id);
@@ -100,10 +104,28 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
   }
 
   @override
+  Future<UserModel> getUserWithUsername(String username) async {
+    final r = await (databaseApp.select(databaseApp.userTable)
+          ..where((tbl) => tbl.username.equals(username)))
+        .getSingle();
+
+    return UserModel.fromTable(r);
+  }
+
+  @override
   Future<List<UserViewModel>> search(String keyword) async {
     final result = await (databaseApp.select(databaseApp.userView)
           ..where((tbl) => tbl.username.like('%$keyword%')))
         .get();
     return UserViewModel.fromTableList(result);
+  }
+
+  @override
+  Future<int?> getTotal() async {
+    var id = databaseApp.userTable.id.count();
+    final query = (databaseApp.selectOnly(databaseApp.userTable))
+      ..addColumns([id]);
+
+    return await query.map((p0) => p0.read(id)).getSingle();
   }
 }

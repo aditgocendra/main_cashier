@@ -89,4 +89,22 @@ class UserRepositoryImpl implements UserRepository {
       throw DatabaseDriftException("Search data user fail");
     }
   }
+
+  @override
+  Future<UserEntity> getUserWithUsername(String username) async {
+    try {
+      return await userLocalDataSource.getUserWithUsername(username);
+    } catch (e) {
+      throw DatabaseDriftException("Get user with username fail");
+    }
+  }
+
+  @override
+  Future<int?> getTotalUser() async {
+    try {
+      return await userLocalDataSource.getTotal();
+    } catch (e) {
+      throw DatabaseDriftException("Get user fail");
+    }
+  }
 }
