@@ -1,3 +1,4 @@
+import 'package:main_cashier/color_app.dart';
 import 'package:main_cashier/data/datasource/local/login_info_local_datasource.dart';
 import 'package:main_cashier/data/repositories/login_info_repository_impl.dart';
 import 'package:main_cashier/domain/repostitories/login_info_repository.dart';
@@ -344,11 +345,6 @@ DeleteLoginInfo _deleteLoginInfo = DeleteLoginInfo(
   repository: _loginInfoRepository,
 );
 
-// ----------------------------------------------
-AuthState initialState = AuthState(
-  getLoginInfo: _getLoginInfo,
-);
-
 List<SingleChildWidget> _listProvider = [
   ChangeNotifierProvider(
     create: (context) => HomeController(
@@ -430,8 +426,12 @@ List<SingleChildWidget> _listProvider = [
       getProfitWithRange: _getProfitWithRange,
     ),
   ),
-  ChangeNotifierProvider<AuthState>(
+  ChangeNotifierProvider(
     lazy: false,
-    create: (context) => initialState,
+    create: (context) => AuthState(getLoginInfo: _getLoginInfo),
+  ),
+  ChangeNotifierProvider(
+    lazy: false,
+    create: (context) => ColorApp(getColorApp: _getColorApp),
   ),
 ];
