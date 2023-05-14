@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:main_cashier/color_app.dart';
 import 'package:main_cashier/core/utils/format_utils.dart';
 import 'package:main_cashier/presentation/home/tab_controller/dashboard_tab_controller.dart';
 import 'package:provider/provider.dart';
 import 'package:unicons/unicons.dart';
 
-import '../../../core/constant/color_constant.dart';
 import '../widgets/item_top_dashboard.dart';
 
 class DashboardTab extends StatefulWidget {
@@ -26,6 +26,7 @@ class _DashboardTabState extends State<DashboardTab> {
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<DashboardTabController>();
+    final colorApp = context.watch<ColorApp>();
     final sizeScreen = MediaQuery.of(context).size;
 
     double aspectRatio = sizeScreen.width / 780;
@@ -54,7 +55,7 @@ class _DashboardTabState extends State<DashboardTab> {
         children: [
           Container(
             decoration: BoxDecoration(
-              color: canvasColor,
+              color: colorApp.canvas,
               borderRadius: BorderRadius.circular(16),
             ),
             child: GridView.count(

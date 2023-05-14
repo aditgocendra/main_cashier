@@ -2,6 +2,7 @@ import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:main_cashier/color_app.dart';
 import 'package:provider/provider.dart';
 import 'package:unicons/unicons.dart';
 
@@ -35,6 +36,7 @@ class _TransactionTabState extends State<TransactionTab> {
   Widget build(BuildContext context) {
     final navigator = Navigator.of(context);
     final controller = context.watch<TransactionTabController>();
+    final colorApp = context.watch<ColorApp>();
     final size = MediaQuery.of(context).size.width;
 
     return ListView(
@@ -42,7 +44,7 @@ class _TransactionTabState extends State<TransactionTab> {
       children: [
         Container(
           decoration: BoxDecoration(
-            color: canvasColor,
+            color: colorApp.canvas,
             borderRadius: BorderRadius.circular(16),
           ),
           child: Column(
@@ -114,7 +116,7 @@ class _TransactionTabState extends State<TransactionTab> {
                           },
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.all(18),
-                            backgroundColor: primaryColor,
+                            backgroundColor: colorApp.primary,
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
@@ -134,7 +136,7 @@ class _TransactionTabState extends State<TransactionTab> {
                           },
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.all(18),
-                            backgroundColor: primaryColor,
+                            backgroundColor: colorApp.primary,
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
@@ -402,7 +404,6 @@ class _TransactionTabState extends State<TransactionTab> {
                         ),
                         Text(
                           controller.activeRowPage.toString(),
-                          // ctgTabController.activeRowPage.toString(),
                           style: const TextStyle(
                             fontSize: 12.5,
                           ),
@@ -439,6 +440,7 @@ class DialogDetailTransaction extends StatelessWidget {
   Widget build(BuildContext context) {
     final navigator = Navigator.of(context);
     final controller = context.watch<TransactionTabController>();
+    final colorApp = context.watch<ColorApp>();
     final size = MediaQuery.of(context).size.width;
 
     return DialogUtils.layoutCustomDialog(
@@ -593,7 +595,7 @@ class DialogDetailTransaction extends StatelessWidget {
             );
             navigator.pop();
           },
-          style: DecorationUtils.buttonDialogStyle(),
+          style: DecorationUtils.buttonDialogStyle(colorApp.primary),
           child: const Text("Generate Invoice"),
         ),
       ],
@@ -611,6 +613,7 @@ class DialogGenerateReport extends StatelessWidget {
   Widget build(BuildContext context) {
     final navigator = Navigator.of(context);
     final controller = context.watch<TransactionTabController>();
+    final colorApp = context.watch<ColorApp>();
 
     final config = CalendarDatePicker2Config(
       calendarType: CalendarDatePicker2Type.range,
@@ -655,7 +658,7 @@ class DialogGenerateReport extends StatelessWidget {
 
             navigator.pop();
           },
-          style: DecorationUtils.buttonDialogStyle(),
+          style: DecorationUtils.buttonDialogStyle(colorApp.primary),
           child: const Text("Generate Invoice"),
         ),
       ],

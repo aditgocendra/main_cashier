@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import '../../../core/constant/color_constant.dart';
+import '../../../color_app.dart';
 import '../home_controller.dart';
 
 class MenuSidebar extends StatelessWidget {
@@ -17,6 +18,7 @@ class MenuSidebar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorApp = context.watch<ColorApp>();
     late Widget widget;
 
     if (homeController.isSidebarExpanded) {
@@ -30,9 +32,11 @@ class MenuSidebar extends StatelessWidget {
             children: [
               Icon(
                 menu['icon'],
-                color: homeController.indexTabActive == indexTab
-                    ? primaryColor
-                    : Colors.black,
+                color: _setColorActive(
+                  homeController.indexTabActive,
+                  indexTab,
+                  colorApp.primary,
+                ),
               ),
               const SizedBox(
                 width: 16,
@@ -40,9 +44,11 @@ class MenuSidebar extends StatelessWidget {
               Text(
                 menu['menu'],
                 style: TextStyle(
-                  color: homeController.indexTabActive == indexTab
-                      ? primaryColor
-                      : Colors.black,
+                  color: _setColorActive(
+                    homeController.indexTabActive,
+                    indexTab,
+                    colorApp.primary,
+                  ),
                 ),
               ),
             ],
@@ -63,9 +69,11 @@ class MenuSidebar extends StatelessWidget {
               Icon(
                 menu['icon'],
                 size: 18,
-                color: homeController.indexTabActive == indexTab
-                    ? primaryColor
-                    : Colors.black,
+                color: _setColorActive(
+                  homeController.indexTabActive,
+                  indexTab,
+                  colorApp.primary,
+                ),
               ),
               const SizedBox(
                 height: 6,
@@ -74,9 +82,11 @@ class MenuSidebar extends StatelessWidget {
                 menu['menu'],
                 style: TextStyle(
                   fontSize: 8.5,
-                  color: homeController.indexTabActive == indexTab
-                      ? primaryColor
-                      : Colors.black,
+                  color: _setColorActive(
+                    homeController.indexTabActive,
+                    indexTab,
+                    colorApp.primary,
+                  ),
                 ),
               ),
             ],
@@ -86,5 +96,11 @@ class MenuSidebar extends StatelessWidget {
     }
 
     return widget;
+  }
+
+  Color _setColorActive(int indexActive, int indexTab, Color primaryColor) {
+    if (indexActive == indexTab) return primaryColor;
+
+    return Colors.black;
   }
 }

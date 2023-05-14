@@ -1,5 +1,6 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:main_cashier/color_app.dart';
 import 'package:provider/provider.dart';
 import 'package:unicons/unicons.dart';
 
@@ -43,6 +44,7 @@ class _CategoryTabState extends State<CategoryTab> {
   Widget build(BuildContext context) {
     final navigator = Navigator.of(context);
     final controller = context.watch<CategoryTabController>();
+    final colorApp = context.watch<ColorApp>();
     final size = MediaQuery.of(context).size.width;
 
     return ListView(
@@ -50,7 +52,7 @@ class _CategoryTabState extends State<CategoryTab> {
       children: [
         Container(
           decoration: BoxDecoration(
-            color: canvasColor,
+            color: colorApp.canvas,
             borderRadius: BorderRadius.circular(16),
           ),
           child: Column(
@@ -130,7 +132,7 @@ class _CategoryTabState extends State<CategoryTab> {
                           },
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.all(18),
-                            backgroundColor: primaryColor,
+                            backgroundColor: colorApp.primary,
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
@@ -176,7 +178,8 @@ class _CategoryTabState extends State<CategoryTab> {
                       // Body Data Table
                       ...controller.listCategory
                           .asMap()
-                          .map((index, val) => MapEntry(
+                          .map(
+                            (index, val) => MapEntry(
                               index,
                               TableRow(
                                 children: [
@@ -269,7 +272,9 @@ class _CategoryTabState extends State<CategoryTab> {
                                     ),
                                   ),
                                 ],
-                              )))
+                              ),
+                            ),
+                          )
                           .values
                           .toList()
                     ],
@@ -393,6 +398,7 @@ class DialogCategoryAdd extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<CategoryTabController>();
+    final colorApp = context.watch<ColorApp>();
     final navigator = Navigator.of(context);
     final formKey = GlobalKey<FormState>();
 
@@ -444,7 +450,7 @@ class DialogCategoryAdd extends StatelessWidget {
               },
             );
           },
-          style: DecorationUtils.buttonDialogStyle(),
+          style: DecorationUtils.buttonDialogStyle(colorApp.primary),
           child: const Text("Add"),
         ),
       ],
@@ -470,6 +476,7 @@ class DialogCategoryEdit extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorApp = context.watch<ColorApp>();
     final navigator = Navigator.of(context);
     final formKey = GlobalKey<FormState>();
 
@@ -527,7 +534,7 @@ class DialogCategoryEdit extends StatelessWidget {
               },
             );
           },
-          style: DecorationUtils.buttonDialogStyle(),
+          style: DecorationUtils.buttonDialogStyle(colorApp.primary),
           child: const Text("Edit"),
         ),
       ],

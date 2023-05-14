@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
-import '../../../core/constant/color_constant.dart';
+import 'package:main_cashier/color_app.dart';
+import 'package:provider/provider.dart';
 
 class ItemTopDashboard extends StatelessWidget {
   final String title;
@@ -18,6 +18,7 @@ class ItemTopDashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorApp = context.watch<ColorApp>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -25,7 +26,6 @@ class ItemTopDashboard extends StatelessWidget {
           title,
           style: const TextStyle(
             fontSize: 14,
-            color: Colors.black,
           ),
         ),
         const SizedBox(
@@ -41,7 +41,7 @@ class ItemTopDashboard extends StatelessWidget {
               ),
               child: Icon(
                 icon,
-                color: primaryColor,
+                color: colorApp.primary,
               ),
             ),
             const SizedBox(
@@ -52,7 +52,6 @@ class ItemTopDashboard extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
               ),
             ),
           ],
@@ -64,7 +63,6 @@ class ItemTopDashboard extends StatelessWidget {
           desc,
           style: const TextStyle(
             fontSize: 12,
-            color: Colors.black54,
           ),
         ),
       ],

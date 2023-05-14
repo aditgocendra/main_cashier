@@ -1,6 +1,7 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:main_cashier/color_app.dart';
 import 'package:provider/provider.dart';
 import 'package:unicons/unicons.dart';
 
@@ -81,6 +82,7 @@ class _InventoryTabState extends State<InventoryTab> {
   Widget build(BuildContext context) {
     final controller = context.watch<InventoryTabController>();
     final homeController = context.read<HomeController>();
+    final colorApp = context.watch<ColorApp>();
     final navigator = Navigator.of(context);
     final sizeWidth = MediaQuery.of(context).size.width;
 
@@ -89,7 +91,7 @@ class _InventoryTabState extends State<InventoryTab> {
       children: [
         Container(
           decoration: BoxDecoration(
-            color: canvasColor,
+            color: colorApp.canvas,
             borderRadius: BorderRadius.circular(16),
           ),
           child: Column(
@@ -118,11 +120,11 @@ class _InventoryTabState extends State<InventoryTab> {
                                   vertical: 16,
                                   horizontal: 16,
                                 ),
-                                border: const OutlineInputBorder(
+                                border: OutlineInputBorder(
                                   borderSide: BorderSide(
-                                    color: borderColor,
+                                    color: colorApp.border,
                                   ),
-                                  borderRadius: BorderRadius.all(
+                                  borderRadius: const BorderRadius.all(
                                     Radius.circular(12),
                                   ),
                                 ),
@@ -137,8 +139,9 @@ class _InventoryTabState extends State<InventoryTab> {
 
                                     if (tecSearch.text.isEmpty) return;
 
-                                    controller
-                                        .searchDataProduct(tecSearch.text);
+                                    controller.searchDataProduct(
+                                      tecSearch.text,
+                                    );
                                   },
                                   child: Icon(
                                     controller.isSearch
@@ -233,7 +236,7 @@ class _InventoryTabState extends State<InventoryTab> {
                             onPressed: () {},
                             style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.all(18),
-                              backgroundColor: primaryColor,
+                              backgroundColor: colorApp.primary,
                               elevation: 0,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
@@ -274,7 +277,7 @@ class _InventoryTabState extends State<InventoryTab> {
                             },
                             style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.all(18),
-                              backgroundColor: primaryColor,
+                              backgroundColor: colorApp.primary,
                               elevation: 0,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
@@ -674,6 +677,7 @@ class DialogProductAdd extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<InventoryTabController>();
+    final colorApp = context.watch<ColorApp>();
     final navigator = Navigator.of(context);
     final formKey = GlobalKey<FormState>();
 
@@ -855,7 +859,7 @@ class DialogProductAdd extends StatelessWidget {
               callbackSuccess: () => navigator.pop(),
             );
           },
-          style: DecorationUtils.buttonDialogStyle(),
+          style: DecorationUtils.buttonDialogStyle(colorApp.primary),
           child: const Text("Add"),
         ),
         if (controller.errDialogMessage.isNotEmpty)
@@ -898,6 +902,7 @@ class DialogProductEdit extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<InventoryTabController>();
+    final colorApp = context.watch<ColorApp>();
     final navigator = Navigator.of(context);
     final formKey = GlobalKey<FormState>();
 
@@ -1095,7 +1100,9 @@ class DialogProductEdit extends StatelessWidget {
 
             navigator.pop();
           },
-          style: DecorationUtils.buttonDialogStyle(),
+          style: DecorationUtils.buttonDialogStyle(
+            colorApp.primary,
+          ),
           child: const Text("Edit"),
         ),
         if (controller.errDialogMessage.isNotEmpty)

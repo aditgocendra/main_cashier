@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:main_cashier/presentation/home/home_controller.dart';
 import 'package:provider/provider.dart';
+import '../../../color_app.dart';
+import '../home_controller.dart';
 
 import '../../../core/constant/color_constant.dart';
 import '../../../core/constant/list_constant.dart';
@@ -13,6 +14,7 @@ class Topbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final homeController = context.watch<HomeController>();
+    final colorApp = context.watch<ColorApp>();
     final sizeWidthScreen = MediaQuery.of(context).size.width;
 
     return Container(
@@ -34,7 +36,9 @@ class Topbar extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              border: Border.all(color: borderColor),
+              border: Border.all(
+                color: colorApp.border,
+              ),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(

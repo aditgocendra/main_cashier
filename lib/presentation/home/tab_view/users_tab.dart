@@ -1,5 +1,6 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:main_cashier/color_app.dart';
 import 'package:main_cashier/domain/entity/user_entity.dart';
 import 'package:provider/provider.dart';
 import 'package:unicons/unicons.dart';
@@ -36,6 +37,7 @@ class _UsersTabState extends State<UsersTab> {
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<UsersTabController>();
+    final colorApp = context.watch<ColorApp>();
     final navigator = Navigator.of(context);
     final size = MediaQuery.of(context).size.width;
 
@@ -131,7 +133,7 @@ class _UsersTabState extends State<UsersTab> {
                             },
                             style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.all(18),
-                              backgroundColor: primaryColor,
+                              backgroundColor: colorApp.primary,
                               elevation: 0,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
@@ -163,7 +165,6 @@ class _UsersTabState extends State<UsersTab> {
                           width: 0.1,
                         ),
                       ),
-                      // defaultColumnWidth: FixedColumnWidth(1800 / 3),
                       columnWidths: const <int, TableColumnWidth>{
                         0: IntrinsicColumnWidth(),
                         1: IntrinsicColumnWidth(),
@@ -427,6 +428,7 @@ class DialogUserAdd extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<UsersTabController>();
+    final colorApp = context.watch<ColorApp>();
     final navigator = Navigator.of(context);
     final formKey = GlobalKey<FormState>();
 
@@ -545,7 +547,7 @@ class DialogUserAdd extends StatelessWidget {
 
             navigator.pop();
           },
-          style: DecorationUtils.buttonDialogStyle(),
+          style: DecorationUtils.buttonDialogStyle(colorApp.primary),
           child: const Text("Add"),
         ),
         if (controller.errMessageDialog.isNotEmpty)
@@ -582,6 +584,7 @@ class DialogUserEdit extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<UsersTabController>();
+    final colorApp = context.watch<ColorApp>();
     final navigator = Navigator.of(context);
     final formKey = GlobalKey<FormState>();
 
@@ -680,7 +683,7 @@ class DialogUserEdit extends StatelessWidget {
 
             navigator.pop();
           },
-          style: DecorationUtils.buttonDialogStyle(),
+          style: DecorationUtils.buttonDialogStyle(colorApp.primary),
           child: const Text("Edit"),
         ),
         if (controller.errMessageDialog.isNotEmpty)
@@ -715,6 +718,7 @@ class DialogUserChangePass extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<UsersTabController>();
+    final colorApp = context.watch<ColorApp>();
     final navigator = Navigator.of(context);
     final formKey = GlobalKey<FormState>();
 
@@ -765,7 +769,7 @@ class DialogUserChangePass extends StatelessWidget {
 
             navigator.pop();
           },
-          style: DecorationUtils.buttonDialogStyle(),
+          style: DecorationUtils.buttonDialogStyle(colorApp.primary),
           child: const Text("Change"),
         ),
         if (controller.errMessageDialog.isNotEmpty)

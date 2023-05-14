@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:main_cashier/color_app.dart';
 import 'package:provider/provider.dart';
 import 'package:unicons/unicons.dart';
 
 import '../../core/utils/format_utils.dart';
 import '../../core/components/table_components.dart';
-import '../../core/constant/color_constant.dart';
 import 'transaction_controller.dart';
 
 class TransactionView extends StatelessWidget {
@@ -17,6 +17,7 @@ class TransactionView extends StatelessWidget {
   Widget build(BuildContext context) {
     final navigator = Navigator.of(context);
     final controller = context.watch<TransactionController>();
+    final colorApp = context.watch<ColorApp>();
     final size = MediaQuery.of(context).size.width;
 
     return Scaffold(
@@ -25,7 +26,7 @@ class TransactionView extends StatelessWidget {
         children: [
           Container(
             decoration: BoxDecoration(
-              color: canvasColor,
+              color: colorApp.canvas,
               borderRadius: BorderRadius.circular(16),
             ),
             child: Column(
@@ -42,10 +43,10 @@ class TransactionView extends StatelessWidget {
                           controller.reset();
                           navigator.pop();
                         },
-                        child: const Text(
+                        child: Text(
                           "Home",
                           style: TextStyle(
-                            color: primaryColor,
+                            color: colorApp.primary,
                             decoration: TextDecoration.underline,
                           ),
                         ),
@@ -62,11 +63,11 @@ class TransactionView extends StatelessWidget {
                               vertical: 16,
                               horizontal: 16,
                             ),
-                            border: const OutlineInputBorder(
+                            border: OutlineInputBorder(
                               borderSide: BorderSide(
-                                color: borderColor,
+                                color: colorApp.border,
                               ),
-                              borderRadius: BorderRadius.all(
+                              borderRadius: const BorderRadius.all(
                                 Radius.circular(12),
                               ),
                             ),
@@ -88,7 +89,7 @@ class TransactionView extends StatelessWidget {
                                 UniconsLine.plus_circle,
                                 color: controller.errSelectProduct != null
                                     ? Colors.red
-                                    : primaryColor,
+                                    : colorApp.primary,
                                 size: 20,
                               ),
                             ),
@@ -259,10 +260,10 @@ class TransactionView extends StatelessWidget {
                           const Text("Total Payment"),
                           Text(
                             FormatUtility.currencyRp(controller.totalPay),
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
-                              color: primaryColor,
+                              color: colorApp.primary,
                             ),
                           )
                         ],
@@ -278,7 +279,7 @@ class TransactionView extends StatelessWidget {
                         },
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.all(18),
-                          backgroundColor: primaryColor,
+                          backgroundColor: colorApp.primary,
                           elevation: 0,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),

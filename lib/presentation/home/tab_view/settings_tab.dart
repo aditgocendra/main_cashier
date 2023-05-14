@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:main_cashier/color_app.dart';
 import 'package:provider/provider.dart';
 import 'package:unicons/unicons.dart';
 
@@ -30,6 +31,8 @@ class _SettingsTabState extends State<SettingsTab> {
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<SettingsTabController>();
+    final colorApp = context.watch<ColorApp>();
+
     final navigator = Navigator.of(context);
 
     return ListView(
@@ -121,6 +124,7 @@ class _SettingsTabState extends State<SettingsTab> {
                               message: "Are you sure ?",
                               callbackConfirmation: () {
                                 controller.resetDefaultColorApp();
+                                colorApp.setColorApp();
                                 navigator.pop();
                               },
                               callbackCancel: () => navigator.pop(),
@@ -128,7 +132,10 @@ class _SettingsTabState extends State<SettingsTab> {
                           },
                         );
                       },
-                      child: const Text("Reset"),
+                      child: Text(
+                        "Reset",
+                        style: TextStyle(color: colorApp.primary),
+                      ),
                     ),
                     TextButton(
                       onPressed: () {
@@ -140,6 +147,7 @@ class _SettingsTabState extends State<SettingsTab> {
                               message: "Are you sure ?",
                               callbackConfirmation: () {
                                 controller.changeColorDataApp();
+                                colorApp.setColorApp();
                                 navigator.pop();
                               },
                               callbackCancel: () => navigator.pop(),
@@ -147,7 +155,10 @@ class _SettingsTabState extends State<SettingsTab> {
                           },
                         );
                       },
-                      child: const Text("Save"),
+                      child: Text(
+                        "Save",
+                        style: TextStyle(color: colorApp.primary),
+                      ),
                     ),
                   ],
                 )
@@ -313,6 +324,7 @@ class DialogOpenFolder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<SettingsTabController>();
+    final colorApp = context.watch<ColorApp>();
     final navigator = Navigator.of(context);
 
     return DialogUtils.layoutCustomDialog(
@@ -398,7 +410,7 @@ class DialogOpenFolder extends StatelessWidget {
           },
           style: ElevatedButton.styleFrom(
             padding: const EdgeInsets.all(18),
-            backgroundColor: primaryColor,
+            backgroundColor: colorApp.primary,
             elevation: 0,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
