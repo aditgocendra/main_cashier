@@ -12,7 +12,7 @@ class Topbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final homeController = context.read<HomeController>();
+    final homeController = context.watch<HomeController>();
     final sizeWidthScreen = MediaQuery.of(context).size.width;
 
     return Container(
