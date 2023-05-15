@@ -122,6 +122,7 @@ class _SettingsTabState extends State<SettingsTab> {
                             return DialogUtils.dialogConfirmation(
                               title: "Reset Theme Color",
                               message: "Are you sure ?",
+                              primary: colorApp.primary,
                               callbackConfirmation: () {
                                 controller.resetDefaultColorApp();
                                 colorApp.setColorApp();
@@ -145,6 +146,7 @@ class _SettingsTabState extends State<SettingsTab> {
                             return DialogUtils.dialogConfirmation(
                               title: "Change Theme Color",
                               message: "Are you sure ?",
+                              primary: colorApp.primary,
                               callbackConfirmation: () {
                                 controller.changeColorDataApp();
                                 colorApp.setColorApp();
@@ -276,6 +278,7 @@ class _SettingsTabState extends State<SettingsTab> {
                           builder: (context) => DialogUtils.dialogInformation(
                             title: "Export Database",
                             message: "Database export success",
+                            primary: colorApp.primary,
                             callbackConfirmation: () => navigator.pop(),
                           ),
                         );

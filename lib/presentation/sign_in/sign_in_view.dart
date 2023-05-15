@@ -113,6 +113,7 @@ class _SignInViewState extends State<SignInView> {
                           return DialogUtils.dialogInformation(
                             title: "Sign In Fail",
                             message: "Something wrong",
+                            primary: colorApp.primary,
                             callbackConfirmation: () => navigator.pop(),
                           );
                         },

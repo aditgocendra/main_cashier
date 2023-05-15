@@ -243,6 +243,7 @@ class _TransactionTabState extends State<TransactionTab> {
                                                   title: "Detail Transaction",
                                                   message:
                                                       "Fail get detail transaction",
+                                                  primary: colorApp.primary,
                                                   callbackConfirmation: () =>
                                                       navigator.pop(),
                                                 );
@@ -276,6 +277,7 @@ class _TransactionTabState extends State<TransactionTab> {
                                                 title: "Delete Transaction",
                                                 message:
                                                     "Are you sure delete this transaction ?",
+                                                primary: colorApp.primary,
                                                 callbackConfirmation: () {
                                                   controller.removeTransaction(
                                                     idTransaction: val.id,
@@ -289,6 +291,8 @@ class _TransactionTabState extends State<TransactionTab> {
                                                                 "Delete Fail",
                                                             message:
                                                                 "Fail remove this transaction",
+                                                            primary: colorApp
+                                                                .primary,
                                                             callbackConfirmation:
                                                                 () {
                                                               navigator.pop();

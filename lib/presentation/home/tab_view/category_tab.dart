@@ -248,6 +248,7 @@ class _CategoryTabState extends State<CategoryTab> {
                                                       title: "Delete Category",
                                                       message:
                                                           "Are you sure delete this category ?, If there are products in this category, they will be deleted automatically",
+                                                      primary: colorApp.primary,
                                                       callbackConfirmation: () {
                                                         controller
                                                             .removeCategory(
@@ -444,6 +445,7 @@ class DialogCategoryAdd extends StatelessWidget {
                   builder: (context) => DialogUtils.dialogInformation(
                     title: "Fail Add Category",
                     message: controller.errorDialog,
+                    primary: colorApp.primary,
                     callbackConfirmation: () => navigator.pop(),
                   ),
                 );
@@ -525,6 +527,7 @@ class DialogCategoryEdit extends StatelessWidget {
                   builder: (context) => DialogUtils.dialogInformation(
                     title: "Edit Category",
                     message: ctgTabController.errorDialog,
+                    primary: colorApp.primary,
                     callbackConfirmation: () {
                       ctgTabController.resetErrorDialog();
                       navigator.pop();

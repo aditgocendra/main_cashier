@@ -280,6 +280,7 @@ class _UsersTabState extends State<UsersTab> {
                                                   title: "Delete User",
                                                   message:
                                                       "Are you sure delete this user ?",
+                                                  primary: colorApp.primary,
                                                   callbackConfirmation: () {
                                                     controller.removeUser(
                                                       val.uid,

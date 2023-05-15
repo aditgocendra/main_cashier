@@ -5,6 +5,7 @@ class DialogUtils {
   static Dialog dialogConfirmation({
     required String title,
     required String message,
+    required Color primary,
     required VoidCallback callbackConfirmation,
     required VoidCallback callbackCancel,
   }) {
@@ -39,11 +40,17 @@ class DialogUtils {
               children: [
                 TextButton(
                   onPressed: () => callbackCancel.call(),
-                  child: const Text("Cancel"),
+                  child: Text(
+                    "Cancel",
+                    style: TextStyle(color: primary),
+                  ),
                 ),
                 TextButton(
                   onPressed: () => callbackConfirmation.call(),
-                  child: const Text("Confirm"),
+                  child: Text(
+                    "Confirm",
+                    style: TextStyle(color: primary),
+                  ),
                 ),
               ],
             )
@@ -57,6 +64,7 @@ class DialogUtils {
     required String title,
     required String message,
     required VoidCallback callbackConfirmation,
+    required Color primary,
   }) {
     return Dialog(
       shape: RoundedRectangleBorder(
@@ -84,7 +92,10 @@ class DialogUtils {
             ),
             TextButton(
               onPressed: () => callbackConfirmation.call(),
-              child: const Text("Confirm"),
+              child: Text(
+                "Confirm",
+                style: TextStyle(color: primary),
+              ),
             ),
           ],
         ),

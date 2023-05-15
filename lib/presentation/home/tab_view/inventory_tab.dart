@@ -517,6 +517,8 @@ class _InventoryTabState extends State<InventoryTab> {
                                                         title: "Delete Product",
                                                         message:
                                                             "Are you sure delete this product ?",
+                                                        primary:
+                                                            colorApp.primary,
                                                         callbackConfirmation:
                                                             () {
                                                           controller
