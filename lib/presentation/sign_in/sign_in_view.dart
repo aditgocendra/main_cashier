@@ -7,14 +7,9 @@ import '../../core/utils/decoration_utils.dart';
 import '../../core/utils/dialog_utils.dart';
 import 'sign_in_controller.dart';
 
-class SignInView extends StatefulWidget {
-  const SignInView({super.key});
+class SignInView extends StatelessWidget {
+  SignInView({super.key});
 
-  @override
-  State<SignInView> createState() => _SignInViewState();
-}
-
-class _SignInViewState extends State<SignInView> {
   final TextEditingController tecUsername = TextEditingController();
   final TextEditingController tecPassword = TextEditingController();
 

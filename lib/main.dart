@@ -22,6 +22,16 @@ void main() {
 class App extends StatelessWidget {
   const App({super.key});
 
+  String _setInitialLocation(bool? isLoggedIn) {
+    if (isLoggedIn == null) return Routes.splashPath;
+
+    if (isLoggedIn) {
+      return Routes.homePath;
+    }
+
+    return Routes.signInPath;
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -30,14 +40,13 @@ class App extends StatelessWidget {
         builder: (context) {
           final authState = context.watch<AuthState>();
           final colorApp = context.watch<ColorApp>();
+
           return MaterialApp.router(
             debugShowCheckedModeBanner: false,
             routerConfig: GoRouter(
-              initialLocation: (authState.isLoggedIn == null)
-                  ? Routes.splashPath
-                  : (authState.isLoggedIn!)
-                      ? Routes.homePath
-                      : Routes.signInPath,
+              initialLocation: _setInitialLocation(
+                authState.isLoggedIn,
+              ),
               routes: <RouteBase>[
                 GoRoute(
                   path: Routes.homePath,
@@ -66,7 +75,7 @@ class App extends StatelessWidget {
                   path: Routes.signInPath,
                   name: Routes.signIn,
                   builder: (context, state) {
-                    return const SignInView();
+                    return SignInView();
                   },
                 ),
               ],

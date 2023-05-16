@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:main_cashier/domain/usecase/login_info/create_login_info_usecase.dart';
+import '../../domain/usecase/login_info/create_login_info_usecase.dart';
 import '../../domain/usecase/user/get_user_with_username_usecase.dart';
 
 class SignInController extends ChangeNotifier {
@@ -27,6 +27,4 @@ class SignInController extends ChangeNotifier {
           );
     });
   }
-
-  void setLoginInfo(String uid) async {}
 }
