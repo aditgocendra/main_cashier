@@ -169,30 +169,18 @@ class _UsersTabState extends State<UsersTab> {
                         0: IntrinsicColumnWidth(),
                         1: IntrinsicColumnWidth(),
                         2: IntrinsicColumnWidth(),
-                        3: IntrinsicColumnWidth(),
                       },
                       defaultVerticalAlignment:
                           TableCellVerticalAlignment.middle,
                       children: <TableRow>[
                         // Header Data Table
                         TableComponent.headerTable(
-                          ["UID", "Username", "Role", "Action"],
+                          ["Username", "Role", "Action"],
                         ),
                         // Body Data Table
                         ...controller.listUser.map((val) {
                           return TableRow(
                             children: [
-                              TableCell(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Center(
-                                    child: Text(
-                                      val.uid.toString(),
-                                      style: const TextStyle(fontSize: 14),
-                                    ),
-                                  ),
-                                ),
-                              ),
                               TableCell(
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
