@@ -55,7 +55,8 @@ class PdfUtility {
     );
 
     final dbFolder = await getApplicationDocumentsDirectory();
-    final file = File(path.join(dbFolder.path, 'example.pdf'));
+    final file =
+        File(path.join(dbFolder.path, '${transactionEntity.numInvoice}.pdf'));
     file.writeAsBytes(await doc.save());
   }
 
