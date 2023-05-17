@@ -109,33 +109,37 @@ class DialogUtils {
     required VoidCallback callbackClose,
   }) {
     return Container(
-      width: 800,
+      constraints: const BoxConstraints(
+        maxHeight: 800,
+        maxWidth: 800,
+      ),
       padding: const EdgeInsets.all(24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                dialogHeaderText,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  dialogHeaderText,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              IconButton(
-                onPressed: () => callbackClose.call(),
-                icon: const Icon(UniconsLine.times_circle),
-              )
-            ],
-          ),
-          const SizedBox(
-            height: 24,
-          ),
-          ...childern.map((val) => val).toList(),
-        ],
+                IconButton(
+                  onPressed: () => callbackClose.call(),
+                  icon: const Icon(UniconsLine.times_circle),
+                )
+              ],
+            ),
+            const SizedBox(
+              height: 24,
+            ),
+            ...childern.map((val) => val).toList(),
+          ],
+        ),
       ),
     );
   }
