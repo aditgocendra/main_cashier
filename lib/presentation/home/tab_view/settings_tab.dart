@@ -37,6 +37,7 @@ class _SettingsTabState extends State<SettingsTab> {
 
     return ListView(
       children: [
+        // Color App Theme
         if (controller.colorApp != null)
           Container(
             padding: const EdgeInsets.all(12),
@@ -170,6 +171,7 @@ class _SettingsTabState extends State<SettingsTab> {
         const SizedBox(
           height: 24,
         ),
+        // Path Folder
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
@@ -248,6 +250,7 @@ class _SettingsTabState extends State<SettingsTab> {
         const SizedBox(
           height: 24,
         ),
+        // Backup
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
@@ -432,17 +435,22 @@ class DialogOpenFolder extends StatelessWidget {
 class WidgetList extends StatelessWidget {
   final int index;
   final FileSystemEntity fileSystem;
-  const WidgetList({required this.fileSystem, required this.index, super.key});
+  const WidgetList({
+    required this.fileSystem,
+    required this.index,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<SettingsTabController>();
+
     return InkWell(
       onTap: () {
         controller.setIndexActive(index);
       },
-      onDoubleTap: () {
-        if (fileSystem.statSync().type is Directory) {
+      onDoubleTap: () async {
+        if (FileSystemEntity.isDirectorySync(fileSystem.path)) {
           controller.openFolder(
             index,
           );
@@ -459,7 +467,7 @@ class WidgetList extends StatelessWidget {
         child: Row(
           children: [
             Icon(
-              fileSystem.statSync().type is Directory
+              FileSystemEntity.isDirectorySync(fileSystem.path)
                   ? UniconsLine.folder
                   : UniconsLine.file,
               size: 24,

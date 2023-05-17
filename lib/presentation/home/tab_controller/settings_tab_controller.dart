@@ -230,7 +230,7 @@ class SettingsTabController extends ChangeNotifier {
       listFileSystem[indexActive!].path,
     );
 
-    if (Directory(newPath).statSync().type is! Directory) return;
+    if (!FileSystemEntity.isDirectorySync(newPath)) return;
 
     final params = PathFileEntity(
       folder: typePath == 0 ? "invoice" : "report",
