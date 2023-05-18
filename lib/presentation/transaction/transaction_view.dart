@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:main_cashier/auth_state.dart';
 import 'package:main_cashier/color_app.dart';
+import 'package:main_cashier/core/utils/dialog_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:unicons/unicons.dart';
 
@@ -38,24 +39,38 @@ class TransactionView extends StatelessWidget {
                   padding: const EdgeInsets.all(16.0),
                   child: Wrap(
                     crossAxisAlignment: WrapCrossAlignment.center,
-                    alignment: authState.userEntity!.roleId != 2
-                        ? WrapAlignment.spaceBetween
-                        : WrapAlignment.end,
+                    alignment: WrapAlignment.spaceBetween,
                     children: [
-                      if (authState.userEntity!.roleId != 2)
-                        InkWell(
-                          onTap: () {
+                      IconButton(
+                        icon: Icon(
+                          Icons.home_outlined,
+                          color: colorApp.primary,
+                          size: 32,
+                        ),
+                        onPressed: () {
+                          if (authState.userEntity!.roleId != 2) {
                             controller.reset();
                             navigator.pop();
-                          },
-                          child: Text(
-                            "Home",
-                            style: TextStyle(
-                              color: colorApp.primary,
-                              decoration: TextDecoration.underline,
-                            ),
-                          ),
-                        ),
+                          } else {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return DialogUtils.dialogConfirmation(
+                                  title: "Logout",
+                                  message: "Are you sure ?",
+                                  primary: colorApp.primary,
+                                  callbackConfirmation: () async {
+                                    await authState.logout().then(
+                                          (_) => navigator.pop(),
+                                        );
+                                  },
+                                  callbackCancel: () => navigator.pop(),
+                                );
+                              },
+                            );
+                          }
+                        },
+                      ),
                       SizedBox(
                         width: 200,
                         child: TextField(
