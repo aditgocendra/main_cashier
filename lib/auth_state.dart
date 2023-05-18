@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:main_cashier/domain/entity/user_entity.dart';
+import 'package:main_cashier/domain/usecase/login_info/delete_login_info_usecase.dart';
 import 'package:main_cashier/domain/usecase/login_info/get_login_info_usecase.dart';
 import 'package:main_cashier/domain/usecase/user/select_user_usecase.dart';
 
@@ -11,10 +12,12 @@ class AuthState with ChangeNotifier {
 
   final GetLoginInfo getLoginInfo;
   final SelectUser selectUser;
+  final DeleteLoginInfo deleteLoginInfo;
 
   AuthState({
     required this.getLoginInfo,
     required this.selectUser,
+    required this.deleteLoginInfo,
   }) {
     setUserLoggedIn();
   }
@@ -23,7 +26,7 @@ class AuthState with ChangeNotifier {
     await getLoginInfo.call(NoParans()).then((value) async {
       if (value != null) {
         isLoggedIn = true;
-        setUser(value);
+        _setUser(value);
       } else {
         isLoggedIn = false;
       }
@@ -32,9 +35,17 @@ class AuthState with ChangeNotifier {
     });
   }
 
-  void setUser(String userId) async {
+  void _setUser(String userId) async {
     await selectUser.call(userId).then((value) {
       userEntity = value;
+      notifyListeners();
+    });
+  }
+
+  Future logout() async {
+    await deleteLoginInfo.call(userEntity!.uid).then((value) {
+      isLoggedIn = false;
+      userEntity = null;
       notifyListeners();
     });
   }
