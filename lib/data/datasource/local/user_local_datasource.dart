@@ -11,6 +11,8 @@ abstract class UserLocalDataSource {
     required int offset,
   });
 
+  Future<UserModel> select(String userId);
+
   Future update({
     required String uid,
     required String newUsername,
@@ -127,5 +129,14 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
       ..addColumns([id]);
 
     return await query.map((p0) => p0.read(id)).getSingle();
+  }
+
+  @override
+  Future<UserModel> select(String userId) async {
+    final r = await (databaseApp.select(databaseApp.userTable)
+          ..where((tbl) => tbl.id.equals(userId)))
+        .getSingle();
+
+    return UserModel.fromTable(r);
   }
 }

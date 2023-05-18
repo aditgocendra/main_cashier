@@ -9,6 +9,8 @@ abstract class UserRepository {
     required int newRole,
   });
 
+  Future<UserEntity> selectUser(String idUser);
+
   Future changePasswordUser({
     required String uid,
     required String pass,

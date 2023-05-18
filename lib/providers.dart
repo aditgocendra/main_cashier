@@ -8,6 +8,7 @@ import 'package:main_cashier/domain/usecase/login_info/get_login_info_usecase.da
 import 'package:main_cashier/domain/usecase/user/get_total_user_usecase.dart';
 import 'package:main_cashier/domain/usecase/user/get_user_with_username_usecase.dart';
 import 'package:main_cashier/auth_state.dart';
+import 'package:main_cashier/domain/usecase/user/select_user_usecase.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -263,6 +264,10 @@ GetUserWithUsername _getUserWithUsername = GetUserWithUsername(
   repository: _userRepository,
 );
 
+SelectUser _selectUser = SelectUser(
+  repository: _userRepository,
+);
+
 GetTotalUser _getTotalUser = GetTotalUser(repository: _userRepository);
 
 // Transaction Usecase
@@ -430,7 +435,7 @@ List<SingleChildWidget> _listProvider = [
     lazy: false,
     create: (context) => AuthState(
       getLoginInfo: _getLoginInfo,
-      getUserWithUsername: _getUserWithUsername,
+      selectUser: _selectUser,
     ),
   ),
   ChangeNotifierProvider(
