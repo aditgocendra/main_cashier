@@ -26,14 +26,4 @@ class HomeController extends ChangeNotifier {
     tabControllerHome.index = index;
     notifyListeners();
   }
-
-  void signOut(VoidCallback callback) async {
-    await deleteLoginInfo.call('asd').then((value) {
-      callback.call();
-    });
-  }
-
-  void test(VoidCallback callback) {
-    callback.call();
-  }
 }
