@@ -71,10 +71,24 @@ class SignInView extends StatelessWidget {
                     ),
                     TextFormField(
                       controller: tecPassword,
-                      obscureText: true,
-                      decoration: DecorationUtils.textFieldDecoration(
-                        hint: "Example : ********",
-                        label: "Password",
+                      obscureText: controller.isObscurePass,
+                      decoration: InputDecoration(
+                        fillColor: Colors.white60,
+                        hintText: "*******",
+                        label: const Text("Password"),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            controller.isObscurePass
+                                ? Icons.remove_red_eye
+                                : Icons.remove_red_eye_outlined,
+                            color: controller.isObscurePass
+                                ? colorApp.primaryLight
+                                : colorApp.primary,
+                          ),
+                          onPressed: () {
+                            controller.toogleObscurePass();
+                          },
+                        ),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {

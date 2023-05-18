@@ -3,6 +3,9 @@ import '../../domain/usecase/login_info/create_login_info_usecase.dart';
 import '../../domain/usecase/user/get_user_with_username_usecase.dart';
 
 class SignInController extends ChangeNotifier {
+  bool _isObscurePass = false;
+  bool get isObscurePass => _isObscurePass;
+
   final GetUserWithUsername getUserWithUsername;
   final CreateLoginInfo createLoginInfo;
 
@@ -26,5 +29,16 @@ class SignInController extends ChangeNotifier {
             (value) => callbackSuccess.call(),
           );
     });
+  }
+
+  void toogleObscurePass() {
+    if (isObscurePass) {
+      _isObscurePass = false;
+    } else {
+      _isObscurePass = true;
+    }
+
+    print(isObscurePass);
+    notifyListeners();
   }
 }
