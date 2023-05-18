@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:main_cashier/auth_state.dart';
 import 'package:main_cashier/presentation/home/home_controller.dart';
 import 'package:provider/provider.dart';
@@ -7,6 +6,7 @@ import 'package:unicons/unicons.dart';
 
 import '../../../color_app.dart';
 import '../../../core/constant/list_constant.dart';
+import '../../../core/utils/dialog_utils.dart';
 import 'menu_sidebar.dart';
 
 class Sidebar extends StatelessWidget {
@@ -21,6 +21,7 @@ class Sidebar extends StatelessWidget {
   Widget build(BuildContext context) {
     final authState = context.read<AuthState>();
     final colorApp = context.watch<ColorApp>();
+    final navigator = Navigator.of(context);
     final sizeScreenWidh = MediaQuery.of(context).size.width;
 
     if (sizeScreenWidh > 1024) {
@@ -58,10 +59,22 @@ class Sidebar extends StatelessWidget {
               ),
               IconButton(
                 onPressed: () {
-                  homeController.signOut(() {
-                    authState.setUserLoggedIn();
-                    context.go("/sign_in");
-                  });
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return DialogUtils.dialogConfirmation(
+                        title: "Logout",
+                        message: "Are you sure ?",
+                        primary: colorApp.primary,
+                        callbackConfirmation: () async {
+                          await authState.logout().then(
+                                (_) => navigator.pop(),
+                              );
+                        },
+                        callbackCancel: () => navigator.pop(),
+                      );
+                    },
+                  );
                 },
                 icon: const Icon(UniconsLine.exit),
               )
