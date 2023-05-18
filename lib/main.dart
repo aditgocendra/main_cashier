@@ -5,6 +5,7 @@ import 'package:main_cashier/auth_state.dart';
 import 'package:main_cashier/color_app.dart';
 
 import 'package:main_cashier/core/router/routes.dart';
+import 'package:main_cashier/domain/entity/user_entity.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'presentation/home/home_view.dart';
@@ -22,10 +23,11 @@ void main() {
 class App extends StatelessWidget {
   const App({super.key});
 
-  String _setInitialLocation(bool? isLoggedIn) {
+  String _setInitialLocation(bool? isLoggedIn, UserEntity? user) {
     if (isLoggedIn == null) return Routes.splashPath;
 
     if (isLoggedIn) {
+      if (user == null || user.roleId == 2) return Routes.transactionPath;
       return Routes.homePath;
     }
 
@@ -46,6 +48,7 @@ class App extends StatelessWidget {
             routerConfig: GoRouter(
               initialLocation: _setInitialLocation(
                 authState.isLoggedIn,
+                authState.userEntity,
               ),
               routes: <RouteBase>[
                 GoRoute(

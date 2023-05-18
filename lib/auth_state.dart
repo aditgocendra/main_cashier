@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:main_cashier/domain/entity/user_entity.dart';
 import 'package:main_cashier/domain/usecase/login_info/get_login_info_usecase.dart';
-import 'package:main_cashier/domain/usecase/user/get_user_with_username_usecase.dart';
+import 'package:main_cashier/domain/usecase/user/select_user_usecase.dart';
 
 import 'core/usecase/usecase.dart';
 
 class AuthState with ChangeNotifier {
   bool? isLoggedIn;
-  UserEntity? user;
+  UserEntity? userEntity;
 
   final GetLoginInfo getLoginInfo;
-  final GetUserWithUsername getUserWithUsername;
+  final SelectUser selectUser;
 
   AuthState({
     required this.getLoginInfo,
-    required this.getUserWithUsername,
+    required this.selectUser,
   }) {
     setUserLoggedIn();
   }
@@ -23,6 +23,7 @@ class AuthState with ChangeNotifier {
     await getLoginInfo.call(NoParans()).then((value) async {
       if (value != null) {
         isLoggedIn = true;
+        setUser(value);
       } else {
         isLoggedIn = false;
       }
@@ -31,9 +32,9 @@ class AuthState with ChangeNotifier {
     });
   }
 
-  void setUser(String username) async {
-    await getUserWithUsername.call(username).then((value) {
-      user = value;
+  void setUser(String userId) async {
+    await selectUser.call(userId).then((value) {
+      userEntity = value;
       notifyListeners();
     });
   }
