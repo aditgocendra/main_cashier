@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:main_cashier/domain/usecase/login_info/delete_login_info_usecase.dart';
-import '../../core/usecase/usecase.dart';
 import '../../domain/usecase/user/get_total_user_usecase.dart';
 
 class HomeController extends ChangeNotifier {
@@ -19,16 +18,6 @@ class HomeController extends ChangeNotifier {
     required this.getTotalUser,
     required this.deleteLoginInfo,
   });
-
-  Future checkUsers({
-    required VoidCallback callbackUserNotExist,
-  }) async {
-    await getTotalUser.call(NoParans()).then((value) {
-      if (value == null || value == 0) {
-        callbackUserNotExist.call();
-      }
-    });
-  }
 
   void toogleSidebar(bool expand) => _isSidebarExpanded = expand;
 
