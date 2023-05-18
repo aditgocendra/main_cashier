@@ -649,21 +649,35 @@ class DialogGenerateReport extends StatelessWidget {
         ),
         ElevatedButton(
           onPressed: () async {
-            final result = await controller.getReportTransaction();
-            final omzet = await controller.getOmzetTransactionWithRange();
-            final profit = await controller.getProfitTransactionWithRange();
+            try {
+              final result = await controller.getReportTransaction();
 
-            await PdfUtility.generateReportTransaction(
-              rangeDate: controller.rangeDatePicker,
-              reportTransaction: result,
-              omzet: omzet!,
-              profit: profit,
-            );
+              final omzet = await controller.getOmzetTransactionWithRange();
 
-            navigator.pop();
+              final profit = await controller.getProfitTransactionWithRange();
+
+              await PdfUtility.generateReportTransaction(
+                rangeDate: controller.rangeDatePicker,
+                reportTransaction: result,
+                omzet: omzet!,
+                profit: profit,
+              );
+
+              navigator.pop();
+            } catch (_) {
+              showDialog(
+                context: context,
+                builder: (context) => DialogUtils.dialogInformation(
+                  title: "Fail Generate Report",
+                  message: "Something wrong, invalid date range",
+                  callbackConfirmation: () => navigator.pop(),
+                  primary: colorApp.primary,
+                ),
+              );
+            }
           },
           style: DecorationUtils.buttonDialogStyle(colorApp.primary),
-          child: const Text("Generate Invoice"),
+          child: const Text("Generate Report Transaction"),
         ),
       ],
       callbackClose: () => navigator.pop(),
