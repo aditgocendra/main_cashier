@@ -434,9 +434,9 @@ List<SingleChildWidget> _listProvider = [
   ChangeNotifierProvider(
     lazy: false,
     create: (context) => AuthState(
-      getLoginInfo: _getLoginInfo,
-      selectUser: _selectUser,
-    ),
+        getLoginInfo: _getLoginInfo,
+        selectUser: _selectUser,
+        deleteLoginInfo: _deleteLoginInfo),
   ),
   ChangeNotifierProvider(
     lazy: false,
