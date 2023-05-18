@@ -228,68 +228,43 @@ class _InventoryTabState extends State<InventoryTab> {
                         )
                       ],
                     ),
-                    Wrap(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          child: ElevatedButton(
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
-                              padding: const EdgeInsets.all(18),
-                              backgroundColor: colorApp.primary,
-                              elevation: 0,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                            child: const Text(
-                              "Generate Report",
-                              style: TextStyle(fontSize: 12),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 12,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          child: ElevatedButton(
-                            onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder: (context) {
-                                  resetTec();
-                                  controller.resetDialogAttr();
-                                  return Dialog(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(16),
-                                    ),
-                                    child: DialogProductAdd(
-                                      tecCode: tecCode,
-                                      tecName: tecName,
-                                      tecCapitalPrice: tecCapitalPrice,
-                                      tecSellPrice: tecSellPrice,
-                                      tecStock: tecStock,
-                                    ),
-                                  );
-                                },
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              resetTec();
+                              controller.resetDialogAttr();
+                              return Dialog(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                child: DialogProductAdd(
+                                  tecCode: tecCode,
+                                  tecName: tecName,
+                                  tecCapitalPrice: tecCapitalPrice,
+                                  tecSellPrice: tecSellPrice,
+                                  tecStock: tecStock,
+                                ),
                               );
                             },
-                            style: ElevatedButton.styleFrom(
-                              padding: const EdgeInsets.all(18),
-                              backgroundColor: colorApp.primary,
-                              elevation: 0,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                            child: const Text(
-                              "Create Product",
-                              style: TextStyle(fontSize: 12),
-                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.all(18),
+                          backgroundColor: colorApp.primary,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
                           ),
-                        )
-                      ],
+                        ),
+                        child: const Text(
+                          "Create Product",
+                          style: TextStyle(fontSize: 12),
+                        ),
+                      ),
                     ),
                   ],
                 ),

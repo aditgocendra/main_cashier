@@ -20,7 +20,7 @@ class SignInController extends ChangeNotifier {
     required VoidCallback callbackSuccess,
     required VoidCallback callbackFail,
   }) async {
-    await getUserWithUsername.call(username).then((value) async {
+    await getUserWithUsername.call(username.toLowerCase()).then((value) async {
       if (value.password != pass) {
         return;
       }
@@ -37,8 +37,6 @@ class SignInController extends ChangeNotifier {
     } else {
       _isObscurePass = true;
     }
-
-    print(isObscurePass);
     notifyListeners();
   }
 }

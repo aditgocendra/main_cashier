@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:main_cashier/domain/entity/user_entity.dart';
-import 'package:main_cashier/domain/usecase/user/change_pass_user_usecase.dart';
-import 'package:main_cashier/domain/usecase/user/search_user_usecase.dart';
+import '../../../domain/entity/user_entity.dart';
+import '../../../domain/usecase/user/change_pass_user_usecase.dart';
+import '../../../domain/usecase/user/search_user_usecase.dart';
 import '../../../core/usecase/usecase.dart';
 import '../../../domain/entity/role_entity.dart';
 

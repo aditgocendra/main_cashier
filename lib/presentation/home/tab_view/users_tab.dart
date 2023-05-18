@@ -1,6 +1,7 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:main_cashier/color_app.dart';
+import 'package:main_cashier/core/utils/format_utils.dart';
 import 'package:main_cashier/domain/entity/user_entity.dart';
 import 'package:provider/provider.dart';
 import 'package:unicons/unicons.dart';
@@ -186,7 +187,7 @@ class _UsersTabState extends State<UsersTab> {
                                   padding: const EdgeInsets.all(8.0),
                                   child: Center(
                                     child: Text(
-                                      val.username,
+                                      FormatUtility.capitalize(val.username),
                                       style: const TextStyle(fontSize: 14),
                                     ),
                                   ),
@@ -527,7 +528,7 @@ class DialogUserAdd extends StatelessWidget {
             controller.addUser(
               UserEntity(
                 uid: "",
-                username: tecUsername.text,
+                username: tecUsername.text.toLowerCase(),
                 password: tecPassword.text,
                 roleId: controller.selectionRole!.id,
                 createdAt: DateTime.now(),
