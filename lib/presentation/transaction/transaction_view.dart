@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:main_cashier/auth_state.dart';
 import 'package:main_cashier/color_app.dart';
 import 'package:provider/provider.dart';
 import 'package:unicons/unicons.dart';
@@ -18,6 +19,7 @@ class TransactionView extends StatelessWidget {
     final navigator = Navigator.of(context);
     final controller = context.watch<TransactionController>();
     final colorApp = context.watch<ColorApp>();
+    final authState = context.watch<AuthState>();
     final size = MediaQuery.of(context).size.width;
 
     return Scaffold(
@@ -36,21 +38,24 @@ class TransactionView extends StatelessWidget {
                   padding: const EdgeInsets.all(16.0),
                   child: Wrap(
                     crossAxisAlignment: WrapCrossAlignment.center,
-                    alignment: WrapAlignment.spaceBetween,
+                    alignment: authState.userEntity!.roleId != 2
+                        ? WrapAlignment.spaceBetween
+                        : WrapAlignment.end,
                     children: [
-                      InkWell(
-                        onTap: () {
-                          controller.reset();
-                          navigator.pop();
-                        },
-                        child: Text(
-                          "Home",
-                          style: TextStyle(
-                            color: colorApp.primary,
-                            decoration: TextDecoration.underline,
+                      if (authState.userEntity!.roleId != 2)
+                        InkWell(
+                          onTap: () {
+                            controller.reset();
+                            navigator.pop();
+                          },
+                          child: Text(
+                            "Home",
+                            style: TextStyle(
+                              color: colorApp.primary,
+                              decoration: TextDecoration.underline,
+                            ),
                           ),
                         ),
-                      ),
                       SizedBox(
                         width: 200,
                         child: TextField(

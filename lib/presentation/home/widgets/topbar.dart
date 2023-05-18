@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:main_cashier/auth_state.dart';
+import 'package:main_cashier/core/utils/format_utils.dart';
 import 'package:provider/provider.dart';
 import '../../../color_app.dart';
 import '../home_controller.dart';
@@ -15,6 +17,7 @@ class Topbar extends StatelessWidget {
   Widget build(BuildContext context) {
     final homeController = context.watch<HomeController>();
     final colorApp = context.watch<ColorApp>();
+    final authState = context.watch<AuthState>();
     final sizeWidthScreen = MediaQuery.of(context).size.width;
 
     return Container(
@@ -43,7 +46,14 @@ class Topbar extends StatelessWidget {
             ),
             child: Row(
               children: [
-                if (sizeWidthScreen > 475) const Text('Administrator'),
+                if (sizeWidthScreen > 475)
+                  Text(
+                    authState.userEntity == null
+                        ? ""
+                        : FormatUtility.capitalize(
+                            authState.userEntity!.username,
+                          ),
+                  ),
                 if (sizeWidthScreen > 475) const SizedBox(width: 8),
                 Image.asset(
                   'assets/images/admin_avatar.png',
