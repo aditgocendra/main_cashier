@@ -13,6 +13,10 @@ abstract class UserLocalDataSource {
 
   Future<UserModel> select(String userId);
 
+  Future<UserViewModel> selectView(String username);
+
+  Future<bool> userIsExist(String username);
+
   Future update({
     required String uid,
     required String newUsername,
@@ -138,5 +142,23 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
         .getSingle();
 
     return UserModel.fromTable(r);
+  }
+
+  @override
+  Future<bool> userIsExist(String username) async {
+    final r = await (databaseApp.select(databaseApp.userTable)
+          ..where((tbl) => tbl.username.equals(username)))
+        .get();
+
+    return r.isNotEmpty ? true : false;
+  }
+
+  @override
+  Future<UserViewModel> selectView(String username) async {
+    final r = await (databaseApp.select(databaseApp.userView)
+          ..where((tbl) => tbl.username.equals(username)))
+        .getSingle();
+
+    return UserViewModel.fromTable(r);
   }
 }
