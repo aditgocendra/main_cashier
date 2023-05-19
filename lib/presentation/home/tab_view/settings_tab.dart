@@ -407,7 +407,19 @@ class DialogOpenFolder extends StatelessWidget {
         ElevatedButton(
           onPressed: () {
             if (controller.typePath == 2) {
-              controller.importData();
+              controller.importData(
+                () => showDialog(
+                  context: context,
+                  builder: (context) {
+                    return DialogUtils.dialogInformation(
+                      title: "Fail",
+                      message: "This is not file",
+                      callbackConfirmation: () => navigator.pop(),
+                      primary: colorApp.primary,
+                    );
+                  },
+                ),
+              );
             } else {
               controller.selectFolder();
             }

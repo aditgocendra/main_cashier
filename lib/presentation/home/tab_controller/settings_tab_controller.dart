@@ -262,13 +262,19 @@ class SettingsTabController extends ChangeNotifier {
     });
   }
 
-  void importData() async {
+  void importData(VoidCallback callbackNotFile) async {
     final dbFolder = await getApplicationSupportDirectory();
 
     final fileBackup = File(path.join(
       pathActiveImport,
       splitPathLast(listFileSystem[indexActive!].path),
     ));
+
+    // Check selection user if is not file
+    if (!FileSystemEntity.isFileSync(fileBackup.path)) {
+      callbackNotFile.call();
+      return;
+    }
 
     final file = File(path.join(dbFolder.path, 'app.db'));
 
