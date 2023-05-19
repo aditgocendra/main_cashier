@@ -3,7 +3,7 @@ import '../../domain/usecase/login_info/create_login_info_usecase.dart';
 import '../../domain/usecase/user/get_user_with_username_usecase.dart';
 
 class SignInController extends ChangeNotifier {
-  bool _isObscurePass = false;
+  bool _isObscurePass = true;
   bool get isObscurePass => _isObscurePass;
 
   final GetUserWithUsername getUserWithUsername;

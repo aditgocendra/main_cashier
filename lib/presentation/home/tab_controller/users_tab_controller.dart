@@ -85,7 +85,10 @@ class UsersTabController extends ChangeNotifier {
   }
 
   void addUser(UserEntity userEntity) async {
-    await createUser.call(userEntity).then((value) {}).catchError((e) {
+    await createUser.call(userEntity).then((value) {
+      _listUser.add(value);
+      notifyListeners();
+    }).catchError((e) {
       _errMessageDialog = e.toString();
       notifyListeners();
     });
