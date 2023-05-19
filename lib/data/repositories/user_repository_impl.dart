@@ -12,9 +12,13 @@ class UserRepositoryImpl implements UserRepository {
   });
 
   @override
-  Future<int> createUser(UserEntity userEntity) async {
+  Future<UserViewEntity> createUser(UserEntity userEntity) async {
     try {
-      return await userLocalDataSource.create(
+      final r = await userLocalDataSource.userIsExist(userEntity.username);
+
+      if (r) throw DatabaseDriftException("Username is exist");
+
+      await userLocalDataSource.create(
         UserModel(
           uid: userEntity.uid,
           username: userEntity.username,
@@ -23,6 +27,8 @@ class UserRepositoryImpl implements UserRepository {
           createdAt: userEntity.createdAt,
         ),
       );
+
+      return await userLocalDataSource.selectView(userEntity.username);
     } catch (e) {
       throw DatabaseDriftException("Insert data user fail");
     }
