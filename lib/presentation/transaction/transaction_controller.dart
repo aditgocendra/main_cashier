@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../core/usecase/usecase.dart';
 
+import '../../core/usecase/usecase.dart';
 import '../../domain/entity/product_transaction_entity.dart';
 import '../../domain/usecase/transaction/update_counter_transaction_usecase.dart';
 import '../../domain/usecase/transaction/get_counter_transaction_usecase.dart';
@@ -50,6 +50,7 @@ class TransactionController extends ChangeNotifier {
 
     // Select product from database
     await selectProduct.call(code).then((value) {
+      // Check stock product
       if (value.stock < 1) {
         _errSelectProduct = "This product has no stock";
         notifyListeners();
@@ -61,8 +62,8 @@ class TransactionController extends ChangeNotifier {
       _listProduct.add(value);
       calculateTotalPay();
       notifyListeners();
-    }).catchError((e) {
-      _errSelectProduct = e.toString();
+    }).catchError((_) {
+      _errSelectProduct = "Product is not exist";
       notifyListeners();
     });
   }
@@ -166,5 +167,6 @@ class TransactionController extends ChangeNotifier {
     _listTotalQty.clear();
     _totalPay = 0;
     clearError();
+    notifyListeners();
   }
 }

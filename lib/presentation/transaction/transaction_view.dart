@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:main_cashier/auth_state.dart';
-import 'package:main_cashier/color_app.dart';
-import 'package:main_cashier/core/utils/dialog_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:unicons/unicons.dart';
 
+import '../home/tab_controller/transaction_tab_controller.dart';
+import '../../auth_state.dart';
+import '../../color_app.dart';
+import '../../core/utils/dialog_utils.dart';
 import '../../core/utils/format_utils.dart';
 import '../../core/components/table_components.dart';
 import 'transaction_controller.dart';
@@ -19,6 +20,7 @@ class TransactionView extends StatelessWidget {
   Widget build(BuildContext context) {
     final navigator = Navigator.of(context);
     final controller = context.watch<TransactionController>();
+    final controllerTransactionTab = context.read<TransactionTabController>();
     final colorApp = context.watch<ColorApp>();
     final authState = context.watch<AuthState>();
     final size = MediaQuery.of(context).size.width;
@@ -43,7 +45,9 @@ class TransactionView extends StatelessWidget {
                     children: [
                       IconButton(
                         icon: Icon(
-                          Icons.home_outlined,
+                          authState.userEntity!.roleId != 2
+                              ? Icons.home_outlined
+                              : Icons.logout_outlined,
                           color: colorApp.primary,
                           size: 32,
                         ),
@@ -292,8 +296,13 @@ class TransactionView extends StatelessWidget {
                         onPressed: () {
                           controller.addTransaction(
                             () {
-                              controller.reset();
-                              navigator.pop();
+                              if (authState.userEntity!.roleId != 2) {
+                                controllerTransactionTab.setTransaction();
+                                controller.reset();
+                                navigator.pop();
+                              } else {
+                                controller.reset();
+                              }
                             },
                           );
                         },
