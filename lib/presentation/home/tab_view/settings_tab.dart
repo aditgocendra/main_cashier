@@ -272,6 +272,10 @@ class _SettingsTabState extends State<SettingsTab> {
                   "Export",
                   style: TextStyle(fontSize: 14),
                 ),
+                subtitle: Text(
+                  "Save in folder : ${controller.pathActiveImport}",
+                  style: const TextStyle(fontSize: 12),
+                ),
                 trailing: InkWell(
                   onTap: () {
                     controller.exportData(
