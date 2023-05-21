@@ -251,7 +251,11 @@ class SettingsTabController extends ChangeNotifier {
 
   void exportData(VoidCallback callback) async {
     final dbFolder = await getApplicationDocumentsDirectory();
-    final file = File(path.join(dbFolder.path, 'backup.db'));
+    final dateTime = DateTime.now();
+    final fileNameBackup =
+        'backup_${dateTime.year}${dateTime.day}${dateTime.month}_${dateTime.hour}${dateTime.minute}${dateTime.millisecond}.db';
+
+    final file = File(path.join(dbFolder.path, fileNameBackup));
 
     await file.parent.create(recursive: true);
 
