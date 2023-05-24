@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:main_cashier/color_app.dart';
-import 'package:main_cashier/core/utils/format_utils.dart';
-import 'package:main_cashier/presentation/home/tab_controller/dashboard_tab_controller.dart';
 import 'package:provider/provider.dart';
 import 'package:unicons/unicons.dart';
-
+import '../../../color_app.dart';
+import '../../../core/utils/format_utils.dart';
+import '../tab_controller/dashboard_tab_controller.dart';
+import '../widgets/best_seller_product_dashboard.dart';
+import '../widgets/chart_dashboard.dart';
 import '../widgets/item_top_dashboard.dart';
 
 class DashboardTab extends StatefulWidget {
@@ -94,6 +95,14 @@ class _DashboardTabState extends State<DashboardTab> {
               ],
             ),
           ),
+          const SizedBox(
+            height: 16,
+          ),
+          const ChartDashboard(),
+          const SizedBox(
+            height: 16,
+          ),
+          const BestSellerProduct()
         ],
       ),
     );
