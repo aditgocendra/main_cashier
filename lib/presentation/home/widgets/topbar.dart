@@ -15,7 +15,6 @@ class Topbar extends StatelessWidget {
   Widget build(BuildContext context) {
     final homeController = context.watch<HomeController>();
     final colorApp = context.watch<ColorApp>();
-    // final authState = context.watch<AuthState>();
     final sizeWidthScreen = MediaQuery.of(context).size.width;
 
     return Container(
@@ -31,8 +30,8 @@ class Topbar extends StatelessWidget {
           Text(
             listTabMenu[homeController.indexTabActive]['menu'],
             style: TextStyle(
-              fontSize: sizeWidthScreen > 360 ? 24 : 16,
-            ),
+                fontSize: sizeWidthScreen > 360 ? 24 : 16,
+                fontWeight: FontWeight.bold),
           ),
           Container(
             padding: const EdgeInsets.all(8),
