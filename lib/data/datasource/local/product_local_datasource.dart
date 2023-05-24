@@ -13,6 +13,8 @@ abstract class ProductLocalDataSource {
 
   Future<ProductModel?> getSingleProductCategory(int idCategory);
 
+  Future<List<ProductModel>> getProductByCategories(int idCategory);
+
   Future<bool> codeProductIsExist(String code);
 
   Future<int> create(ProductModel productModel);
@@ -155,5 +157,14 @@ class ProductLocalDataSourceImpl implements ProductLocalDataSource {
     return await (databaseApp.delete(databaseApp.productTable)
           ..where((tbl) => tbl.categoryId.equals(idCategory)))
         .go();
+  }
+
+  @override
+  Future<List<ProductModel>> getProductByCategories(int idCategory) async {
+    final r = await (databaseApp.select(databaseApp.productTable)
+          ..where((tbl) => tbl.categoryId.equals(idCategory)))
+        .get();
+
+    return ProductModel.fromTableList(r);
   }
 }

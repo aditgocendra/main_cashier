@@ -135,4 +135,13 @@ class ProductRepositoryImpl implements ProductRepository {
       throw DatabaseDriftException("Fail delete product");
     }
   }
+
+  @override
+  Future<List<ProductModel>> getProductCategories(int idCategory) async {
+    try {
+      return await productLocalDataSource.getProductByCategories(idCategory);
+    } catch (e) {
+      throw DatabaseDriftException("Fail get all product by categories");
+    }
+  }
 }

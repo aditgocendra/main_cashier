@@ -1,3 +1,4 @@
+import 'package:main_cashier/data/models/product_model.dart';
 import 'package:main_cashier/domain/entity/product_entity.dart';
 
 abstract class ProductRepository {
@@ -11,6 +12,8 @@ abstract class ProductRepository {
   });
 
   Future<ProductEntity?> getSingleProductCategory(int idCategory);
+
+  Future<List<ProductModel>> getProductCategories(int idCategory);
 
   Future<List<ProductViewEntity>> searchProduct(String keyword);
 
