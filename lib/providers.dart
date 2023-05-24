@@ -1,17 +1,11 @@
-import 'package:main_cashier/color_app.dart';
-import 'package:main_cashier/data/datasource/local/login_info_local_datasource.dart';
-import 'package:main_cashier/data/repositories/login_info_repository_impl.dart';
-import 'package:main_cashier/domain/repostitories/login_info_repository.dart';
-import 'package:main_cashier/domain/usecase/login_info/create_login_info_usecase.dart';
-import 'package:main_cashier/domain/usecase/login_info/delete_login_info_usecase.dart';
-import 'package:main_cashier/domain/usecase/login_info/get_login_info_usecase.dart';
-import 'package:main_cashier/domain/usecase/user/get_total_user_usecase.dart';
-import 'package:main_cashier/domain/usecase/user/get_user_with_username_usecase.dart';
-import 'package:main_cashier/auth_state.dart';
-import 'package:main_cashier/domain/usecase/user/select_user_usecase.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
+import 'auth_state.dart';
+import 'color_app.dart';
+
+import 'data/datasource/local/login_info_local_datasource.dart';
+import 'data/repositories/login_info_repository_impl.dart';
 import 'data/datasource/local/transaction_local_datasource.dart';
 import 'data/datasource/local/user_local_datasource.dart';
 import 'data/repositories/transaction_repository_impl.dart';
@@ -30,6 +24,14 @@ import 'data/repositories/backup_repository_impl.dart';
 import 'data/repositories/color_app_repository_impl.dart';
 import 'data/repositories/path_file_repository_impl.dart';
 
+import 'domain/repostitories/login_info_repository.dart';
+import 'domain/usecase/login_info/create_login_info_usecase.dart';
+import 'domain/usecase/login_info/delete_login_info_usecase.dart';
+import 'domain/usecase/login_info/get_login_info_usecase.dart';
+import 'domain/usecase/product/get_product_categories.dart';
+import 'domain/usecase/user/get_total_user_usecase.dart';
+import 'domain/usecase/user/get_user_with_username_usecase.dart';
+import 'domain/usecase/user/select_user_usecase.dart';
 import 'domain/repostitories/backup_repository.dart';
 import 'domain/repostitories/color_app_repository.dart';
 import 'domain/repostitories/path_file_repository.dart';
@@ -227,6 +229,10 @@ GetSingleProductCategory _getSingleProductCategory = GetSingleProductCategory(
 );
 
 DeleteProductCategory _deleteProductCategory = DeleteProductCategory(
+  repository: _productRepository,
+);
+
+GetProductCategories _getProductCategories = GetProductCategories(
   repository: _productRepository,
 );
 
@@ -429,6 +435,9 @@ List<SingleChildWidget> _listProvider = [
       getTotalProduct: _getTotalProduct,
       getTotalTransaction: _getTotalTransaction,
       getProfitWithRange: _getProfitWithRange,
+      getProductView: _getProductView,
+      getCategories: _getCategories,
+      getProductCategories: _getProductCategories,
     ),
   ),
   ChangeNotifierProvider(
