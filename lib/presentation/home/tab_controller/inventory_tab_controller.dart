@@ -149,7 +149,7 @@ class InventoryTabController extends ChangeNotifier {
     _rowPage = newRowPage;
     _offsetRowPage = 0;
     _activeRowPage = 1;
-    setCategories();
+    setProductData();
   }
 
   void nextPage() {
@@ -157,7 +157,7 @@ class InventoryTabController extends ChangeNotifier {
 
     _offsetRowPage = offsetRowPage + rowPage;
     _activeRowPage += 1;
-    setCategories();
+    setProductData();
   }
 
   void backPage() {
