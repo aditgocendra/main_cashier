@@ -24,11 +24,8 @@ class DashboardTabController extends ChangeNotifier {
   int _profitMonth = 0;
   int get profitMonth => _profitMonth;
 
-  final List<int> _yearChart = [
-    DateTime.now().year,
-    DateTime.now().year,
-  ];
-  List<int> get yearChart => _yearChart;
+  int _yearProfitMonthYear = DateTime.now().year;
+  int get yearProfitMonthYear => _yearProfitMonthYear;
 
   final List<int> _profitMonthInYear = [];
   List<int> get profitMonthInYear => _profitMonthInYear;
@@ -43,6 +40,27 @@ class DashboardTabController extends ChangeNotifier {
   double get percentagePieChart => _percentagePieChart;
 
   List<CategoryEntity> _categories = [];
+
+  // Chart Settings
+  final List<Map<String, dynamic>> _profitChartSettings = [
+    {
+      'setting': 'Grid',
+      'value': false,
+    },
+    {
+      'setting': 'Border',
+      'value': false,
+    },
+    {
+      'setting': 'Indicator',
+      'value': true,
+    },
+    {
+      'setting': 'Area Bar',
+      'value': false,
+    },
+  ];
+  List<Map<String, dynamic>> get profitChartSettings => _profitChartSettings;
 
   final GetTotalCategory getTotalCategory;
   final GetTotalProduct getTotalProduct;
@@ -94,15 +112,17 @@ class DashboardTabController extends ChangeNotifier {
   }
 
   void setProfitMonthInYear() async {
+    _profitMonthInYear.clear();
+
     for (var i = 1; i <= 12; i++) {
-      var firstDate = DateTime(yearChart.first, i, 1);
-      var lastDate = DateTime(yearChart.last, i + 1, 0, 23, 59, 00);
+      var firstDate = DateTime(yearProfitMonthYear, i, 1);
+      var lastDate = DateTime(yearProfitMonthYear, i + 1, 0, 23, 59, 00);
 
       await getProfitWithRange.call([firstDate, lastDate]).then((value) {
         _profitMonthInYear.add(value);
-        notifyListeners();
-      }).catchError((_) {});
+      });
     }
+    notifyListeners();
   }
 
   void setBestSellerProduct() async {
@@ -151,6 +171,18 @@ class DashboardTabController extends ChangeNotifier {
     }
     _percentagePieChart = 100 / totalAllSold;
 
+    notifyListeners();
+  }
+
+  void changeYearProfitMonthYear(int year) {
+    _yearProfitMonthYear = year;
+  }
+
+  void setSettingProfitBar({
+    required int index,
+    required bool value,
+  }) {
+    _profitChartSettings[index]['value'] = value;
     notifyListeners();
   }
 }

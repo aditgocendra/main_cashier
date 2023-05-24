@@ -79,10 +79,8 @@ class ProfitChart extends StatelessWidget {
                     onTap: () {
                       showDialog(
                         context: context,
-                        builder: (context) => Dialog(
-                          child: DialogYearPicker(
-                            callbackPick: () {},
-                          ),
+                        builder: (context) => const Dialog(
+                          child: DialogYearPicker(),
                         ),
                       );
                     },
@@ -93,7 +91,7 @@ class ProfitChart extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
-                        "January - December 2023",
+                        "January - December ${controller.yearProfitMonthYear}",
                         style: TextStyle(
                           fontSize: 12,
                           color: colorApp.primary,
@@ -104,16 +102,26 @@ class ProfitChart extends StatelessWidget {
                   const SizedBox(
                     width: 12,
                   ),
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade100,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Icon(
-                      Icons.more_vert,
-                      color: colorApp.primary,
-                      size: 20,
+                  InkWell(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => const Dialog(
+                          child: DialogSettingProfitChart(),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade100,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(
+                        Icons.more_vert,
+                        color: colorApp.primary,
+                        size: 20,
+                      ),
                     ),
                   )
                 ],
@@ -121,7 +129,7 @@ class ProfitChart extends StatelessWidget {
             ],
           ),
           AspectRatio(
-            aspectRatio: 2.0,
+            aspectRatio: 2.1,
             child: Padding(
               padding: const EdgeInsets.only(
                 top: 40,
@@ -157,7 +165,7 @@ class ProfitChart extends StatelessWidget {
                     ),
                   ),
                   gridData: FlGridData(
-                    show: false,
+                    show: controller.profitChartSettings[0]['value'],
                     drawVerticalLine: false,
                     horizontalInterval: 1,
                     verticalInterval: 1,
@@ -188,7 +196,7 @@ class ProfitChart extends StatelessWidget {
                     ),
                   ),
                   borderData: FlBorderData(
-                    show: false,
+                    show: controller.profitChartSettings[1]['value'],
                     border: Border.all(color: const Color(0xff37434d)),
                   ),
                   lineBarsData: [
@@ -212,10 +220,10 @@ class ProfitChart extends StatelessWidget {
                       barWidth: 3,
                       isStrokeCapRound: true,
                       dotData: FlDotData(
-                        show: true,
+                        show: controller.profitChartSettings[2]['value'],
                       ),
                       belowBarData: BarAreaData(
-                        show: false,
+                        show: controller.profitChartSettings[3]['value'],
                         gradient: LinearGradient(
                           colors: gradientColor
                               .map((color) => color.withOpacity(0.3))
@@ -260,6 +268,81 @@ class ProfitChart extends StatelessWidget {
   }
 }
 
+class DialogSettingProfitChart extends StatelessWidget {
+  const DialogSettingProfitChart({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = context.watch<DashboardTabController>();
+
+    return DialogUtils.layoutCustomDialog(
+      dialogHeaderText: 'Settings',
+      childern: controller.profitChartSettings
+          .asMap()
+          .map(
+            (i, val) => MapEntry(
+              i,
+              CheckboxListTile(
+                value: val['value'],
+                onChanged: (bool? value) {
+                  controller.setSettingProfitBar(index: i, value: value!);
+                },
+                title: Text(val['setting']),
+              ),
+            ),
+          )
+          .values
+          .toList(),
+      callbackClose: () => Navigator.pop(context),
+    );
+  }
+}
+
+class DialogYearPicker extends StatelessWidget {
+  const DialogYearPicker({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = context.read<DashboardTabController>();
+
+    return DialogUtils.layoutCustomDialog(
+      dialogHeaderText: "Select Year",
+      childern: [
+        Wrap(
+          alignment: WrapAlignment.center,
+          children: List.generate(
+            20,
+            (index) => InkWell(
+              onTap: () {
+                controller.changeYearProfitMonthYear(
+                  DateTime.now().year - index,
+                );
+
+                controller.setProfitMonthInYear();
+                Navigator.pop(context);
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Chip(
+                  label: Container(
+                    padding: const EdgeInsets.all(5),
+                    child: Text(
+                      (DateTime.now().year - index).toString(),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        )
+      ],
+      callbackClose: () => Navigator.pop(context),
+    );
+  }
+}
+
 // Best Seller Chart
 class BestSellerCategoryChart extends StatelessWidget {
   final ColorApp colorApp;
@@ -281,44 +364,12 @@ class BestSellerCategoryChart extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Text(
-                "Best Seller Category",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              InkWell(
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return Dialog(
-                        child: DialogYearPicker(
-                          callbackPick: () {},
-                        ),
-                      );
-                    },
-                  );
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Icon(
-                    Icons.timer_sharp,
-                    color: colorApp.primary,
-                    size: 20,
-                  ),
-                ),
-              ),
-            ],
+          const Text(
+            "Best Seller Category",
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           Padding(
             padding: const EdgeInsets.only(top: 40),
@@ -389,45 +440,6 @@ class BestSellerCategoryChart extends StatelessWidget {
           )
         ],
       ),
-    );
-  }
-}
-
-class DialogYearPicker extends StatelessWidget {
-  final VoidCallback callbackPick;
-  const DialogYearPicker({required this.callbackPick, super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return DialogUtils.layoutCustomDialog(
-      dialogHeaderText: "Select Year",
-      childern: [
-        Wrap(
-          alignment: WrapAlignment.center,
-          children: List.generate(
-            30,
-            (index) => InkWell(
-              onTap: () {
-                // log("Selected Year ==> ${(2022 - index).toString()}");
-
-                Navigator.pop(context);
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Chip(
-                  label: Container(
-                    padding: const EdgeInsets.all(5),
-                    child: Text(
-                      (2035 - index).toString(),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        )
-      ],
-      callbackClose: () => Navigator.pop(context),
     );
   }
 }
