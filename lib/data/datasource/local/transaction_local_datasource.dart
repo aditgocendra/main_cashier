@@ -220,6 +220,9 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
           ))
         .get();
 
+    if (result.isEmpty) {
+      return 0;
+    }
     List<int> profit = [];
 
     for (var element in result) {
