@@ -20,33 +20,12 @@ class BestSellerProduct extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Text(
-                "Best Seller Product",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              InkWell(
-                onTap: () {},
-                child: Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Icon(
-                    Icons.timer_sharp,
-                    color: colorApp.primary,
-                    size: 20,
-                  ),
-                ),
-              ),
-            ],
+          const Text(
+            "Best Seller Product",
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           const SizedBox(
             height: 40,
@@ -59,9 +38,9 @@ class BestSellerProduct extends StatelessWidget {
                   ListTile(
                     contentPadding: EdgeInsets.zero,
                     leading: CircleAvatar(
-                      backgroundColor: Colors.amber.shade800,
+                      backgroundColor: colorApp.primary,
                       child: Text(
-                        index.toString(),
+                        (index + 1).toString(),
                         style: const TextStyle(
                           fontSize: 12.5,
                           color: Colors.white,
