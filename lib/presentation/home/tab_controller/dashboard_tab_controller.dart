@@ -21,11 +21,11 @@ class DashboardTabController extends ChangeNotifier {
   int _totalTransaction = 0;
   int get totalTransaction => _totalTransaction;
 
-  int _profitMonth = 0;
-  int get profitMonth => _profitMonth;
+  int _profitYear = 0;
+  int get profitYear => _profitYear;
 
-  int _yearProfitMonthYear = DateTime.now().year;
-  int get yearProfitMonthYear => _yearProfitMonthYear;
+  int _yearProfitActive = DateTime.now().year;
+  int get yearProfitActive => _yearProfitActive;
 
   final List<int> _profitMonthInYear = [];
   List<int> get profitMonthInYear => _profitMonthInYear;
@@ -93,7 +93,6 @@ class DashboardTabController extends ChangeNotifier {
       _totalTransaction = value!;
     });
 
-    setProfitThisMonth();
     setProfitMonthInYear();
     setBestSellerProduct();
     setBestSellerCategories();
@@ -101,25 +100,17 @@ class DashboardTabController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setProfitThisMonth() async {
-    var date = DateTime.now();
-    var firstDate = DateTime(date.year, date.month, 1);
-    var lastDate = DateTime(date.year, date.month + 1, 0, 23, 59, 00);
-
-    await getProfitWithRange.call([firstDate, lastDate]).then((value) {
-      _profitMonth = value;
-    }).catchError((_) {});
-  }
-
   void setProfitMonthInYear() async {
     _profitMonthInYear.clear();
+    _profitYear = 0;
 
     for (var i = 1; i <= 12; i++) {
-      var firstDate = DateTime(yearProfitMonthYear, i, 1);
-      var lastDate = DateTime(yearProfitMonthYear, i + 1, 0, 23, 59, 00);
+      var firstDate = DateTime(yearProfitActive, i, 1);
+      var lastDate = DateTime(yearProfitActive, i + 1, 0, 23, 59, 00);
 
       await getProfitWithRange.call([firstDate, lastDate]).then((value) {
         _profitMonthInYear.add(value);
+        _profitYear += value;
       });
     }
     notifyListeners();
@@ -175,7 +166,7 @@ class DashboardTabController extends ChangeNotifier {
   }
 
   void changeYearProfitMonthYear(int year) {
-    _yearProfitMonthYear = year;
+    _yearProfitActive = year;
   }
 
   void setSettingProfitBar({

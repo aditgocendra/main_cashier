@@ -89,8 +89,8 @@ class _DashboardTabState extends State<DashboardTab> {
                 ItemTopDashboard(
                   icon: UniconsLine.money_insert,
                   title: "Profit",
-                  desc: "Profit this month",
-                  value: FormatUtility.currencyRp(controller.profitMonth),
+                  desc: "Profit in year ${controller.yearProfitActive}",
+                  value: FormatUtility.currencyRp(controller.profitYear),
                 ),
               ],
             ),

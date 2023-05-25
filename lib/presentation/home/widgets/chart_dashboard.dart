@@ -91,7 +91,7 @@ class ProfitChart extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
-                        "January - December ${controller.yearProfitMonthYear}",
+                        "January - December ${controller.yearProfitActive}",
                         style: TextStyle(
                           fontSize: 12,
                           color: colorApp.primary,
